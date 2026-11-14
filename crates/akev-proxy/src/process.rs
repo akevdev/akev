@@ -12,7 +12,6 @@
 use super::*;
 use parking_lot::Mutex;
 use std::collections::HashMap;
-use std::net::IpAddr;
 use std::time::{Duration, Instant};
 
 const CACHE_TTL: Duration = Duration::from_secs(5);
@@ -98,7 +97,7 @@ fn file_name(path: &str) -> String {
 mod linux {
     use super::*;
     use std::fs;
-    use std::net::{Ipv4Addr, Ipv6Addr};
+    use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
     /// Socket inode → pid knowledge gathered from `/proc/*/fd` scans.
     ///
@@ -753,7 +752,7 @@ mod macos {
 #[cfg(windows)]
 mod windows {
     use super::*;
-    use std::net::{Ipv4Addr, Ipv6Addr};
+    use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
     use windows_sys::Win32::Foundation::{CloseHandle, ERROR_INSUFFICIENT_BUFFER, NO_ERROR};
     use windows_sys::Win32::NetworkManagement::IpHelper::{
         GetExtendedTcpTable, TCP_TABLE_OWNER_PID_ALL,

@@ -448,9 +448,11 @@ fn deeply_nested_values_never_overflow_the_native_stack() {
     let src = "function onRequest(req) { try { JSON.stringify(JSON.parse(req.body)); } catch (e) { req.headers['x-error'] = e.name; } return req; }";
     let (out, _) = run_on_request(src, post(), Bytes::from(nested_arrays(10_000))).unwrap();
     assert_eq!(cont(out).0.headers.get("x-error"), Some("RangeError"));
-    // console.log of such a value prints something instead of crashing.
-    let src = "function onRequest(req) { console.log('body', JSON.parse(req.body)); }";
-    let (_, log) = run_on_request(src, post(), Bytes::from(nested_arrays(10_000))).unwrap();
+    // console.log of such a value prints something instead of crashing. The script builds the
+    // value itself: how deep `JSON.parse` gets before its RangeError depends on the platform's
+    // native frame sizes (on macOS arm64 it already throws at this depth).
+    let src = "function onRequest(req) { let a = []; for (let i = 0; i < 10000; i++) a = [a]; console.log('body', a); }";
+    let (_, log) = run_on_request(src, post(), Bytes::new()).unwrap();
     assert!(log.lines[0].starts_with("[log] body "), "{:?}", log.lines);
     // The same from onResponse (an upstream body).
     let src = "function onResponse(req, res) { res.body = JSON.stringify(JSON.parse(res.body)); }";

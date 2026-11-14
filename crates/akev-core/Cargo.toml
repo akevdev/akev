@@ -12,9 +12,7 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 bytes = { workspace = true, features = ["serde"] }
 http = { workspace = true }
-smol_str = { workspace = true }
 uuid = { workspace = true }
-thiserror = { workspace = true }
 async-trait = { workspace = true }
 base64 = { workspace = true }
 time = { workspace = true }
