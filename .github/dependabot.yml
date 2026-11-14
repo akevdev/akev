@@ -9,7 +9,7 @@ updates:
         update-types: [minor, patch]
     open-pull-requests-limit: 10
 
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /ui
     schedule:
       interval: weekly

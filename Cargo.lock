@@ -219,8 +219,6 @@ dependencies = [
  "http",
  "serde",
  "serde_json",
- "smol_str",
- "thiserror 2.0.21",
  "time",
  "tokio",
  "uuid",
@@ -359,7 +357,6 @@ dependencies = [
  "tokio-tungstenite 0.30.0",
  "tokio-util",
  "tracing",
- "tungstenite 0.30.0",
  "url",
  "webpki-roots",
  "windows-sys 0.61.2",
@@ -1031,16 +1028,6 @@ dependencies = [
  "tracing",
  "untrusted",
  "x25519-dalek",
-]
-
-[[package]]
-name = "borsh"
-version = "1.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "553c5d846a6ba5150c65e3b1b8ec073bcf1abc20f9b7220de384a4443ea4e20a"
-dependencies = [
- "bytes",
- "cfg_aliases",
 ]
 
 [[package]]
@@ -6059,16 +6046,6 @@ version = "1.16.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "149309498a5f7334b12ddae0cad8aba81ce785fe91755068867e017cf98fee46"
 dependencies = [
- "serde",
-]
-
-[[package]]
-name = "smol_str"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9676b89cd56310a87b93dec47b11af744f34d5fc9f367b829474eec0a891350d"
-dependencies = [
- "borsh",
  "serde",
 ]
 
