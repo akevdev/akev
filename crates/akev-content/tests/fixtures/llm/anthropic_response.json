@@ -1,0 +1,29 @@
+{
+  "id": "msg_01NonStream9xYz",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-haiku-4-5-20251001",
+  "content": [
+    {
+      "type": "text",
+      "text": "Rounding error in `toCents`."
+    },
+    {
+      "type": "tool_use",
+      "id": "toolu_01Run",
+      "name": "run_tests",
+      "input": {
+        "pattern": "money"
+      }
+    }
+  ],
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 1200,
+    "cache_creation_input_tokens": 2048,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 42,
+    "service_tier": "standard"
+  }
+}

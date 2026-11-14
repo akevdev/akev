@@ -1,0 +1,184 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/akev-core",
+    "crates/akev-ca",
+    "crates/akev-content",
+    "crates/akev-codegen",
+    "crates/akev-filter",
+    "crates/akev-rules",
+    "crates/akev-store",
+    "crates/akev-proxy",
+    "crates/akev-intercept",
+    "crates/akev-wireguard",
+    "crates/akev-api",
+    "crates/akev-cli",
+    "crates/akev-loadgen",
+    "desktop/src-tauri",
+]
+# cargo-fuzz targets have their own workspace (nightly + libFuzzer; run by the `fuzz` CI job).
+exclude = ["fuzz"]
+# The desktop shell needs webkit2gtk development headers on Linux; keep it out of the
+# default build so `cargo build` / `cargo test` work everywhere. The benchmark load generator
+# (akev-loadgen) isn't part of Akev either; build it with `-p akev-loadgen`.
+default-members = [
+    "crates/akev-core",
+    "crates/akev-ca",
+    "crates/akev-content",
+    "crates/akev-codegen",
+    "crates/akev-filter",
+    "crates/akev-rules",
+    "crates/akev-store",
+    "crates/akev-proxy",
+    "crates/akev-intercept",
+    "crates/akev-wireguard",
+    "crates/akev-api",
+    "crates/akev-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.91"
+license = "AGPL-3.0-or-later"
+repository = "https://github.com/akevdev/akev"
+homepage = "https://akev.dev"
+authors = ["Akev contributors"]
+# Distributed as the akev binaries and app, not as crates.
+publish = false
+
+[workspace.dependencies]
+# internal
+akev-core = { path = "crates/akev-core" }
+akev-ca = { path = "crates/akev-ca" }
+akev-content = { path = "crates/akev-content" }
+akev-codegen = { path = "crates/akev-codegen" }
+akev-filter = { path = "crates/akev-filter" }
+akev-rules = { path = "crates/akev-rules" }
+akev-store = { path = "crates/akev-store" }
+akev-proxy = { path = "crates/akev-proxy" }
+akev-intercept = { path = "crates/akev-intercept" }
+akev-wireguard = { path = "crates/akev-wireguard" }
+akev-api = { path = "crates/akev-api" }
+
+# async / runtime
+tokio = { version = "1.47", features = ["full"] }
+tokio-util = { version = "0.7", features = ["io", "codec", "rt"] }
+futures = "0.3"
+futures-util = "0.3"
+async-trait = "0.1"
+pin-project-lite = "0.2"
+
+# http
+http = "1"
+http-body = "1"
+http-body-util = "0.1"
+hyper = { version = "1", features = ["full"] }
+hyper-util = { version = "0.1", features = ["full"] }
+h2 = "0.4"
+bytes = "1"
+httparse = "1"
+url = { version = "2", features = ["serde"] }
+percent-encoding = "2"
+mime = "0.3"
+cookie = "0.18"
+
+# tls / crypto
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12", "logging"] }
+rustls-pki-types = "1"
+# Path building for the upstream chain view (the verifier rustls itself uses).
+rustls-webpki = { version = "0.103", default-features = false, features = ["std"] }
+rustls-native-certs = "0.8"
+webpki-roots = "1"
+rcgen = { version = "0.14", features = ["pem", "x509-parser", "ring"] }
+x509-parser = "0.18"
+ring = "0.17"
+sha1 = "0.10"
+sha2 = "0.10"
+md-5 = "0.10"
+hex = "0.4"
+base64 = "0.22"
+
+# websockets
+tokio-tungstenite = "0.30"
+tungstenite = "0.30"
+
+# http/3 (QUIC)
+quinn = { version = "0.11", default-features = false, features = ["runtime-tokio", "rustls-ring"] }
+h3 = "0.0.8"
+h3-quinn = "0.0.10"
+
+# web server
+axum = { version = "0.8", features = ["ws", "macros", "multipart"] }
+tower = { version = "0.5", features = ["util"] }
+tower-http = { version = "0.6", features = ["cors", "compression-full", "trace", "set-header"] }
+rust-embed = { version = "8", features = ["compression", "mime-guess"] }
+mime_guess = "2"
+
+# serialization
+serde = { version = "1", features = ["derive", "rc"] }
+serde_json = { version = "1", features = ["preserve_order", "raw_value", "float_roundtrip"] }
+toml = "0.8"
+rmp-serde = "1"
+ciborium = "0.2"
+
+# compression
+flate2 = "1"
+brotli = "8"
+zstd = "0.13"
+
+# text / parsing
+regex = "1"
+globset = "0.4"
+memchr = "2"
+quick-xml = "0.42"
+smallvec = { version = "1", features = ["serde", "union"] }
+smol_str = { version = "0.3", features = ["serde"] }
+indexmap = { version = "2", features = ["serde"] }
+unicase = "2"
+
+# misc
+anyhow = "1"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
+parking_lot = "0.12"
+dashmap = "6"
+arc-swap = "1"
+once_cell = "1"
+uuid = { version = "1", features = ["v4", "v7", "serde"] }
+time = { version = "0.3", features = ["serde", "formatting", "parsing", "macros"] }
+chrono = { version = "0.4", features = ["serde"] }
+rand = "0.9"
+clap = { version = "4", features = ["derive", "env", "wrap_help"] }
+dirs = "6"
+which = "7"
+tempfile = "3"
+socket2 = { version = "0.6", features = ["all"] }
+hickory-resolver = "0.26"
+sysinfo = "0.37"
+lru = "0.19"
+crossbeam-channel = "0.5"
+open = "5"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream", "gzip", "brotli", "zstd"] }
+
+# Panicking shortcuts stay out of production code: request paths must never take the
+# process down. Tests may use them (clippy.toml).
+[workspace.lints.clippy]
+unwrap_used = "warn"
+expect_used = "warn"
+panic = "warn"
+todo = "warn"
+unimplemented = "warn"
+dbg_macro = "warn"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
+panic = "unwind"
+
+[profile.dev.package."*"]
+opt-level = 2

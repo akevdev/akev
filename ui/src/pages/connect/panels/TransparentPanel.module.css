@@ -1,0 +1,236 @@
+/* Transparent capture panel (Connect → Transparent capture). */
+
+.statusCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2-5);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-panel);
+  transition:
+    border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.statusCard[data-tone='active'] {
+  border-color: color-mix(in srgb, var(--success) 40%, transparent);
+  background: color-mix(in srgb, var(--success-soft) 55%, var(--bg-panel));
+}
+
+.statusCard[data-tone='error'] {
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+}
+
+.statusHead {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2-5);
+}
+
+.statusIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--text-subtle);
+}
+
+.statusCard[data-tone='active'] .statusIcon {
+  color: var(--success);
+}
+
+.statusCard[data-tone='error'] .statusIcon {
+  color: var(--danger);
+}
+
+.statusText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.statusTitle {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+}
+
+.statusDetail {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.statusAction {
+  flex-shrink: 0;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+}
+
+.recent {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.recentRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  padding: var(--sp-1-5) 0;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-sm);
+}
+
+.recentRow:last-child {
+  border-bottom: none;
+}
+
+.recentDest {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+}
+
+.recentDirect {
+  color: var(--text-subtle);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+}
+
+.recentWho {
+  max-width: 34%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.recentWhen {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3) var(--sp-4);
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.optionLabel {
+  display: block;
+  margin-bottom: var(--sp-1-5);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.modeHelp {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  gap: var(--sp-2-5);
+  min-width: 0;
+}
+
+.stepNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  flex-shrink: 0;
+}
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1-5);
+  flex: 1;
+  min-width: 0;
+}
+
+.stepTitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.stepDesc {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.summary {
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+
+.planStale {
+  opacity: 0.55;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.details {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.details > summary {
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.details[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.detailsBody {
+  padding: var(--sp-3);
+}

@@ -1,0 +1,33 @@
+{
+  "model": "o4-mini",
+  "messages": [
+    {
+      "role": "developer",
+      "content": "Answer with one sentence."
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "What is shown in this screenshot?"
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAA8CAIAAAAWtijjAAAAk0lEQVR42u3XwQmAMBBFwVTiMWANtmkHNpFiPKUKEREbCDkJumTgVTCHv0ma5kWdEgJAgAABAgQIECA1gY7zUidAgAABAhQRaN1K3AAB+j+QAAECBMg76KPbBAiQDTLSgAABUvDfPCBAcYEECBAgQIAAAQIEqNld62gBGgZoz/mtAAECZINiAgkQIECAAAECBGjsHma2DI5aF0wsAAAAAElFTkSuQmCC",
+            "detail": "low"
+          }
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "https://example.com/receipt.jpg"
+          }
+        }
+      ]
+    }
+  ],
+  "reasoning_effort": "low",
+  "max_completion_tokens": 800
+}

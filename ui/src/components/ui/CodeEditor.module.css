@@ -1,0 +1,33 @@
+.editor {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.editor[data-fill] {
+  flex: 1;
+  height: 100%;
+}
+
+.editor :global(.cm-editor) {
+  flex: 1;
+  min-height: var(--cm-min-h, auto);
+  max-height: var(--cm-max-h, none);
+}
+
+.editor[data-fill] :global(.cm-editor) {
+  height: 100%;
+  max-height: none;
+}
+
+.fallback {
+  padding: 12px 16px;
+  background: var(--bg-panel);
+}
+
+.fillFallback {
+  flex: 1;
+  height: 100%;
+}

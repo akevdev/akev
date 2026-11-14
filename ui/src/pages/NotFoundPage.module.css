@@ -1,0 +1,40 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.title {
+  padding: 0 4px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  padding: 24px;
+}
+
+.path {
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+  background: var(--bg-active);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-ligatures: none;
+  word-break: break-all;
+}
+
+.pages {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-1);
+}

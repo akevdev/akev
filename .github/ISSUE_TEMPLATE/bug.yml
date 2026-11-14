@@ -1,0 +1,44 @@
+name: Bug report
+description: Something doesn't work the way it should
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Security problems go to security@akev.dev instead (see SECURITY.md).
+        Settings → About → "Copy diagnostics" collects the details below for you.
+  - type: input
+    id: version
+    attributes:
+      label: Akev version
+      description: "`akev --version`, or Settings → About"
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: app
+    attributes:
+      label: How you run Akev
+      options: [Desktop app, akev command line, Docker image]
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: macOS 15.2 (Apple Silicon), Windows 11, Ubuntu 24.04…
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or diagnostics
+      description: Remove tokens, cookies and anything private before pasting.
+      render: text

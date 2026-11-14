@@ -1,0 +1,8 @@
+POST /login HTTP/1.1
+Host: example.com
+Content-Type: application/x-www-form-urlencoded
+Cookie: session=abc123; theme=dark
+Origin: https://example.com
+Content-Length: 58
+
+user=ann%40example.com&password=p%40ss+w0rd%21&remember=on

@@ -1,0 +1,7 @@
+# winget version manifest (rendered by scripts/package-manifests.sh; submit the three files to
+# microsoft/winget-pkgs under manifests/a/Akev/Akev/@VERSION@/).
+PackageIdentifier: Akev.Akev
+PackageVersion: @VERSION@
+DefaultLocale: en-US
+ManifestType: version
+ManifestVersion: 1.6.0

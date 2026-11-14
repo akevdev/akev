@@ -1,0 +1,75 @@
+.button {
+  --ib-size: var(--control-h);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--ib-size);
+  height: var(--ib-size);
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.button:active:not(:disabled) {
+  background: var(--bg-active);
+  transform: translateY(0.5px);
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.button[data-active] {
+  color: var(--accent-text);
+  background: var(--accent-soft);
+}
+
+.button[data-active]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent-soft), var(--accent) 8%);
+  color: var(--accent-text);
+}
+
+.button[data-state='open'] {
+  background: var(--bg-active);
+  color: var(--text);
+}
+
+.sm {
+  --ib-size: var(--control-h-sm);
+  border-radius: 5px;
+}
+
+.lg {
+  --ib-size: var(--control-h-lg);
+  border-radius: var(--r-md);
+}
+
+.subtle {
+  border-color: var(--border-strong);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.subtle:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bg-elevated), var(--text) 5%);
+}
+
+.danger:hover:not(:disabled) {
+  background: var(--danger-soft);
+  color: var(--danger);
+}

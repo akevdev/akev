@@ -1,0 +1,98 @@
+/* Chevron and split triggers share the ghost-button look of IconButton. */
+.chevronTrigger,
+.splitMain,
+.splitChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-h);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.chevronTrigger:hover:not(:disabled),
+.splitMain:hover:not(:disabled),
+.splitChevron:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.chevronTrigger:active:not(:disabled),
+.splitMain:active:not(:disabled),
+.splitChevron:active:not(:disabled) {
+  background: var(--bg-active);
+}
+
+.chevronTrigger[data-state='open'],
+.splitChevron[data-state='open'] {
+  background: var(--bg-active);
+  color: var(--text);
+}
+
+.chevronTrigger:disabled,
+.splitMain:disabled,
+.splitChevron:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.chevronTrigger {
+  gap: 1px;
+  padding: 0 4px 0 6px;
+}
+
+.chevron {
+  color: var(--text-subtle);
+}
+
+.chevronTrigger:hover .chevron,
+.chevronTrigger[data-state='open'] .chevron {
+  color: inherit;
+}
+
+/* Split button: [icon][▾] reading as one control. */
+.split {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: var(--r-sm);
+}
+
+.splitMain {
+  width: var(--control-h);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.splitChevron {
+  position: relative;
+  width: 16px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  color: var(--text-subtle);
+}
+
+/* Hovering either half tints the whole control lightly, the hovered half more. */
+.split:hover:not([data-disabled]) {
+  background: var(--bg-hover);
+}
+
+.split:hover:not([data-disabled]) .splitChevron::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 0;
+  width: 1px;
+  background: var(--border-strong);
+}
+
+.menu {
+  min-width: 220px;
+}

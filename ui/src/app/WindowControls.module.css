@@ -1,0 +1,46 @@
+/* Window buttons over the right end of the 40px top toolbar (desktop app on Linux and
+   Windows). Styled after GNOME's on both: small round buttons with a faint fill that
+   strengthens on hover. */
+.controls {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: var(--z-banner);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--toolbar-h);
+  padding: 0 10px 0 4px;
+}
+
+.button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+  cursor: default;
+  transition: background-color var(--dur-fast, 120ms) var(--ease, ease);
+}
+
+.button:hover {
+  background: color-mix(in srgb, var(--text) 16%, transparent);
+}
+
+.button:active {
+  background: color-mix(in srgb, var(--text) 24%, transparent);
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring-width) solid var(--border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* lucide's "copy" reads as restore when mirrored like the GTK icon. */
+.restore {
+  transform: scaleX(-1);
+}

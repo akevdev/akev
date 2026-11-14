@@ -1,0 +1,81 @@
+{
+  "model": "gpt-4.1",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are Atlas, a concise travel assistant. Use the tools for anything that depends on live data (weather, opening hours). Answer in Markdown."
+    },
+    {
+      "role": "user",
+      "content": "I'm in Ljubljana tomorrow afternoon. Do I need an umbrella, and what's a good indoor plan if it rains?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Hourly forecast for a city and date.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "City name"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "units": {
+              "type": "string",
+              "enum": [
+                "metric",
+                "imperial"
+              ]
+            }
+          },
+          "required": [
+            "city",
+            "date"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "search_places",
+        "description": "Find places (museums, cafés, sights) in a city.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "open_now": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "query",
+            "city"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "parallel_tool_calls": true,
+  "temperature": 0.3,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  }
+}

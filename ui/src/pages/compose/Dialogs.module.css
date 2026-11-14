@@ -1,0 +1,104 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.textarea {
+  min-height: 220px;
+  max-height: 50vh;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-code);
+  white-space: pre;
+  resize: vertical;
+}
+
+.detect {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.detectNone {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+.detectError {
+  overflow: hidden;
+  color: var(--danger);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---- import */
+.importBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: -4px;
+  padding: 4px;
+  border-radius: var(--r-md);
+  outline: 1px dashed transparent;
+  outline-offset: -1px;
+  transition:
+    outline-color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
+}
+
+.importOver {
+  outline-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.importFoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.importHint {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+.fileChip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-subtle);
+}
+
+.fileChipIcon {
+  flex-shrink: 0;
+  color: var(--accent-text);
+}
+
+.fileChipText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fileChipName {
+  overflow: hidden;
+  color: var(--text);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.fileChipMeta {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

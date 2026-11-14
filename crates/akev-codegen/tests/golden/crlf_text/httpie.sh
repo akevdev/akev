@@ -1,0 +1,2 @@
+printf '%s' $'--XyZ\r\nContent-Disposition: form-data; name="note"\r\n\r\nhi \x1B[1m"there"\r\n--XyZ--\r\n' | http POST 'https://example.com/upload' \
+  'Content-Type:multipart/form-data; boundary=XyZ'

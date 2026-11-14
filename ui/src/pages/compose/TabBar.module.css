@@ -1,0 +1,285 @@
+.bar {
+  display: flex;
+  align-items: stretch;
+  height: var(--toolbar-h);
+  flex-shrink: 0;
+  min-width: 0;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+  /* Room for the desktop window buttons (0 unless they're shown, see lib/windowChrome.ts). */
+  padding-right: var(--window-controls-right, 0px);
+}
+
+.sidebarToggle {
+  align-self: center;
+  margin: 0 2px 0 6px;
+  flex-shrink: 0;
+}
+
+.scroller {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.scroller[data-fade-left] {
+  mask-image: linear-gradient(to right, transparent 0, black 28px);
+}
+
+.scroller[data-fade-right] {
+  mask-image: linear-gradient(to left, transparent 0, black 28px);
+}
+
+.scroller[data-fade-left][data-fade-right] {
+  mask-image: linear-gradient(to right, transparent 0, black 28px, black calc(100% - 28px), transparent 100%);
+}
+
+.list {
+  display: flex;
+  align-items: stretch;
+  gap: 1px;
+  padding: 6px 2px 0 4px;
+  flex-shrink: 0;
+}
+
+.tab {
+  --tab-bg: transparent;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 196px;
+  min-width: 0;
+  height: 100%;
+  padding: 0 6px 0 11px;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  background: var(--tab-bg);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: default;
+  user-select: none;
+  outline: none;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+/* Separators between inactive tabs (browser style). */
+.tab::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 9px;
+  bottom: 9px;
+  width: 1px;
+  background: var(--border-strong);
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.tab:first-child::before,
+.active::before,
+.active + .tab::before,
+.tab:hover::before,
+.tab:hover + .tab::before {
+  opacity: 0;
+}
+
+.tab:hover {
+  --tab-bg: var(--bg-hover);
+  color: var(--text);
+}
+
+.active,
+.active:hover {
+  --tab-bg: var(--bg-panel);
+  color: var(--text);
+  box-shadow:
+    inset 0 1px 0 var(--border-strong),
+    inset 1px 0 0 var(--border),
+    inset -1px 0 0 var(--border);
+  z-index: 1;
+}
+
+/* Cover the bar's bottom border under the active tab. */
+.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--bg-panel);
+}
+
+.tab:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+
+.dragging {
+  z-index: 2;
+  opacity: 0.92;
+  cursor: grabbing;
+  --tab-bg: var(--bg-elevated);
+  box-shadow: var(--shadow-md);
+}
+
+.method {
+  flex-shrink: 0;
+  color: var(--method-color);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.untitled {
+  color: var(--text-subtle);
+  font-style: italic;
+}
+
+.rename {
+  flex: 1;
+  min-width: 0;
+  height: 22px;
+  padding: 0 6px;
+  margin-left: -6px;
+  border: 1px solid var(--border-focus);
+  border-radius: var(--r-xs);
+  outline: none;
+  background: var(--bg-input);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+  font-size: var(--fs-sm);
+}
+
+.end {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-xs);
+  color: var(--text-subtle);
+  opacity: 0;
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.tab:hover .close,
+.active .close {
+  opacity: 1;
+}
+
+.close:hover {
+  background: var(--bg-active);
+  color: var(--text);
+}
+
+.dirty {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.active .dirty {
+  background: var(--accent);
+}
+
+/* Dirty: the dot shows until hover, then the close button takes its place (VS Code style). */
+.closeDirty {
+  opacity: 0;
+}
+
+.active .closeDirty {
+  opacity: 0;
+}
+
+.tab:hover .closeDirty {
+  opacity: 1;
+}
+
+.tab:hover .dirty {
+  opacity: 0;
+}
+
+.sendingDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.1s var(--ease-in-out) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.newTab {
+  position: sticky;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 28px;
+  height: 28px;
+  margin: 3px 8px 0 4px;
+  flex-shrink: 0;
+  border-radius: var(--r-sm);
+  color: var(--text-subtle);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.newTab:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.trailing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+}

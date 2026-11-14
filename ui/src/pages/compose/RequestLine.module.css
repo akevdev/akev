@@ -1,0 +1,358 @@
+.line {
+  container: compose-line / inline-size;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--compose-line-h, 56px);
+  padding: 0 12px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+/* ---- method + URL field group (one input chrome) */
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  height: var(--control-h-lg);
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r-md);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+
+.bar:hover {
+  border-color: var(--border-strong);
+}
+
+.bar:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.barInvalid,
+.barInvalid:hover {
+  border-color: var(--danger);
+}
+
+.barInvalid:focus-within {
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+.barDivider {
+  width: 1px;
+  height: 18px;
+  background: var(--border-strong);
+  flex-shrink: 0;
+}
+
+/* Method combobox inside the bar: no chrome of its own. */
+.methodWrap.methodWrap {
+  width: 108px;
+  flex-shrink: 0;
+  height: 100%;
+  padding: 0 6px 0 11px;
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  box-shadow: none;
+}
+
+.methodWrap.methodWrap:focus-within {
+  box-shadow: none;
+  background: var(--bg-hover);
+}
+
+.methodInput.methodInput {
+  color: var(--method-color, var(--m-other));
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-feature-settings: normal;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.01em;
+  caret-color: var(--text);
+}
+
+.methodChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 22px;
+  margin-right: -2px;
+  border-radius: var(--r-xs);
+  color: var(--text-subtle);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.methodChevron:hover {
+  background: var(--bg-active);
+  color: var(--text);
+}
+
+/* ---- variables chip */
+.varsChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  margin-right: 6px;
+  padding: 0 7px;
+  flex-shrink: 0;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  transition: filter var(--dur-fast) var(--ease);
+}
+
+.varsChip:hover {
+  filter: brightness(1.15);
+}
+
+.varsChipWarn {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.varsPanel {
+  padding: 0;
+}
+
+.varsHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 6px;
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.varsEnv {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+
+.varsList {
+  display: flex;
+  flex-direction: column;
+  max-height: 240px;
+  padding: 0 4px;
+  overflow: auto;
+}
+
+.varsRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+}
+
+.varsRow:hover {
+  background: var(--bg-hover);
+}
+
+.varsName {
+  flex-shrink: 0;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--accent-text);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-sm);
+}
+
+.varsDyn {
+  color: var(--info);
+}
+
+.varsMissing {
+  color: var(--warning);
+}
+
+.varsValue {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+}
+
+.varsUndefined {
+  color: var(--text-subtle);
+  font-family: var(--font-ui);
+  font-style: italic;
+}
+
+.varsFoot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.varsNote {
+  flex: 1;
+  min-width: 0;
+  margin-right: auto;
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-tight);
+}
+
+.varsFoot > :last-child {
+  flex-shrink: 0;
+}
+
+/* ---- send */
+.sendButton.sendButton {
+  min-width: 104px;
+  flex-shrink: 0;
+}
+
+.cancelInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Narrow request pane (side-by-side layout): give the URL the room — icon-only Send/Cancel,
+   tighter method picker. */
+@container compose-line (max-width: 600px) {
+  .sendLabel {
+    display: none;
+  }
+
+  .sendButton.sendButton {
+    min-width: 0;
+    width: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .methodWrap.methodWrap {
+    width: 94px;
+  }
+}
+
+/* ---- options */
+.optionsButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: var(--control-h-lg);
+  padding: 0 8px 0 10px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-input);
+  border-radius: var(--r-md);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.optionsButton:hover,
+.optionsButton[data-open] {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.optionsChevron {
+  opacity: 0.7;
+}
+
+.optionsDot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--bg-elevated);
+}
+
+.optionsPanel {
+  padding: 0;
+}
+
+.optionsHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 8px 0 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.optionsTitle {
+  font-weight: var(--fw-semibold);
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+}
+
+.optionsTimeout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px 14px;
+  border-top: 1px solid var(--border);
+}
+
+.optionsTimeoutText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.optionsLabel {
+  font-weight: var(--fw-medium);
+}
+
+.optionsHint {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+.timeoutInput {
+  width: 104px;
+}

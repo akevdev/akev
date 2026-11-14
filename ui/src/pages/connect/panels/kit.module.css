@@ -1,0 +1,350 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.section + .section {
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--border);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+.sectionTitles {
+  flex: 1;
+  min-width: 0;
+}
+
+.sectionTitle {
+  color: var(--text);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+}
+
+.sectionDesc {
+  margin-top: var(--sp-1);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.sectionActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-shrink: 0;
+}
+
+/* ---- callout */
+.callout {
+  --callout-fg: var(--info);
+  --callout-bg: var(--info-soft);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2-5);
+  padding: var(--sp-2-5) var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--callout-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--callout-fg) 22%, transparent);
+}
+
+.info {
+  --callout-fg: var(--info);
+  --callout-bg: var(--info-soft);
+}
+
+.warning {
+  --callout-fg: var(--warning);
+  --callout-bg: var(--warning-soft);
+}
+
+.danger {
+  --callout-fg: var(--danger);
+  --callout-bg: var(--danger-soft);
+}
+
+.success {
+  --callout-fg: var(--success);
+  --callout-bg: var(--success-soft);
+}
+
+.calloutIcon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--callout-fg);
+}
+
+.calloutBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.calloutTitle {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+}
+
+.calloutText {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.calloutAction {
+  display: flex;
+  gap: var(--sp-1-5);
+  margin-top: var(--sp-1);
+}
+
+/* ---- live status */
+.live {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 36px;
+  padding: 0 var(--sp-3);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-md);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.liveActive {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--success) 40%, transparent);
+  background: var(--success-soft);
+  color: var(--text);
+}
+
+.liveActive svg {
+  color: var(--success);
+}
+
+/* ---- targets */
+.targets {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-panel);
+  overflow: hidden;
+}
+
+.target {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+  min-height: 52px;
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.target + .target {
+  border-top: 1px solid var(--border);
+}
+
+.target:hover {
+  background: var(--bg-hover);
+}
+
+.targetActive {
+  background: color-mix(in srgb, var(--success-soft) 55%, transparent);
+}
+
+.targetDisabled .targetIcon,
+.targetDisabled .targetTitle {
+  opacity: 0.6;
+}
+
+.targetIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  background: var(--bg-active);
+  color: var(--text-muted);
+}
+
+.targetActive .targetIcon {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.targetText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.targetTitleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.targetTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.targetSubtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-ligatures: none;
+}
+
+.targetHint {
+  color: var(--warning);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+.targetAction {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-shrink: 0;
+}
+
+/* ---- activation result (Docker exec command, Android CA install) */
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-2-5) var(--sp-3) var(--sp-3);
+  border: 1px solid color-mix(in srgb, var(--success) 28%, var(--border));
+  border-radius: var(--r-md);
+  background: var(--bg-panel);
+}
+
+.resultHead {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.resultHead > svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--success);
+}
+
+.resultText {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.resultDismiss {
+  flex-shrink: 0;
+  margin: -3px -6px -3px 0;
+}
+
+/* Full-width area under a row (activation result). */
+.targetExtra {
+  flex-basis: 100%;
+  min-width: 0;
+  padding: 0 var(--sp-1) var(--sp-1) calc(32px + var(--sp-3));
+}
+
+.targetExtra:empty {
+  display: none;
+}
+
+/* ---- empty */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1-5);
+  padding: var(--sp-6) var(--sp-4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-md);
+  text-align: center;
+}
+
+.emptyIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: var(--sp-1);
+  border-radius: var(--r-full);
+  background: var(--bg-active);
+  color: var(--text-muted);
+}
+
+.emptyTitle {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.emptyText {
+  max-width: 360px;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.emptyAction {
+  margin-top: var(--sp-2);
+}
+
+/* ---- key line */
+.keyLine {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--control-h);
+  min-width: 0;
+}
+
+.keyLabel {
+  flex: 0 0 72px;
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+}
+
+.keyValue {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex: 1;
+  min-width: 0;
+}

@@ -1,0 +1,179 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-panel);
+}
+
+.fill {
+  flex: 1;
+  height: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.search {
+  width: 220px;
+}
+
+.matches {
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+  margin-left: 4px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 6px 0;
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-code);
+  font-feature-settings: normal;
+}
+
+.scroll:focus-visible {
+  outline-offset: -2px;
+}
+
+.sizer {
+  position: relative;
+  width: max-content;
+  min-width: 100%;
+}
+
+.window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding-right: 16px;
+  white-space: pre;
+  cursor: default;
+  user-select: text;
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.row[aria-expanded] {
+  cursor: pointer;
+}
+
+/* The keyboard's current row, shown while the tree has focus. */
+.scroll:focus-visible .row[data-active] {
+  background: var(--bg-active);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.matchRow {
+  background: color-mix(in srgb, var(--code-match) 40%, transparent);
+}
+
+.chevron {
+  display: inline-flex;
+  width: 12px;
+  color: var(--text-subtle);
+  transition: transform var(--dur-fast) var(--ease);
+  flex-shrink: 0;
+}
+
+.open {
+  transform: rotate(90deg);
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.key {
+  color: var(--syn-key);
+}
+
+.index {
+  color: var(--text-subtle);
+}
+
+.colon {
+  color: var(--syn-punct);
+  margin-right: 4px;
+  margin-left: -4px;
+}
+
+.preview {
+  color: var(--syn-punct);
+}
+
+.ellipsis {
+  color: var(--text-subtle);
+  padding: 0 2px;
+}
+
+.count {
+  margin-left: 8px;
+  color: var(--text-subtle);
+  font-family: var(--font-ui);
+  font-size: var(--fs-xs);
+}
+
+.value {
+  min-width: 0;
+}
+
+.string {
+  color: var(--syn-string);
+}
+
+.number {
+  color: var(--syn-number);
+}
+
+.boolean,
+.null {
+  color: var(--syn-bool);
+}
+
+.other {
+  color: var(--text-muted);
+}
+
+.mark {
+  background: var(--code-match-active);
+  color: inherit;
+  border-radius: 2px;
+}
+
+/* An earlier occurrence of a duplicate object key (overridden by a later one). */
+.shadowed .key {
+  text-decoration: line-through;
+  text-decoration-color: var(--text-subtle);
+}
+
+.dupe {
+  margin-left: 8px;
+  color: var(--text-subtle);
+  font-family: var(--font-ui);
+  font-size: var(--fs-xs);
+}

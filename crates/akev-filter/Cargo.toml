@@ -1,0 +1,22 @@
+[package]
+name = "akev-filter"
+description = "Traffic filter query language: parser, evaluator, autocompletion"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+akev-core = { workspace = true }
+regex = { workspace = true }
+memchr = { workspace = true }
+smallvec = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

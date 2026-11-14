@@ -1,0 +1,47 @@
+[package]
+name = "akev-cli"
+description = "The `akev` command: HTTP(S) interception daemon, headless CI capture, MCP bridge and remote control"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "akev"
+path = "src/main.rs"
+
+[features]
+# Browser TLS fingerprints for upstream connections (BoringSSL; `make release-impersonate`).
+impersonate = ["akev-api/impersonate"]
+
+[dependencies]
+akev-core = { workspace = true }
+akev-api = { workspace = true }
+akev-ca = { workspace = true }
+akev-filter = { workspace = true }
+akev-store = { workspace = true }
+tokio = { workspace = true }
+clap = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+reqwest = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+open = { workspace = true }
+bytes = { workspace = true }
+tokio-tungstenite = { workspace = true }
+futures-util = { workspace = true }
+url = { workspace = true }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[dev-dependencies]
+tempfile = { workspace = true }
+axum = { workspace = true }
+http = { workspace = true }
+
+[lints]
+workspace = true

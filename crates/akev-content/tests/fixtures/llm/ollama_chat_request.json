@@ -1,0 +1,23 @@
+{
+  "model": "qwen3:8b",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Be brief."
+    },
+    {
+      "role": "user",
+      "content": "What is in this picture?",
+      "images": [
+        "iVBORw0KGgoAAAANSUhEUgAAAGAAAAA8CAIAAAAWtijjAAAAk0lEQVR42u3XwQmAMBBFwVTiMWANtmkHNpFiPKUKEREbCDkJumTgVTCHv0ma5kWdEgJAgAABAgQIECA1gY7zUidAgAABAhQRaN1K3AAB+j+QAAECBMg76KPbBAiQDTLSgAABUvDfPCBAcYEECBAgQIAAAQIEqNld62gBGgZoz/mtAAECZINiAgkQIECAAAECBGjsHma2DI5aF0wsAAAAAElFTkSuQmCC"
+      ]
+    }
+  ],
+  "stream": true,
+  "think": true,
+  "options": {
+    "temperature": 0.6,
+    "num_ctx": 8192
+  },
+  "keep_alive": "5m"
+}

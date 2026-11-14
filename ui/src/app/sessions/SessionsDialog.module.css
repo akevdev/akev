@@ -1,0 +1,198 @@
+.dialog {
+  max-height: min(760px, calc(100vh - 64px));
+}
+
+/* ---- save form */
+
+.saveForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--bg-subtle);
+}
+
+.saveTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.saveTitle svg {
+  color: var(--text-muted);
+}
+
+.saveRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.nameInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.scopeSelect {
+  width: 176px;
+  flex-shrink: 0;
+}
+
+.formError {
+  color: var(--danger);
+  font-size: var(--fs-xs);
+}
+
+.formHint {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+/* ---- lists */
+
+.lists {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.groupTitle {
+  margin-bottom: var(--sp-1-5);
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 52px;
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+  transition: background var(--dur-fast) var(--ease);
+}
+
+.row + .row {
+  border-top: 1px solid var(--border);
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.rowHighlighted {
+  background: var(--accent-soft);
+}
+
+.rowHighlighted:hover {
+  background: var(--accent-soft-strong);
+}
+
+.rowIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+}
+
+.rowIconAutosave {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.rowText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rowName {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  color: var(--text);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+.rowMeta {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-shrink: 0;
+}
+
+.renameInput {
+  width: 100%;
+  max-width: 360px;
+}
+
+.emptyList {
+  padding: var(--sp-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--r-lg);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+  text-align: center;
+}
+
+.skeletons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+}
+
+/* ---- footer */
+
+.footerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  margin-right: auto;
+  padding: 0 var(--sp-1);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-xs);
+  cursor: pointer;
+}
+
+.footerLink:hover {
+  color: var(--text);
+}

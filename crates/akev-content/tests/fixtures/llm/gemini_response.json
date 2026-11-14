@@ -1,0 +1,34 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "**Grouping the feedback**\n\nFive reviews. Positives cluster around battery life, noise cancelling and comfort; negatives around app stability, heat and the case.",
+            "thought": true
+          },
+          {
+            "text": "### Aurora X2 — review themes\n\n| Theme | Mentions | Sentiment |\n|---|---|---|\n| Noise cancelling | 2 | positive |\n| Battery life | 2 | positive |\n| Sound & comfort | 2 | positive |\n| Companion app stability | 2 | negative |\n| Ear-cup heat | 1 | negative |\n| Case build quality | 1 | negative |\n\n**Takeaway:** the hardware is loved; the companion app is the main source of frustration."
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 152,
+    "candidatesTokenCount": 131,
+    "totalTokenCount": 409,
+    "thoughtsTokenCount": 126,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 152
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "mFUQaZ2pFqWkz7IPuL6t8Q4"
+}

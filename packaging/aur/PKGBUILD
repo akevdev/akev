@@ -1,0 +1,22 @@
+# Maintainer: Akev <support@akev.dev>
+# AUR package akev-bin: the akev command-line tool (rendered by scripts/package-manifests.sh).
+pkgname=akev-bin
+pkgver=@PKGVER@
+pkgrel=1
+pkgdesc='Fast HTTP(S) debugging proxy: intercept, inspect, mock and replay traffic'
+arch=('x86_64' 'aarch64')
+url='https://akev.dev'
+license=('AGPL-3.0-or-later')
+depends=('glibc' 'gcc-libs')
+provides=('akev')
+conflicts=('akev')
+source_x86_64=("https://github.com/akevdev/akev/releases/download/v@VERSION@/akev-@VERSION@-x86_64-unknown-linux-gnu.tar.gz")
+source_aarch64=("https://github.com/akevdev/akev/releases/download/v@VERSION@/akev-@VERSION@-aarch64-unknown-linux-gnu.tar.gz")
+sha256sums_x86_64=('@SHA:akev-@VERSION@-x86_64-unknown-linux-gnu.tar.gz@')
+sha256sums_aarch64=('@SHA:akev-@VERSION@-aarch64-unknown-linux-gnu.tar.gz@')
+
+package() {
+  install -Dm755 akev "$pkgdir/usr/bin/akev"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+}

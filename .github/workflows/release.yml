@@ -1,0 +1,532 @@
+name: Release
+
+# Push a tag `vX.Y.Z` (scripts/release.sh makes one) to test, build every package and attach it
+# to a *draft* GitHub Release, plus a Docker image on GHCR. Review the draft, then publish it.
+# Run it by hand (Actions → Release → Run workflow) for a test build: the same packages are
+# kept as workflow artifacts and nothing is published. See docs/RELEASING.md.
+#
+# Every official build includes TLS fingerprint impersonation (BoringSSL, `impersonate`).
+# Signing steps run only when their secrets are configured; see docs/RELEASING.md.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+  GH_REPO: ${{ github.repository }}
+  IMPERSONATE: akev-cli/impersonate,akev-api/impersonate,akev-proxy/impersonate
+  # The JVM agent is compiled from source with this JDK (to Java 8 bytecode); no JDK, no build.
+  AKEV_AGENT_REQUIRE_JDK: '1'
+  AGENT_JDK: '17'
+
+jobs:
+  prepare:
+    name: Check version, create draft release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      publish: ${{ steps.version.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check versions
+        id: version
+        shell: bash
+        run: |
+          version=$(sed -n '/^\[workspace\.package\]/,/^\[/s/^version = "\(.*\)"$/\1/p' Cargo.toml)
+          [ -n "$version" ] || { echo "::error file=Cargo.toml::no [workspace.package] version"; exit 1; }
+          for f in desktop/src-tauri/tauri.conf.json ui/package.json; do
+            v=$(jq -r .version "$f")
+            [ "$v" = "$version" ] || { echo "::error file=$f::version $v doesn't match Cargo.toml ($version); run scripts/release.sh"; exit 1; }
+          done
+          publish=false
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            [ "$GITHUB_REF_NAME" = "v$version" ] || { echo "::error::tag $GITHUB_REF_NAME doesn't match the version in Cargo.toml ($version)"; exit 1; }
+            publish=true
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
+          echo "Akev $version (publish: $publish)" >> "$GITHUB_STEP_SUMMARY"
+      - name: Release notes from CHANGELOG.md
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          awk -v v="$VERSION" '$0 ~ "^## "v" " {f=1; next} /^## /{f=0} f' CHANGELOG.md > notes.md
+          if [ "$GITHUB_REF_TYPE" = tag ] && ! grep -q '[^[:space:]]' notes.md; then
+            echo "::error file=CHANGELOG.md::no notes for $VERSION in CHANGELOG.md"; exit 1
+          fi
+          cat notes.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Create the draft release
+        if: steps.version.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release $GITHUB_REF_NAME exists; re-run uploads replace its files."
+          else
+            pre=""; case "$VERSION" in *-*) pre="--prerelease";; esac
+            gh release create "$GITHUB_REF_NAME" --draft $pre --verify-tag --notes-file notes.md --title "Akev $VERSION"
+          fi
+
+  ui:
+    name: Web UI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+        working-directory: ui
+      - run: bun run lint
+        working-directory: ui
+      - run: bun test
+        working-directory: ui
+      - run: bun run build
+        working-directory: ui
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-dist
+          path: ui/dist
+
+  notices:
+    name: Third-party licence notices
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+        working-directory: ui
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-about
+      - run: scripts/third-party-notices.sh THIRD-PARTY-NOTICES.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: notices
+          path: THIRD-PARTY-NOTICES.md
+
+  test:
+    name: Tests (with impersonation)
+    needs: ui
+    runs-on: ubuntu-latest
+    env:
+      CARGO_PROFILE_DEV_DEBUG: line-tables-only
+    steps:
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: ui-dist
+          path: ui/dist
+      - run: sudo apt-get update && sudo apt-get install -y cmake clang libclang-dev
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ env.AGENT_JDK }}
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      # Includes license::tests::canary_key_verifies_in_release_builds: the build must trust
+      # the production licence key.
+      - run: cargo test --locked --no-fail-fast --features "$IMPERSONATE"
+
+  package:
+    name: Packages (${{ matrix.name }})
+    needs: [prepare, ui, test, notices]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux-x64
+            # The oldest supported runner: the binaries then run on glibc 2.35+.
+            os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+          - name: linux-arm64
+            os: ubuntu-22.04-arm
+            target: aarch64-unknown-linux-gnu
+          - name: macos-universal
+            os: macos-latest
+            target: universal-apple-darwin
+          - name: windows-x64
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - name: windows-arm64
+            os: windows-11-arm
+            target: aarch64-pc-windows-msvc
+    runs-on: ${{ matrix.os }}
+    env:
+      VERSION: ${{ needs.prepare.outputs.version }}
+      BUNDLE: target/${{ matrix.target }}/release/bundle
+      EXE: ${{ startsWith(matrix.os, 'windows') && '.exe' || '' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: ui-dist
+          path: ui/dist
+      - uses: actions/download-artifact@v5
+        with:
+          name: notices
+          path: .
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ env.AGENT_JDK }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ runner.os == 'macOS' && 'aarch64-apple-darwin,x86_64-apple-darwin' || matrix.target }}
+      - name: Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libayatana-appindicator3-dev patchelf cmake clang libclang-dev
+      - name: macOS dependencies
+        if: runner.os == 'macOS'
+        run: brew list cmake >/dev/null 2>&1 || brew install cmake
+      # BoringSSL needs NASM (x64 assembly) and libclang (bindings) on Windows.
+      - name: Windows dependencies
+        if: runner.os == 'Windows'
+        uses: ilammy/setup-nasm@v1
+      - name: libclang (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo "LIBCLANG_PATH=C:\\Program Files\\LLVM\\bin" >> "$GITHUB_ENV"
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-${{ matrix.target }}
+      - run: cargo install tauri-cli --version "^2" --locked
+
+      - name: macOS signing
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        # Only export what's configured: Tauri treats a present-but-empty variable as a
+        # certificate to import and fails.
+        run: |
+          if [ -n "$APPLE_CERTIFICATE" ]; then
+            for v in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY; do echo "$v=${!v}" >> "$GITHUB_ENV"; done
+            if [ -n "$APPLE_ID" ]; then
+              for v in APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID; do echo "$v=${!v}" >> "$GITHUB_ENV"; done
+              echo "Signing with a Developer ID and notarizing."
+            else
+              echo "::warning::Signed with a Developer ID but not notarized (APPLE_ID not set)"
+            fi
+          else
+            # Ad-hoc signature: enough to run on Apple Silicon, but Gatekeeper still makes
+            # users confirm the first launch (System Settings → Privacy & Security → Open Anyway).
+            echo "APPLE_SIGNING_IDENTITY=-" >> "$GITHUB_ENV"
+            echo "::warning::No Apple signing secrets: the macOS app is ad-hoc signed and not notarized"
+          fi
+
+      # Windows: Azure Trusted Signing through `bundle.windows.signCommand` (Tauri signs every
+      # executable and installer it produces). Without the secrets the packages are unsigned.
+      - name: Windows signing
+        if: runner.os == 'Windows'
+        shell: bash
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          TRUSTED_SIGNING_ENDPOINT: ${{ secrets.TRUSTED_SIGNING_ENDPOINT }}
+          TRUSTED_SIGNING_ACCOUNT: ${{ secrets.TRUSTED_SIGNING_ACCOUNT }}
+          TRUSTED_SIGNING_PROFILE: ${{ secrets.TRUSTED_SIGNING_PROFILE }}
+        run: |
+          if [ -n "$AZURE_CLIENT_ID" ]; then
+            cargo install trusted-signing-cli --locked
+            for v in AZURE_CLIENT_ID AZURE_CLIENT_SECRET AZURE_TENANT_ID; do echo "$v=${!v}" >> "$GITHUB_ENV"; done
+            cmd="trusted-signing-cli -e $TRUSTED_SIGNING_ENDPOINT -a $TRUSTED_SIGNING_ACCOUNT -c $TRUSTED_SIGNING_PROFILE -d Akev %1"
+            jq -n --arg c "$cmd" '{bundle: {windows: {signCommand: $c}}}' > "$RUNNER_TEMP/sign.json"
+            echo "TAURI_EXTRA_CONFIG=$RUNNER_TEMP/sign.json" >> "$GITHUB_ENV"
+            echo "SIGN_CMD=$cmd" >> "$GITHUB_ENV"
+          else
+            echo "::warning::No Windows signing secrets: installers are unsigned (SmartScreen will warn)"
+          fi
+
+      # The in-app updater checks signatures made with this key (public half in tauri.conf.json).
+      - name: Updater signing
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            { echo "TAURI_SIGNING_PRIVATE_KEY<<EOF"; echo "$TAURI_SIGNING_PRIVATE_KEY"; echo "EOF"; } >> "$GITHUB_ENV"
+            echo "TAURI_SIGNING_PRIVATE_KEY_PASSWORD=$TAURI_SIGNING_PRIVATE_KEY_PASSWORD" >> "$GITHUB_ENV"
+            echo "UPDATER=1" >> "$GITHUB_ENV"
+          else
+            echo "::warning::No updater signing key: no update packages (installed apps won't see this release)"
+          fi
+
+      - name: Desktop app
+        working-directory: desktop/src-tauri
+        shell: bash
+        env:
+          # linuxdeploy (AppImage) unpacks itself instead of needing FUSE on the runner.
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+        run: |
+          args=(--target ${{ matrix.target }} --features impersonate)
+          [ -n "${TAURI_EXTRA_CONFIG:-}" ] && args+=(--config "$TAURI_EXTRA_CONFIG")
+          [ "${UPDATER:-}" = 1 ] && args+=(--config '{"bundle":{"createUpdaterArtifacts":true}}')
+          # Licence notices inside every app bundle.
+          args+=(--config '{"bundle":{"resources":{"../../THIRD-PARTY-NOTICES.md":"THIRD-PARTY-NOTICES.md"}}}')
+          # AppStream metadata for Linux software centres.
+          if [ "$RUNNER_OS" = Linux ]; then
+            meta="$RUNNER_TEMP/dev.akev.desktop.metainfo.xml"
+            sed -e "s/@VERSION@/$VERSION/g" -e "s/@DATE@/$(date -u +%F)/g" ../../packaging/linux/dev.akev.desktop.metainfo.xml > "$meta"
+            files=$(jq -n --arg m "$meta" '{"/usr/share/metainfo/dev.akev.desktop.metainfo.xml": $m}')
+            args+=(--config "$(jq -n --argjson f "$files" '{bundle: {linux: {deb: {files: $f}, rpm: {files: $f}}}}')")
+          fi
+          cargo tauri build "${args[@]}"
+
+      - name: Command-line tool
+        shell: bash
+        run: |
+          mkdir -p dist cli
+          if [ "$RUNNER_OS" = macOS ]; then
+            for t in aarch64-apple-darwin x86_64-apple-darwin; do
+              cargo build --release --locked -p akev-cli --features impersonate --target $t
+            done
+            lipo -create -output cli/akev target/aarch64-apple-darwin/release/akev target/x86_64-apple-darwin/release/akev
+            if [ -n "${APPLE_SIGNING_IDENTITY:-}" ] && [ "$APPLE_SIGNING_IDENTITY" != "-" ]; then
+              codesign --force --options runtime --timestamp --sign "$APPLE_SIGNING_IDENTITY" cli/akev
+            fi
+          else
+            cargo build --release --locked -p akev-cli --features impersonate --target ${{ matrix.target }}
+            cp target/${{ matrix.target }}/release/akev$EXE cli/
+            if [ -n "${SIGN_CMD:-}" ]; then ${SIGN_CMD/\%1/cli/akev.exe}; fi
+          fi
+          cp LICENSE README.md CHANGELOG.md THIRD-PARTY-NOTICES.md cli/
+          ./cli/akev$EXE --version
+          ./cli/akev$EXE --version | grep -q "TLS impersonation" || { echo "::error::the CLI was built without TLS impersonation"; exit 1; }
+          name="akev-$VERSION-${{ matrix.target }}"
+          if [ "$RUNNER_OS" = Windows ]; then
+            (cd cli && 7z a -tzip "../dist/$name.zip" . >/dev/null)
+          else
+            tar -C cli -czf "dist/$name.tar.gz" .
+          fi
+
+      - name: Notarize the CLI
+        if: runner.os == 'macOS' && env.APPLE_ID != ''
+        shell: bash
+        run: |
+          ditto -c -k cli/akev "$RUNNER_TEMP/akev.zip"
+          xcrun notarytool submit "$RUNNER_TEMP/akev.zip" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
+
+      - name: Collect packages
+        shell: bash
+        run: |
+          shopt -s nullglob
+          case "$RUNNER_OS" in
+            Linux)   cp "$BUNDLE"/deb/*.deb "$BUNDLE"/rpm/*.rpm "$BUNDLE"/appimage/*.AppImage "$BUNDLE"/appimage/*.AppImage.sig dist/ ;;
+            macOS)   cp "$BUNDLE"/dmg/*.dmg dist/
+                     # COPYFILE_DISABLE: no AppleDouble (._*) files inside the signed bundle.
+                     if [ -f "$BUNDLE/macos/Akev.app.tar.gz" ]; then
+                       cp "$BUNDLE/macos/Akev.app.tar.gz" "dist/Akev_${VERSION}_universal.app.tar.gz"
+                       cp "$BUNDLE/macos/Akev.app.tar.gz.sig" "dist/Akev_${VERSION}_universal.app.tar.gz.sig"
+                     else
+                       COPYFILE_DISABLE=1 tar -C "$BUNDLE/macos" -czf "dist/Akev_${VERSION}_universal.app.tar.gz" Akev.app
+                     fi ;;
+            Windows) cp "$BUNDLE"/msi/*.msi "$BUNDLE"/nsis/*.exe "$BUNDLE"/nsis/*.exe.sig dist/ ;;
+          esac
+          ls -l dist
+          [ "$(ls dist | wc -l)" -ge 2 ] || { echo "::error::no desktop packages were produced"; exit 1; }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.name }}
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Attach to the draft release
+        if: needs.prepare.outputs.publish == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" dist/* --clobber
+
+  docker:
+    name: Docker image (${{ matrix.platform }})
+    needs: [prepare, test, notices]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            os: ubuntu-latest
+          - platform: linux/arm64
+            os: ubuntu-24.04-arm
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: notices
+          path: .
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        if: needs.prepare.outputs.publish == 'true'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Image name
+        id: image
+        # Registry paths must be lower case (`${GITHUB_REPOSITORY_OWNER,,}`).
+        run: |
+          echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/akev" >> "$GITHUB_OUTPUT"
+          p=${{ matrix.platform }}; echo "slug=${p//\//-}" >> "$GITHUB_OUTPUT"
+      - id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          labels: |
+            org.opencontainers.image.title=Akev
+            org.opencontainers.image.description=Headless Akev: HTTP(S) interception proxy, API and web UI
+            org.opencontainers.image.licenses=AGPL-3.0-or-later
+          outputs: type=image,name=${{ steps.image.outputs.name }},push-by-digest=true,name-canonical=true,push=${{ needs.prepare.outputs.publish == 'true' }}
+          cache-from: type=gha,scope=${{ steps.image.outputs.slug }}
+          cache-to: type=gha,mode=max,scope=${{ steps.image.outputs.slug }}
+      - name: Export digest
+        run: |
+          mkdir -p "$RUNNER_TEMP/digests"
+          touch "$RUNNER_TEMP/digests/${DIGEST#sha256:}"
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: digest-${{ steps.image.outputs.slug }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+
+  docker-manifest:
+    name: Docker image (multi-arch tag)
+    needs: [prepare, docker]
+    if: needs.prepare.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: digest-*
+          path: ${{ runner.temp }}/digests
+          merge-multiple: true
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Tag the multi-arch image
+        working-directory: ${{ runner.temp }}/digests
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/akev"
+          tags=(-t "$image:$VERSION" -t "$image:${VERSION%.*}")
+          case "$VERSION" in *-*) ;; *) tags+=(-t "$image:latest");; esac
+          docker buildx imagetools create "${tags[@]}" $(printf "$image@sha256:%s " *)
+          docker buildx imagetools inspect "$image:$VERSION"
+
+  checksums:
+    name: Checksums, signatures, SBOM, updater manifest
+    needs: [prepare, package]
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.prepare.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: release-*
+          path: dist
+          merge-multiple: true
+      - name: SBOM (source dependencies)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          output-file: dist/akev-${{ needs.prepare.outputs.version }}.spdx.json
+          upload-artifact: false
+      - name: Updater manifest (latest.json)
+        shell: bash
+        run: |
+          base="https://github.com/${GITHUB_REPOSITORY}/releases/download/v$VERSION"
+          entry() { # platform-key file
+            local f="dist/$2"; [ -f "$f" ] && [ -f "$f.sig" ] || return 0
+            jq -n --arg k "$1" --arg url "$base/$2" --rawfile sig "$f.sig" '{($k): {url: $url, signature: $sig}}'
+          }
+          shopt -s nullglob
+          parts=()
+          for f in dist/*_amd64.AppImage; do parts+=("$(entry linux-x86_64 "$(basename "$f")")"); done
+          for f in dist/*_aarch64.AppImage; do parts+=("$(entry linux-aarch64 "$(basename "$f")")"); done
+          for f in dist/*_universal.app.tar.gz; do
+            parts+=("$(entry darwin-aarch64 "$(basename "$f")")" "$(entry darwin-x86_64 "$(basename "$f")")")
+          done
+          for f in dist/*_x64-setup.exe; do parts+=("$(entry windows-x86_64 "$(basename "$f")")"); done
+          for f in dist/*_arm64-setup.exe; do parts+=("$(entry windows-aarch64 "$(basename "$f")")"); done
+          if [ ${#parts[@]} -eq 0 ] || [ -z "$(printf '%s' "${parts[@]}")" ]; then
+            echo "::warning::no signed update packages; skipping latest.json"; exit 0
+          fi
+          notes=$(awk -v v="$VERSION" '$0 ~ "^## "v" " {f=1; next} /^## /{f=0} f' CHANGELOG.md)
+          printf '%s\n' "${parts[@]}" | jq -s --arg v "$VERSION" --arg notes "$notes" \
+            --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{version: $v, notes: $notes, pub_date: $date, platforms: (add // {})}' > dist/latest.json
+          cat dist/latest.json
+      - name: Package-manager manifests
+        shell: bash
+        run: |
+          scripts/package-manifests.sh "$VERSION" dist "$RUNNER_TEMP/packaging"
+          (cd "$RUNNER_TEMP/packaging" && zip -qr "$GITHUB_WORKSPACE/dist/akev-$VERSION-packaging.zip" .)
+      - name: SHA256SUMS
+        working-directory: dist
+        run: |
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS | tee -a "$GITHUB_STEP_SUMMARY"
+      # Keyless Sigstore signature of the checksum list: `cosign verify-blob` proves it was made
+      # by this workflow in this repository.
+      - uses: sigstore/cosign-installer@v3
+      - name: Sign SHA256SUMS
+        working-directory: dist
+        run: cosign sign-blob --yes --bundle SHA256SUMS.sigstore.json SHA256SUMS
+      - name: Build provenance
+        if: needs.prepare.outputs.publish == 'true'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-checksums
+          path: |
+            dist/SHA256SUMS
+            dist/SHA256SUMS.sigstore.json
+            dist/*.spdx.json
+            dist/latest.json
+            dist/*-packaging.zip
+          if-no-files-found: ignore
+      - name: Attach to the draft release
+        if: needs.prepare.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          shopt -s nullglob
+          gh release upload "$GITHUB_REF_NAME" dist/SHA256SUMS dist/SHA256SUMS.sigstore.json dist/*.spdx.json dist/latest.json dist/*-packaging.zip --clobber
+          echo "Draft ready for review: $(gh release view "$GITHUB_REF_NAME" --json url -q .url)" >> "$GITHUB_STEP_SUMMARY"

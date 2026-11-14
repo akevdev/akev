@@ -1,0 +1,72 @@
+.field {
+  display: flex;
+  min-width: 0;
+}
+
+.stacked {
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inline {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.labelCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.inline .labelCol {
+  flex: 1;
+}
+
+.label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text);
+  line-height: var(--lh-tight);
+}
+
+.inline .label {
+  font-size: var(--fs-base);
+}
+
+.required {
+  color: var(--danger);
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.inline .control {
+  flex-shrink: 0;
+  align-items: flex-end;
+  max-width: 60%;
+}
+
+.hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+  color: var(--text-muted);
+}
+
+.hint svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.error {
+  color: var(--danger);
+}

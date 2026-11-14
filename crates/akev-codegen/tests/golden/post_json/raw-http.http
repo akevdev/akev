@@ -1,0 +1,7 @@
+POST /v1/users HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+Accept: application/json
+Content-Length: 123
+
+{"name":"Ann O'Neil","age":34,"admin":false,"tags":["a","b"],"address":{"city":"Zürich","zip":null},"score":9.5,"meta":{}}

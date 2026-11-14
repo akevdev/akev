@@ -1,0 +1,347 @@
+.root {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: var(--bg-panel);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px 32px;
+  animation: var(--anim-fade-in) var(--dur-slow) var(--ease);
+}
+
+/* ---------------------------------------------------------------- head */
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  color: var(--text);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-h);
+  height: var(--control-h);
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.clear:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ---------------------------------------------------------------- tiles */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--bg-subtle);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.tileLabel {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+.tileValue {
+  color: var(--text);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.danger {
+  color: var(--danger);
+}
+
+.tileHint {
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------------------------------------------------------- sections */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.sectionHint {
+  color: var(--text-subtle);
+  font-weight: var(--fw-regular);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Stacked status bar: 2px surface gaps between segments, rounded ends. */
+.stack {
+  display: flex;
+  gap: 2px;
+  height: 10px;
+}
+
+.segment {
+  flex-basis: 0;
+  min-width: 3px;
+  border-radius: 2px;
+  background: var(--seg-color);
+  transition: filter var(--dur-fast) var(--ease);
+}
+
+.segment:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.segment:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.segment:hover {
+  filter: brightness(1.15);
+}
+
+/* Failures share the 5xx hue: a hatch keeps them apart without relying on colour. */
+.hatched {
+  background: repeating-linear-gradient(135deg, var(--seg-color) 0 2px, color-mix(in srgb, var(--seg-color) 35%, transparent) 2px 4px);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--seg-color);
+}
+
+.legendCount {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+/* ---------------------------------------------------------------- hosts */
+
+.hosts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.host {
+  display: grid;
+  grid-template-columns: minmax(120px, 34%) minmax(60px, 1fr) 40px 64px;
+  align-items: center;
+  gap: 12px;
+  height: 26px;
+  font-size: var(--fs-sm);
+}
+
+.hostName {
+  color: var(--text);
+}
+
+.hostTrack {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-active);
+  overflow: hidden;
+}
+
+.hostBar {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+  opacity: 0.85;
+}
+
+.hostCount {
+  color: var(--text);
+  text-align: right;
+  font-weight: var(--fw-medium);
+}
+
+.hostBytes {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+  text-align: right;
+}
+
+/* ---------------------------------------------------------------- compare preview */
+
+.compareCard {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  border-radius: var(--r-md);
+  background: var(--bg-subtle);
+  box-shadow: inset 0 0 0 1px var(--border);
+  text-align: left;
+  transition: box-shadow var(--dur-fast) var(--ease);
+}
+
+.compareCard:hover {
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+.compareRow {
+  display: grid;
+  grid-template-columns: 52px 56px minmax(0, 1fr) 36px 60px;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 6px;
+  font-size: var(--fs-sm);
+}
+
+.compareId {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+.compareUrl {
+  color: var(--text);
+}
+
+.comparePath {
+  color: var(--text-muted);
+}
+
+.compareMeta {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  text-align: right;
+}
+
+.compareCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 6px;
+  color: var(--accent-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+}
+
+.tip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+/* ---------------------------------------------------------------- compare dialog */
+
+.compareDialog {
+  width: min(1180px, calc(100vw - 48px));
+}
+
+.compareBody {
+  display: flex;
+  flex-direction: column;
+  height: min(720px, 72vh);
+  border-top: 1px solid var(--border);
+  overflow: auto;
+}
+
+.compareBody > * {
+  flex: 1 0 auto;
+  min-height: 0;
+}

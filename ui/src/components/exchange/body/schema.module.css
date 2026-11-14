@@ -1,0 +1,76 @@
+/* Typed protobuf decoding: schema bar + notices. Tokens only. */
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 34px;
+  padding: var(--sp-1) var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.schema {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  height: 22px;
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: var(--fs-xs);
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  cursor: default;
+}
+
+.schemaFailed {
+  background: var(--warning-soft);
+  color: var(--text);
+}
+
+.schemaFailed svg {
+  color: var(--warning);
+}
+
+.schemaLabel {
+  font-weight: var(--fw-medium);
+  flex-shrink: 0;
+}
+
+.schemaType {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-weight: var(--fw-semibold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.source {
+  flex: 0 100 auto;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.notice {
+  flex-shrink: 0;
+}
+
+/* Card badge for a message that didn't decode with the schema. */
+.mismatch {
+  cursor: default;
+}

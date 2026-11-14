@@ -1,0 +1,33 @@
+[package]
+name = "akev-store"
+description = "Captured traffic store: memory-efficient records, body spill-to-disk, querying, HAR & session files"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+akev-core = { workspace = true }
+akev-content = { workspace = true }
+akev-filter = { workspace = true }
+bytes = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+base64 = { workspace = true }
+parking_lot = { workspace = true }
+tokio = { workspace = true }
+zstd = { workspace = true }
+tempfile = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+url = { workspace = true }
+memchr = { workspace = true }
+# Fiddler .saz archives (foreign/fiddler.rs).
+zip = { version = "9", default-features = false, features = ["deflate"] }
+
+[dev-dependencies]
+flate2 = { workspace = true }
+
+[lints]
+workspace = true

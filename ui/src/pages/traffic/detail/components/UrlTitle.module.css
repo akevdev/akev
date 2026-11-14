@@ -1,0 +1,82 @@
+.wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.leading {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+  height: 20px;
+  font-family: var(--font-ui);
+}
+
+.urlCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.url {
+  max-width: 100%;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-code);
+  line-height: 20px;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+
+.clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.scheme {
+  color: var(--text-muted);
+}
+
+.host {
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+}
+
+.path {
+  color: var(--text);
+}
+
+.query {
+  color: var(--text-muted);
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+  margin-left: -5px;
+  padding: 0 5px;
+  border-radius: var(--r-xs);
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-medium);
+  transition:
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
+}
+
+.toggle:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}

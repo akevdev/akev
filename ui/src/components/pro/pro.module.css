@@ -1,0 +1,289 @@
+/* ---- ProBadge */
+.badge {
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+}
+
+/* ---- ProCallout: a locked feature, with an Unlock button */
+.callout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2-5) var(--sp-3);
+  padding: var(--sp-2-5) var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+  min-width: 0;
+}
+
+.calloutIcon {
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 1px;
+  color: var(--accent-text);
+}
+
+.calloutBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.calloutTitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+  color: var(--text);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+}
+
+.calloutText {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.calloutActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Centered, roomier variant for a whole locked view (LLM tab, Connect panels). */
+.panel {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6) var(--sp-5);
+  text-align: center;
+}
+
+.panel .calloutIcon {
+  align-self: center;
+  margin: 0;
+}
+
+.panel .calloutBody {
+  flex: 0 1 auto;
+  align-items: center;
+  max-width: 440px;
+}
+
+.panel .calloutTitle {
+  justify-content: center;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+}
+
+.panel .calloutActions {
+  margin-left: 0;
+}
+
+.panelIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-full);
+  background: var(--bg-elevated);
+  color: var(--accent-text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.terms {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+/* ---- ProGate (disable mode): a fieldset that disables every control inside */
+.fieldset {
+  min-width: 0;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.locked {
+  opacity: 0.55;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.gate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+/* ---- Upgrade dialog */
+.dialog {
+  max-height: min(720px, calc(100vh - 64px));
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--warning-soft);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.notice svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--warning);
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-2-5);
+  border-radius: var(--r-md);
+  min-width: 0;
+}
+
+.featureHighlighted {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.featureCheck {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--accent-text);
+}
+
+.featureText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.featureLabel {
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+}
+
+.featureDesc {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+.freeNote {
+  margin-top: var(--sp-3);
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+.footerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  margin-right: auto;
+  padding: 0 var(--sp-1);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.footerLink:hover {
+  color: var(--text);
+}
+
+/* ---- License key form */
+.keyForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.keyLabel {
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.keyInput {
+  word-break: break-all;
+}
+
+.keyError {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  color: var(--danger);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+.keyError svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.keyHint {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+.keyActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+}
+
+.linkButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-text);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.linkButton:hover {
+  color: var(--text);
+}
+
+@media (max-width: 560px) {
+  .features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Premain-Class: dev.akev.AkevAgent
+Agent-Class: dev.akev.AkevAgent
+Main-Class: dev.akev.Attach
+Can-Redefine-Classes: false
+Can-Retransform-Classes: false
+Implementation-Title: Akev JVM agent
+Implementation-Version: 1.0.0

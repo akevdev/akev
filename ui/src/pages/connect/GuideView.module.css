@@ -1,0 +1,97 @@
+.guide {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.intro {
+  color: var(--text-muted);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.blockTitle {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.text {
+  color: var(--text);
+  line-height: var(--lh-base);
+}
+
+.note {
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2-5);
+  min-width: 0;
+}
+
+.num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: -1px;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+}
+
+.stepText {
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+  line-height: var(--lh-base);
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.stepTitle {
+  display: block;
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.stepDetail {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.optionTitle {
+  color: var(--text);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}

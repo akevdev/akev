@@ -1,0 +1,249 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 248px;
+  width: 248px;
+  min-height: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-2) var(--sp-1);
+}
+
+.views {
+  flex: 1;
+}
+
+.search {
+  padding: var(--sp-1) var(--sp-2) var(--sp-2);
+}
+
+/* ---- the clause(s) the sidebar added to the filter */
+.scope {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: 0 var(--sp-2) var(--sp-2);
+  padding: var(--sp-2);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  font-size: var(--fs-xs);
+}
+
+.scopeIcon {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--accent-text);
+}
+
+.scopeBody {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.scopeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  padding: 1px 2px 1px 6px;
+  border-radius: var(--r-xs);
+  background: var(--bg-panel);
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.scopeLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scopeClear {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-xs);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.scopeClear:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.scopeRest {
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.scopeRest code {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  color: var(--text);
+}
+
+/* ---- rows */
+.scroller {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.canvas {
+  position: relative;
+}
+
+.slot {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 28px;
+}
+
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 28px;
+  padding: 0 var(--sp-3) 4px;
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.emptyRow {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 var(--sp-3);
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  margin: 0 var(--sp-1);
+  padding-left: 2px;
+  border-radius: var(--r-sm);
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.rowActive,
+.rowActive:hover {
+  background: var(--bg-selected);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.rowNested {
+  padding-left: 22px;
+}
+
+.chevron,
+.chevronSpacer {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 18px;
+  height: 22px;
+  border-radius: var(--r-xs);
+  color: var(--text-subtle);
+}
+
+.chevron {
+  cursor: pointer;
+}
+
+.chevron:hover {
+  color: var(--text);
+  background: var(--bg-active);
+}
+
+.chevron svg {
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+.pick {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 var(--sp-2) 0 2px;
+  color: var(--text);
+  font-size: var(--fs-sm);
+  text-align: start;
+  cursor: pointer;
+}
+
+.globe {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unknown {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.hostCount {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+}
+
+.count {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+/* The pin button replaces the count on hover (and stays for pinned hosts). */
+.pin {
+  position: absolute;
+  right: 2px;
+  opacity: 0;
+  background: var(--bg-elevated);
+}
+
+.row:hover .pin,
+.pin:focus-visible {
+  opacity: 1;
+}
+
+.pinOn {
+  color: var(--accent-text);
+}

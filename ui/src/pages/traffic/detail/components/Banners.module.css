@@ -1,0 +1,231 @@
+.banner {
+  --banner-fg: var(--text);
+  --banner-icon: var(--text-muted);
+  --banner-bg: var(--bg-active);
+  --banner-edge: var(--border-strong);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px -14px -10px;
+  padding: 10px 14px;
+  background: var(--banner-bg);
+  border-top: 1px solid var(--banner-edge);
+  color: var(--banner-fg);
+  font-size: var(--fs-sm);
+  line-height: 18px;
+  animation: var(--anim-fade-in) var(--dur) var(--ease);
+}
+
+.paused {
+  --banner-icon: var(--warning);
+  --banner-bg: var(--warning-soft);
+  --banner-edge: color-mix(in srgb, var(--warning) 30%, transparent);
+}
+
+.error {
+  --banner-icon: var(--danger);
+  --banner-bg: var(--danger-soft);
+  --banner-edge: color-mix(in srgb, var(--danger) 26%, transparent);
+}
+
+.neutral {
+  --banner-icon: var(--text-muted);
+  --banner-bg: var(--bg-active);
+  --banner-edge: var(--border);
+}
+
+.info {
+  --banner-icon: var(--info);
+  --banner-bg: var(--info-soft);
+  --banner-edge: color-mix(in srgb, var(--info) 26%, transparent);
+}
+
+.warnSoft {
+  --banner-icon: var(--warning);
+  --banner-bg: color-mix(in srgb, var(--warning-soft) 60%, transparent);
+  --banner-edge: color-mix(in srgb, var(--warning) 22%, transparent);
+  align-items: center;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.titleRegular {
+  color: var(--text);
+  font-size: var(--fs-xs);
+}
+
+/* A banner used as a standalone card (special layouts), not inside the header. */
+.card {
+  margin: 0;
+  border: 1px solid var(--banner-edge);
+  border-radius: var(--r-md);
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--banner-icon);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 10px;
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.sep {
+  color: var(--text-subtle);
+  font-weight: var(--fw-regular);
+}
+
+.timer {
+  color: var(--warning);
+  font-weight: var(--fw-medium);
+}
+
+.timerLate {
+  color: var(--danger);
+}
+
+.sub,
+.body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 8px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.body {
+  display: block;
+}
+
+.changes {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--r-xs);
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+  transition:
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
+}
+
+.link:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.invalid {
+  color: var(--danger);
+  font-weight: var(--fw-medium);
+}
+
+.fix {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 2px;
+  color: var(--text);
+  font-size: var(--fs-xs);
+}
+
+.fix svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--warning);
+}
+
+.raw {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-top: 4px;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-2xs);
+  overflow-wrap: anywhere;
+}
+
+.code {
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+  background: var(--bg-active);
+  color: var(--text-muted);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin: -3px -4px -3px 0;
+}
+
+.actionsCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.actionsCol:empty {
+  display: none;
+}
+
+.narrowOnly {
+  display: none;
+}
+
+@container (max-width: 640px) {
+  .wideOnly {
+    display: none;
+  }
+
+  .narrowOnly {
+    display: inline-flex;
+  }
+}
+
+@container (max-width: 420px) {
+  .banner {
+    flex-wrap: wrap;
+  }
+
+  .actions,
+  .actionsCol {
+    flex-basis: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 0;
+  }
+}
+
+/* A second banner right under another one (the first pulls itself flush to the header edge). */
+.stacked {
+  margin-top: 10px;
+}

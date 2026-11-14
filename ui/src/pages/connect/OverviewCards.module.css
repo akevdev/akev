@@ -1,0 +1,286 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--bg-subtle);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 20px;
+}
+
+.cardIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-sm);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.cardTitle {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.cardBadge {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.primaryValue {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  margin-top: calc(-1 * var(--sp-1));
+}
+
+.bigAddress {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+}
+
+.caption {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.divider {
+  height: 1px;
+  margin: var(--sp-0-5) 0;
+  background: var(--border);
+}
+
+.switchLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.addressRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  height: var(--control-h);
+  padding: 0 var(--sp-1) 0 var(--sp-2-5);
+  border-radius: var(--r-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  transition: opacity var(--dur) var(--ease);
+}
+
+.mutedRow {
+  opacity: 0.55;
+}
+
+.rowIcon {
+  color: var(--text-subtle);
+}
+
+.rowLabel {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.address {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.inlineNote {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-1-5);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.inlineNote svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Replaces the switch description while LAN access is on (same height). */
+.lanWarning {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  color: var(--text-muted);
+}
+
+.lanWarning svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--warning);
+}
+
+/* ---- certificate */
+.kv {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--sp-4);
+  row-gap: var(--sp-2);
+  min-width: 0;
+}
+
+.k {
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+}
+
+.v {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.vRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.fingerprint {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.vWarn {
+  color: var(--warning);
+}
+
+.vMuted {
+  color: var(--text-muted);
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  margin-top: auto;
+  padding-top: var(--sp-1);
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* ---- device setup */
+.deviceBody {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.qrWrap {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--border);
+}
+
+.qr {
+  display: block;
+  transition:
+    filter var(--dur-slow) var(--ease),
+    opacity var(--dur-slow) var(--ease);
+}
+
+.qrDisabled .qr {
+  filter: blur(5px);
+  opacity: 0.35;
+}
+
+.qrOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.deviceText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1-5);
+  flex: 1;
+  min-width: 0;
+}
+
+.deviceLead {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+}
+
+.setupUrl {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--accent-text);
+}
+
+.allowButton {
+  align-self: flex-start;
+  margin-top: var(--sp-1);
+}
+
+.guideLinks {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+  margin-top: var(--sp-1);
+  font-size: var(--fs-sm);
+}
+
+.link {
+  color: var(--accent-text);
+  font-size: var(--fs-sm);
+  border-radius: var(--r-xs);
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dot {
+  color: var(--text-subtle);
+}

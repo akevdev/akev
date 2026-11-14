@@ -1,0 +1,79 @@
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 356px;
+  padding: 10px 12px !important;
+  background: var(--bg-elevated) !important;
+  color: var(--text) !important;
+  border: 0 !important;
+  border-radius: var(--r-md) !important;
+  box-shadow: var(--shadow-lg) !important;
+  font-family: var(--font-ui) !important;
+  font-size: var(--fs-base) !important;
+}
+
+.title {
+  font-weight: var(--fw-medium) !important;
+  line-height: var(--lh-tight) !important;
+}
+
+.description {
+  margin-top: 2px;
+  color: var(--text-muted) !important;
+  font-size: var(--fs-sm) !important;
+  line-height: var(--lh-base) !important;
+}
+
+.icon {
+  align-self: flex-start;
+  margin-top: 1px;
+}
+
+.success .icon {
+  color: var(--success);
+}
+
+.error .icon {
+  color: var(--danger);
+}
+
+.warning .icon {
+  color: var(--warning);
+}
+
+.info .icon {
+  color: var(--info);
+}
+
+.action {
+  height: 24px !important;
+  padding: 0 10px !important;
+  border-radius: 5px !important;
+  background: var(--accent) !important;
+  color: var(--text-on-accent) !important;
+  font-size: var(--fs-sm) !important;
+  font-weight: var(--fw-medium) !important;
+  font-family: var(--font-ui) !important;
+}
+
+.action:hover {
+  background: var(--accent-hover) !important;
+}
+
+.cancel {
+  height: 24px !important;
+  border-radius: 5px !important;
+  background: var(--bg-active) !important;
+  color: var(--text) !important;
+}
+
+.close {
+  background: var(--bg-elevated) !important;
+  border-color: var(--border-strong) !important;
+  color: var(--text-muted) !important;
+}
+
+.close:hover {
+  color: var(--text) !important;
+}

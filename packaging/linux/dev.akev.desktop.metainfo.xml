@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AppStream metadata for Linux software centres (installed by the .deb and .rpm). -->
+<component type="desktop-application">
+  <id>dev.akev.desktop</id>
+  <name>Akev</name>
+  <summary>Intercept, inspect, mock and replay HTTP(S) traffic</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0-or-later</project_license>
+  <developer id="dev.akev">
+    <name>Akev</name>
+  </developer>
+  <description>
+    <p>
+      Akev is a fast HTTP(S) debugging proxy. It intercepts traffic from browsers, terminals,
+      Android devices, containers and whole systems, and shows every request as it happens.
+    </p>
+    <ul>
+      <li>HTTP/1.1, HTTP/2, HTTP/3, WebSocket, server-sent events and gRPC</li>
+      <li>Breakpoints, mocks, rewrites, Map Local and Map Remote</li>
+      <li>Compose and replay requests, export them as code</li>
+      <li>An MCP server for AI agents</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">Akev.desktop</launchable>
+  <url type="homepage">https://akev.dev</url>
+  <url type="bugtracker">https://github.com/akevdev/akev/issues</url>
+  <url type="help">https://akev.dev/docs/</url>
+  <categories>
+    <category>Development</category>
+    <category>Network</category>
+  </categories>
+  <keywords>
+    <keyword>http</keyword>
+    <keyword>proxy</keyword>
+    <keyword>debugging</keyword>
+    <keyword>https</keyword>
+  </keywords>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="@VERSION@" date="@DATE@"/>
+  </releases>
+</component>

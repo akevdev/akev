@@ -1,0 +1,188 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-panel);
+}
+
+.fill {
+  flex: 1;
+  height: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 6px 0 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 0;
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-sm);
+  font-feature-settings: normal;
+  user-select: none;
+  cursor: text;
+}
+
+.scroll:focus-visible {
+  outline-offset: -2px;
+}
+
+.sizer {
+  position: relative;
+  width: max-content;
+  min-width: 100%;
+}
+
+.window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 12px;
+  white-space: pre;
+}
+
+.row:hover {
+  background: var(--code-active-line);
+}
+
+.offset {
+  width: calc(var(--offset-w, 8) * 1ch);
+  min-width: 8ch;
+  margin-right: 16px;
+  color: var(--text-disabled);
+  font-feature-settings: 'tnum';
+}
+
+.hex {
+  display: inline-flex;
+  margin-right: 16px;
+}
+
+.byte {
+  display: inline-block;
+  width: 2ch;
+  margin-right: 0.6ch;
+  text-align: center;
+  border-radius: 2px;
+}
+
+.gap {
+  margin-right: 1.6ch;
+}
+
+.empty {
+  color: transparent;
+}
+
+.zero {
+  color: var(--text-disabled);
+}
+
+.ascii {
+  display: inline-flex;
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+}
+
+.char {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+  border-radius: 1px;
+}
+
+.printable {
+  color: var(--text-muted);
+}
+
+.np {
+  color: var(--text-disabled);
+}
+
+.selected {
+  background: var(--accent-soft-strong);
+  color: var(--text);
+}
+
+.noBytes {
+  padding: 16px;
+  color: var(--text-subtle);
+  font-family: var(--font-ui);
+}
+
+.n0 {
+  color: hsl(0deg var(--hex-sat) var(--hex-light));
+}
+.n1 {
+  color: hsl(22deg var(--hex-sat) var(--hex-light));
+}
+.n2 {
+  color: hsl(45deg var(--hex-sat) var(--hex-light));
+}
+.n3 {
+  color: hsl(67deg var(--hex-sat) var(--hex-light));
+}
+.n4 {
+  color: hsl(90deg var(--hex-sat) var(--hex-light));
+}
+.n5 {
+  color: hsl(112deg var(--hex-sat) var(--hex-light));
+}
+.n6 {
+  color: hsl(135deg var(--hex-sat) var(--hex-light));
+}
+.n7 {
+  color: hsl(157deg var(--hex-sat) var(--hex-light));
+}
+.n8 {
+  color: hsl(180deg var(--hex-sat) var(--hex-light));
+}
+.n9 {
+  color: hsl(202deg var(--hex-sat) var(--hex-light));
+}
+.n10 {
+  color: hsl(225deg var(--hex-sat) var(--hex-light));
+}
+.n11 {
+  color: hsl(247deg var(--hex-sat) var(--hex-light));
+}
+.n12 {
+  color: hsl(270deg var(--hex-sat) var(--hex-light));
+}
+.n13 {
+  color: hsl(292deg var(--hex-sat) var(--hex-light));
+}
+.n14 {
+  color: hsl(315deg var(--hex-sat) var(--hex-light));
+}
+.n15 {
+  color: hsl(337deg var(--hex-sat) var(--hex-light));
+}

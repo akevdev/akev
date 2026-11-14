@@ -1,0 +1,36 @@
+[package]
+name = "akev-rules"
+description = "Rules engine: matching, transforms, mocks, map-local/remote, scripting"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[features]
+default = ["scripting"]
+scripting = ["dep:rquickjs"]
+
+[dependencies]
+akev-core = { workspace = true }
+akev-content = { workspace = true }
+bytes = { workspace = true }
+regex = { workspace = true }
+serde_json = { workspace = true }
+base64 = { workspace = true }
+url = { workspace = true }
+percent-encoding = { workspace = true }
+mime_guess = { workspace = true }
+arc-swap = { workspace = true }
+parking_lot = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+rand = { workspace = true }
+httpdate = "1.0"
+rquickjs = { version = "0.9", optional = true, features = ["classes", "properties"] }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+
+[lints]
+workspace = true

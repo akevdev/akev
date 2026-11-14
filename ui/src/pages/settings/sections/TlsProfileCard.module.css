@@ -1,0 +1,122 @@
+/* Per-host TLS fingerprint list (styled like StringListEditor). */
+.editor {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border-input);
+  border-radius: var(--r-md);
+  background: var(--bg-input);
+  overflow: hidden;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  max-height: 232px;
+  margin: 0;
+  padding: var(--sp-1) 0;
+  overflow-y: auto;
+  list-style: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 32px;
+  padding: 0 var(--sp-1) 0 var(--sp-3);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.row:hover,
+.row:focus-within {
+  background: var(--bg-hover);
+}
+
+.host {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-sm);
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.rowSelect {
+  width: 148px;
+  flex-shrink: 0;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.row:hover .rowActions,
+.row:focus-within .rowActions {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .rowActions {
+    opacity: 1;
+  }
+}
+
+.empty {
+  margin: 0;
+  padding: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+}
+
+.addRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  padding: var(--sp-1-5);
+  background: var(--bg-subtle);
+}
+
+.hostInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.error {
+  margin: 0;
+  padding: 0 var(--sp-2) var(--sp-2);
+  background: var(--bg-subtle);
+  color: var(--danger);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+.fingerprints {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+  margin-top: var(--sp-1);
+  color: var(--text-subtle);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}

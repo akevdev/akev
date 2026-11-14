@@ -1,0 +1,6 @@
+target/
+corpus/
+artifacts/
+coverage/
+# Resolved fresh against the workspace crates (cargo fuzz build).
+Cargo.lock

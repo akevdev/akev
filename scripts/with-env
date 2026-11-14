@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Runs a command with the development settings in the repository's .env (see .env.example):
+#
+#   scripts/with-env cargo test -p akev-api
+#
+# Every `make` target runs this way (the Makefile uses it as its shell), and scripts/release.sh
+# sources it. The rules:
+#   * a variable already set in the environment wins over the file
+#     (`AKEV_TOKEN=… make daemon` still works);
+#   * VITE_ lines are skipped: the UI dev server reads them from .env itself and builds ignore
+#     them, so a setting like VITE_MOCK=1 never ends up in a build;
+#   * the file is read as shell (`set -a; . .env`): KEY=value lines, quotes and $HOME work.
+# AKEV_ENV_FILE points it at another file.
+
+akev_load_env() {
+  local file=${AKEV_ENV_FILE:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/.env}
+  [ -f "$file" ] || return 0
+  local key keys entry flags=$- kept=() vite=()
+  keys=$(sed -nE 's/^[[:space:]]*(export[[:space:]]+)?([A-Za-z_][A-Za-z0-9_]*)=.*/\2/p' "$file")
+  for key in $keys; do
+    if printenv "$key" >/dev/null; then
+      kept+=("$key=$(printenv "$key")")
+    elif [[ $key == VITE_* ]]; then
+      vite+=("$key")
+    fi
+  done
+  set +u -a
+  # shellcheck disable=SC1090
+  . "$file" || { set +a; echo "with-env: couldn't read $file" >&2; return 1; }
+  set +a
+  [[ $flags == *u* ]] && set -u
+  for key in ${vite[@]+"${vite[@]}"}; do unset "$key"; done
+  for entry in ${kept[@]+"${kept[@]}"}; do export "${entry?}"; done
+  return 0
+}
+
+akev_load_env || exit 1
+unset -f akev_load_env
+
+# Sourced (scripts/release.sh): the settings are loaded and there is nothing to run.
+if [ "${BASH_SOURCE[0]}" != "$0" ]; then return 0; fi
+# As make's shell: `with-env -c '<recipe line>'`.
+if [ "${1:-}" = -c ]; then exec bash "$@"; fi
+[ $# -gt 0 ] || { echo "usage: scripts/with-env <command> [args…]" >&2; exit 2; }
+exec "$@"

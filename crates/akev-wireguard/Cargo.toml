@@ -1,0 +1,49 @@
+[package]
+name = "akev-wireguard"
+description = "Akev's WireGuard mode: an embedded userspace WireGuard server (boringtun) with a userspace TCP/IP stack (smoltcp) that hands every TCP connection of a tunnelled device to the intercepting proxy"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+akev-core = { workspace = true }
+akev-proxy = { workspace = true }
+# The WireGuard protocol (Noise IK handshake, transport encryption, timers). Only the `noise`
+# module is used: no TUN device, no OS networking changes.
+boringtun = { version = "0.7", default-features = false }
+# Userspace TCP (IPv4 + IPv6) terminating the device's connections. UDP and DNS are handled
+# by this crate directly.
+smoltcp = { version = "0.14", default-features = false, features = [
+    "std",
+    "medium-ip",
+    "proto-ipv4",
+    "proto-ipv6",
+    "socket-tcp",
+] }
+hickory-resolver = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+bytes = { workspace = true }
+base64 = { workspace = true }
+parking_lot = { workspace = true }
+rand = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+socket2 = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+futures = { workspace = true }
+
+[dev-dependencies]
+akev-ca = { workspace = true }
+akev-rules = { workspace = true }
+tokio-rustls = { workspace = true }
+rustls = { workspace = true }
+rustls-pki-types = { workspace = true }
+rcgen = { workspace = true }
+tempfile = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,551 @@
+/* ------------------------------------------------------------------ layout */
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  background: var(--bg-panel);
+}
+
+.scroller {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+.scroller:focus-visible {
+  outline: none;
+}
+
+/* Keyboard focus with no active row: a quiet inset ring on the list itself. */
+.scroller:focus-visible:not([aria-activedescendant]) {
+  box-shadow: inset 0 0 0 1px var(--border-focus);
+}
+
+.scrollerEmpty {
+  display: flex;
+  overflow: auto;
+}
+
+.canvas {
+  position: relative;
+  width: 100%;
+}
+
+/* ------------------------------------------------------------------ header */
+.headerGroup {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: 28px;
+}
+
+.header {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--cols);
+  height: 28px;
+  background: var(--bg-subtle);
+  box-shadow: inset 0 -1px 0 var(--border);
+  user-select: none;
+}
+
+.headerCell {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.headerButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  padding: 0 2px 0 var(--sp-2);
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.headerButton:hover {
+  color: var(--text);
+}
+
+.headerButton:focus-visible {
+  outline-offset: -2px;
+}
+
+.end .headerButton {
+  justify-content: flex-end;
+  padding: 0 var(--sp-2) 0 2px;
+}
+
+.headerSorted {
+  color: var(--text);
+}
+
+.headerLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ↑ request / ↓ response header columns. */
+.headerSide {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+}
+
+.sortIcon {
+  flex-shrink: 0;
+  color: var(--accent-text);
+}
+
+.headerCellDragging {
+  z-index: 2;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--r-xs);
+  color: var(--text);
+  cursor: grabbing;
+  opacity: 0.94;
+}
+
+.headerDragging .headerButton {
+  cursor: grabbing;
+}
+
+/* Column edge: subtle divider, accent on hover/drag. */
+.resizer {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  bottom: 0;
+  z-index: 1;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+/* The last column's edge can be the list's edge: keep its handle inside the column, or the
+   4px it would stick out make the list scroll sideways. */
+.headerCellLast .resizer {
+  right: 0;
+}
+
+.resizer::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 3.5px;
+  width: 1px;
+  background: var(--border-strong);
+  opacity: 0;
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
+}
+
+.headerCellLast .resizer::after {
+  left: auto;
+  right: 0;
+}
+
+.header:hover .resizer::after {
+  opacity: 1;
+}
+
+.resizer:hover::after,
+.headerCellResizing .resizer::after {
+  top: 3px;
+  bottom: 3px;
+  background: var(--accent);
+  opacity: 1;
+}
+
+.dropIndicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ rows */
+.row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--row-h);
+  display: grid;
+  grid-template-columns: var(--cols);
+  align-items: center;
+  color: var(--text);
+  font-size: var(--fs-sm);
+  cursor: default;
+  /* Fixed-size rows: isolate their layout/paint so patching one never relayouts the list. */
+  contain: strict;
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.tagged {
+  background: color-mix(in srgb, var(--tag) 6%, transparent);
+}
+
+.tagged:hover {
+  background: color-mix(in srgb, var(--tag) 10%, transparent);
+}
+
+.paused {
+  background: color-mix(in srgb, var(--warning) 8%, transparent);
+}
+
+.selected,
+.selected:hover {
+  background: var(--bg-selected);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.scroller:focus-within .selected {
+  background: var(--bg-selected-strong);
+}
+
+/* The keyboard-focus row inside a multi-selection (or unselected after Ctrl-click). */
+.scroller:focus-visible .active {
+  box-shadow:
+    inset 2px 0 0 var(--accent),
+    inset 0 0 0 1px color-mix(in srgb, var(--border-focus) 70%, transparent);
+}
+
+.failed .hostCell,
+.failed .pathCell,
+.failed .typeCell,
+.failed .numCell {
+  color: var(--text-muted);
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 100%;
+  padding: 0 var(--sp-2);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.end {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.subtleText {
+  color: var(--text-subtle);
+}
+
+/* ---- indicator */
+.indicator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding-left: 3px;
+}
+
+/* An inset pill (not flush with the edge) so it never reads as the selection bar. */
+.stripe {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 4px;
+  width: 3px;
+  border-radius: var(--r-full);
+  background: var(--tag);
+}
+
+.pinGlyph {
+  color: var(--accent-text);
+  transform: rotate(45deg);
+}
+
+.pausedGlyph {
+  color: var(--warning);
+}
+
+/* ---- cells */
+.idCell {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+.statusCell {
+  gap: 5px;
+}
+
+.marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: var(--r-full);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+}
+
+.mocked {
+  background: var(--accent-soft-strong);
+  color: var(--accent-text);
+}
+
+.modified {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.hostCell {
+  color: var(--text);
+}
+
+.port {
+  color: var(--text-subtle);
+}
+
+.pathCell {
+  color: var(--text);
+}
+
+.query {
+  color: var(--text-subtle);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+}
+
+.failText {
+  color: var(--danger);
+}
+
+.dimText {
+  color: var(--text-subtle);
+}
+
+.msgCount {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 16px;
+  padding: 0 5px;
+  margin-left: auto;
+  border-radius: var(--r-full);
+  background: var(--bg-active);
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-medium);
+  font-feature-settings: 'tnum';
+}
+
+.noteGlyph {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--tag-yellow);
+}
+
+.msgCount + .noteGlyph {
+  margin-left: 0;
+}
+
+.typeCell {
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.kindIcon {
+  color: var(--kind);
+}
+
+/* Recognised LLM API calls. */
+.llmType {
+  --kind: var(--accent-text);
+  color: var(--accent-text);
+  font-weight: var(--fw-medium);
+}
+
+.modelCell {
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.numCell {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.slow {
+  color: var(--warning);
+}
+
+.verySlow {
+  color: var(--danger);
+}
+
+.pendingTime {
+  color: var(--text-subtle);
+}
+
+.tunnelBytes {
+  gap: 2px;
+}
+
+.tunnelBytes svg {
+  color: var(--text-subtle);
+  margin-left: 4px;
+}
+
+.tunnelBytes svg:first-child {
+  margin-left: 0;
+}
+
+.sourceCell {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.protoCell {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+}
+
+/* Custom header columns: the value as sent, in the code font. */
+.headerValueCell {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+}
+
+.ruleChip {
+  max-width: 100%;
+  padding: 1px 6px;
+  border-radius: var(--r-xs);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+}
+
+/* ------------------------------------------------------------------ overlays */
+.emptyOverlay {
+  position: absolute;
+  inset: 28px 0 0;
+  display: flex;
+  min-height: 320px;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+}
+
+.loadingRow {
+  display: grid;
+  grid-template-columns: 64px 64px 1fr;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-4);
+}
+
+.newPill {
+  position: absolute;
+  bottom: var(--sp-4);
+  left: 50%;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px 0 10px;
+  translate: -50% 0;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--text-on-accent);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  font-feature-settings: 'tnum';
+  box-shadow: var(--shadow-md);
+  animation: var(--anim-pop-in) var(--dur) var(--ease-out);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.newPill:hover {
+  background: var(--accent-hover);
+}
+
+.newPill:active {
+  transform: translateY(0.5px);
+}
+
+.newPillTop {
+  top: calc(28px + var(--sp-3));
+  bottom: auto;
+}
+
+.gridTip {
+  position: fixed;
+  z-index: var(--z-tooltip);
+  max-width: 320px;
+  padding: 5px 8px;
+  background: var(--bg-elevated);
+  color: var(--text);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-md);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  transform: translateY(-100%);
+  animation: var(--anim-fade-in) var(--dur-fast) var(--ease);
+}
+
+.gridTip[data-below] {
+  transform: none;
+}

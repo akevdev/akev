@@ -1,0 +1,59 @@
+.track {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--bg-active);
+  overflow: hidden;
+}
+
+.sm {
+  height: 2px;
+}
+
+.bar {
+  height: 100%;
+  border-radius: inherit;
+  transition: width var(--dur-slow) var(--ease-out);
+}
+
+.accent {
+  background: var(--accent);
+}
+
+.success {
+  background: var(--success);
+}
+
+.warning {
+  background: var(--warning);
+}
+
+.danger {
+  background: var(--danger);
+}
+
+.indeterminate {
+  position: absolute;
+  width: 35%;
+  animation: akev-indeterminate 1.3s var(--ease-in-out) infinite;
+}
+
+@keyframes akev-indeterminate {
+  from {
+    left: -35%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+@media (forced-colors: active) {
+  .track {
+    border: 1px solid CanvasText;
+  }
+
+  .bar {
+    background: Highlight;
+  }
+}

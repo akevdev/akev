@@ -1,0 +1,82 @@
+# Fuzz targets for Akev's parsers of untrusted input. Run one with nightly Rust and
+# cargo-fuzz from the repository root:
+#
+#   cargo +nightly fuzz run http1_request fuzz/corpus/http1_request fuzz/seeds/http1_request
+#
+# `fuzz/seeds/<target>` holds small hand-made starting inputs; CI (`fuzz` job) runs every
+# target for 60 seconds. Internal parsers are reached through `akev_proxy::fuzzing` (cargo
+# feature `fuzzing`).
+
+[package]
+name = "akev-fuzz"
+version = "0.0.0"
+description = "cargo-fuzz targets for Akev's parsers (not part of the workspace)"
+publish = false
+edition = "2024"
+license = "AGPL-3.0-or-later"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+akev-proxy = { path = "../crates/akev-proxy", features = ["fuzzing"] }
+akev-store = { path = "../crates/akev-store" }
+akev-content = { path = "../crates/akev-content" }
+akev-core = { path = "../crates/akev-core" }
+
+# Its own workspace: never built by `cargo build` / `cargo test` at the repository root.
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "http1_request"
+path = "fuzz_targets/http1_request.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "http1_response"
+path = "fuzz_targets/http1_response.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "client_hello"
+path = "fuzz_targets/client_hello.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "proxy_protocol"
+path = "fuzz_targets/proxy_protocol.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "socks_handshake"
+path = "fuzz_targets/socks_handshake.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "har_import"
+path = "fuzz_targets/har_import.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "content_decoders"
+path = "fuzz_targets/content_decoders.rs"
+test = false
+doc = false
+bench = false

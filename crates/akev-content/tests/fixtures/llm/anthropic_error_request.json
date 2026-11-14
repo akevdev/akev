@@ -1,0 +1,11 @@
+{
+  "model": "claude-haiku-4-5",
+  "max_tokens": 256,
+  "system": "Classify the support ticket as billing, bug, feature or other. Reply with one word.",
+  "messages": [
+    {
+      "role": "user",
+      "content": "I was charged twice for my November invoice."
+    }
+  ]
+}

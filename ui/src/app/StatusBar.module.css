@@ -1,0 +1,133 @@
+.bar {
+  grid-area: status;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 12px;
+  height: var(--statusbar-h);
+  padding: 0 6px;
+  background: var(--bg-app);
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  line-height: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.group {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  white-space: nowrap;
+  color: inherit;
+  border-radius: 0;
+  min-width: 0;
+}
+
+.clickable {
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.clickable:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.segment:focus-visible {
+  outline-offset: -2px;
+}
+
+.sep {
+  align-self: center;
+  width: 1px;
+  height: 12px;
+  background: var(--border-strong);
+  flex-shrink: 0;
+}
+
+.strong {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.dim {
+  color: var(--text-subtle);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-full);
+  flex-shrink: 0;
+}
+
+.ok {
+  background: var(--success);
+  box-shadow: 0 0 0 3px var(--success-soft);
+}
+
+.bad {
+  background: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+.rec {
+  background: var(--danger);
+  animation: var(--anim-pulse) 2s var(--ease-in-out) infinite;
+}
+
+.pausedIcon {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.pausedIcon span {
+  width: 2px;
+  height: 8px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.warning {
+  color: var(--warning);
+}
+
+.warning.clickable:hover {
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+
+.icons {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.truncate {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 16px;
+  padding: 0 7px;
+  border-radius: var(--r-full);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: var(--fw-medium);
+  animation: var(--anim-pulse) 2.4s var(--ease-in-out) infinite;
+}

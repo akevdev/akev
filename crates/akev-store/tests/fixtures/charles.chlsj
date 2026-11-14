@@ -1,0 +1,604 @@
+[
+  {
+    "status": "COMPLETE",
+    "method": "GET",
+    "protocolVersion": "HTTP/2.0",
+    "scheme": "https",
+    "host": "api.github.com",
+    "actualPort": 443,
+    "path": "/users/octocat",
+    "query": null,
+    "tunnel": false,
+    "keptAlive": false,
+    "webSocket": false,
+    "remoteAddress": "api.github.com/140.82.121.6",
+    "clientAddress": "/127.0.0.1",
+    "clientPort": 52178,
+    "times": {
+      "start": "2024-03-04T10:21:36.512+00:00",
+      "requestBegin": "2024-03-04T10:21:36.563+00:00",
+      "requestComplete": "2024-03-04T10:21:36.563+00:00",
+      "responseBegin": "2024-03-04T10:21:36.701+00:00",
+      "end": "2024-03-04T10:21:36.703+00:00"
+    },
+    "durations": {
+      "total": 191,
+      "dns": 3,
+      "connect": 17,
+      "ssl": 29,
+      "request": 0,
+      "response": 2,
+      "latency": 138
+    },
+    "speeds": {
+      "overall": 15376,
+      "request": 0,
+      "response": 1468000
+    },
+    "totalSize": 2937,
+    "ssl": {
+      "protocol": "TLSv1.3",
+      "cipherSuite": "TLS_AES_128_GCM_SHA256"
+    },
+    "alpn": {
+      "protocol": "h2"
+    },
+    "request": {
+      "sizes": {
+        "headers": 179,
+        "body": 0
+      },
+      "mimeType": null,
+      "charset": null,
+      "contentEncoding": null,
+      "header": {
+        "firstLine": "GET /users/octocat HTTP/2.0",
+        "headers": [
+          {
+            "name": ":method",
+            "value": "GET"
+          },
+          {
+            "name": ":authority",
+            "value": "api.github.com"
+          },
+          {
+            "name": ":scheme",
+            "value": "https"
+          },
+          {
+            "name": ":path",
+            "value": "/users/octocat"
+          },
+          {
+            "name": "user-agent",
+            "value": "curl/8.4.0"
+          },
+          {
+            "name": "accept",
+            "value": "application/vnd.github+json"
+          },
+          {
+            "name": "accept-encoding",
+            "value": "gzip"
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "sizes": {
+        "headers": 1361,
+        "body": 112
+      },
+      "mimeType": "application/json",
+      "charset": "utf-8",
+      "contentEncoding": "gzip",
+      "header": {
+        "firstLine": "HTTP/2.0 200 OK",
+        "headers": [
+          {
+            "name": ":status",
+            "value": "200"
+          },
+          {
+            "name": "content-type",
+            "value": "application/json; charset=utf-8"
+          },
+          {
+            "name": "content-encoding",
+            "value": "gzip"
+          },
+          {
+            "name": "etag",
+            "value": "W/\"5e1a\""
+          },
+          {
+            "name": "x-ratelimit-remaining",
+            "value": "59"
+          }
+        ]
+      },
+      "body": {
+        "text": "{\"login\":\"octocat\",\"id\":583231,\"type\":\"User\",\"site_admin\":false}",
+        "charset": "utf-8",
+        "decoded": true
+      }
+    }
+  },
+  {
+    "status": "COMPLETE",
+    "method": "POST",
+    "protocolVersion": "HTTP/1.1",
+    "scheme": "http",
+    "host": "shop.example.test",
+    "actualPort": 8080,
+    "path": "/api/orders",
+    "query": "source=web",
+    "tunnel": false,
+    "keptAlive": true,
+    "webSocket": false,
+    "remoteAddress": "shop.example.test/192.0.2.10",
+    "clientAddress": "/127.0.0.1",
+    "clientPort": 52190,
+    "notes": "Checkout bug: total is wrong",
+    "times": {
+      "start": "2024-03-04T10:21:38.012+00:00",
+      "requestBegin": "2024-03-04T10:21:38.012+00:00",
+      "requestComplete": "2024-03-04T10:21:38.016+00:00",
+      "responseBegin": "2024-03-04T10:21:38.052+00:00",
+      "end": "2024-03-04T10:21:38.054+00:00"
+    },
+    "durations": {
+      "total": 42,
+      "dns": null,
+      "connect": null,
+      "ssl": null,
+      "request": 4,
+      "response": 2,
+      "latency": 36
+    },
+    "request": {
+      "sizes": {
+        "headers": 211,
+        "body": 27
+      },
+      "mimeType": "application/x-www-form-urlencoded",
+      "charset": null,
+      "contentEncoding": null,
+      "header": {
+        "firstLine": "POST /api/orders?source=web HTTP/1.1",
+        "headers": [
+          {
+            "name": "Host",
+            "value": "shop.example.test:8080"
+          },
+          {
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          },
+          {
+            "name": "Content-Length",
+            "value": "27"
+          },
+          {
+            "name": "Cookie",
+            "value": "sid=42; theme=dark"
+          }
+        ]
+      },
+      "body": {
+        "text": "item=book&qty=2&price=19.90",
+        "charset": "ISO-8859-1"
+      }
+    },
+    "response": {
+      "status": 201,
+      "sizes": {
+        "headers": 150,
+        "body": 33
+      },
+      "mimeType": "application/json",
+      "charset": null,
+      "contentEncoding": null,
+      "header": {
+        "firstLine": "HTTP/1.1 201 Created",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "Content-Length",
+            "value": "33"
+          },
+          {
+            "name": "Location",
+            "value": "/api/orders/981"
+          }
+        ]
+      },
+      "body": {
+        "text": "{\"id\":981,\"total\":39.8,\"ok\":true}",
+        "charset": "UTF-8"
+      }
+    }
+  },
+  {
+    "status": "COMPLETE",
+    "method": "GET",
+    "protocolVersion": "HTTP/1.1",
+    "scheme": "https",
+    "host": "cdn.example.test",
+    "actualPort": 443,
+    "path": "/img/pixel.png",
+    "query": null,
+    "tunnel": false,
+    "keptAlive": true,
+    "webSocket": false,
+    "remoteAddress": "cdn.example.test/198.51.100.7",
+    "clientAddress": "/127.0.0.1",
+    "clientPort": 52191,
+    "times": {
+      "start": "2024-03-04T10:21:38.512+00:00",
+      "requestBegin": "2024-03-04T10:21:38.512+00:00",
+      "requestComplete": "2024-03-04T10:21:38.512+00:00",
+      "responseBegin": "2024-03-04T10:21:38.537+00:00",
+      "end": "2024-03-04T10:21:38.538+00:00"
+    },
+    "durations": {
+      "total": 26,
+      "dns": 1,
+      "connect": 5,
+      "ssl": 12,
+      "request": 0,
+      "response": 1,
+      "latency": 7
+    },
+    "ssl": {
+      "protocol": "TLSv1.2",
+      "cipherSuite": "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+    },
+    "request": {
+      "sizes": {
+        "headers": 120,
+        "body": 0
+      },
+      "header": {
+        "firstLine": "GET /img/pixel.png HTTP/1.1",
+        "headers": [
+          {
+            "name": "Host",
+            "value": "cdn.example.test"
+          },
+          {
+            "name": "Accept",
+            "value": "image/*"
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "sizes": {
+        "headers": 98,
+        "body": 69
+      },
+      "mimeType": "image/png",
+      "charset": null,
+      "contentEncoding": null,
+      "header": {
+        "firstLine": "HTTP/1.1 200 OK",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "image/png"
+          },
+          {
+            "name": "Content-Length",
+            "value": "69"
+          },
+          {
+            "name": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
+      },
+      "body": {
+        "encoded": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC"
+      }
+    }
+  },
+  {
+    "status": "COMPLETE",
+    "method": "GET",
+    "protocolVersion": "HTTP/1.1",
+    "scheme": "http",
+    "host": "legacy.example.test",
+    "actualPort": 80,
+    "path": "/index.html",
+    "query": null,
+    "tunnel": false,
+    "keptAlive": false,
+    "webSocket": false,
+    "clientAddress": "localhost/127.0.0.1",
+    "clientPort": 52192,
+    "times": {
+      "start": "2024-03-04T10:21:39.012+00:00",
+      "requestBegin": "2024-03-04T10:21:39.012+00:00",
+      "requestComplete": "2024-03-04T10:21:39.012+00:00",
+      "responseBegin": "2024-03-04T10:21:39.022+00:00",
+      "end": "2024-03-04T10:21:39.024+00:00"
+    },
+    "durations": {
+      "total": 12,
+      "dns": 0,
+      "connect": 2,
+      "ssl": -1,
+      "request": 0,
+      "response": 2,
+      "latency": 8
+    },
+    "request": {
+      "sizes": {
+        "headers": 90,
+        "body": 0
+      },
+      "header": {
+        "firstLine": "GET /index.html HTTP/1.1",
+        "headers": [
+          {
+            "name": "Host",
+            "value": "legacy.example.test"
+          },
+          {
+            "name": "Accept-Encoding",
+            "value": "gzip"
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "sizes": {
+        "headers": 120,
+        "body": 56
+      },
+      "mimeType": "text/html",
+      "contentEncoding": "gzip",
+      "header": {
+        "firstLine": "HTTP/1.1 200 OK",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "text/html"
+          },
+          {
+            "name": "Content-Encoding",
+            "value": "gzip"
+          },
+          {
+            "name": "Content-Length",
+            "value": "56"
+          }
+        ]
+      },
+      "body": {
+        "encoded": "H4sIAAAAAAAA/7PJKMnNsbNJyk+ptCsuyczJUUjOzy0oSi0uTk2x0QcL2+iD1QAAs0dpeioAAAA="
+      }
+    }
+  },
+  {
+    "status": "FAILED",
+    "method": "GET",
+    "protocolVersion": "HTTP/1.1",
+    "scheme": "https",
+    "host": "nope.invalid",
+    "actualPort": 443,
+    "path": "/",
+    "query": null,
+    "tunnel": false,
+    "keptAlive": false,
+    "webSocket": false,
+    "clientAddress": "/127.0.0.1",
+    "clientPort": 52193,
+    "errorMessage": "java.net.UnknownHostException: nope.invalid",
+    "times": {
+      "start": "2024-03-04T10:21:39.512+00:00",
+      "requestBegin": null,
+      "requestComplete": null,
+      "responseBegin": null,
+      "end": "2024-03-04T10:21:39.530+00:00"
+    },
+    "durations": {
+      "total": 18,
+      "dns": 18,
+      "connect": null,
+      "ssl": null,
+      "request": null,
+      "response": null,
+      "latency": null
+    },
+    "request": {
+      "sizes": {
+        "headers": 0,
+        "body": 0
+      },
+      "header": {
+        "firstLine": "GET / HTTP/1.1",
+        "headers": [
+          {
+            "name": "Host",
+            "value": "nope.invalid"
+          }
+        ]
+      }
+    },
+    "response": null
+  },
+  {
+    "status": "COMPLETE",
+    "method": "CONNECT",
+    "protocolVersion": "HTTP/1.1",
+    "scheme": "https",
+    "host": "updates.example.test",
+    "actualPort": 443,
+    "path": null,
+    "query": null,
+    "tunnel": true,
+    "keptAlive": false,
+    "webSocket": false,
+    "remoteAddress": "updates.example.test/203.0.113.5",
+    "clientAddress": "/127.0.0.1",
+    "clientPort": 52194,
+    "times": {
+      "start": "2024-03-04T10:21:40.000+00:00",
+      "requestBegin": "2024-03-04T10:21:40.000+00:00",
+      "requestComplete": "2024-03-04T10:21:40.001+00:00",
+      "responseBegin": "2024-03-04T10:21:40.020+00:00",
+      "end": "2024-03-04T10:21:41.250+00:00"
+    },
+    "durations": {
+      "total": 1250,
+      "dns": 2,
+      "connect": 15,
+      "ssl": null,
+      "request": 1,
+      "response": 1230,
+      "latency": 19
+    },
+    "request": {
+      "sizes": {
+        "headers": 80,
+        "body": 5120
+      },
+      "header": {
+        "firstLine": "CONNECT updates.example.test:443 HTTP/1.1",
+        "headers": [
+          {
+            "name": "Host",
+            "value": "updates.example.test:443"
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "sizes": {
+        "headers": 39,
+        "body": 48213
+      },
+      "header": {
+        "firstLine": "HTTP/1.1 200 Connection established",
+        "headers": []
+      }
+    }
+  },
+  {
+    "status": "COMPLETE",
+    "method": "GET",
+    "protocolVersion": "HTTP/1.1",
+    "scheme": "https",
+    "host": "chat.example.test",
+    "actualPort": 443,
+    "path": "/socket",
+    "query": "v=2",
+    "tunnel": false,
+    "keptAlive": false,
+    "webSocket": true,
+    "remoteAddress": "chat.example.test/198.51.100.20",
+    "clientAddress": "/127.0.0.1",
+    "clientPort": 52195,
+    "times": {
+      "start": "2024-03-04T10:21:42.000+00:00",
+      "requestBegin": "2024-03-04T10:21:42.001+00:00",
+      "requestComplete": "2024-03-04T10:21:42.001+00:00",
+      "responseBegin": "2024-03-04T10:21:42.050+00:00",
+      "end": "2024-03-04T10:21:45.000+00:00"
+    },
+    "durations": {
+      "total": 3000,
+      "dns": 1,
+      "connect": 10,
+      "ssl": 25,
+      "request": 0,
+      "response": 2950,
+      "latency": 49
+    },
+    "request": {
+      "sizes": {
+        "headers": 260,
+        "body": 0
+      },
+      "header": {
+        "firstLine": "GET /socket?v=2 HTTP/1.1",
+        "headers": [
+          {
+            "name": "Host",
+            "value": "chat.example.test"
+          },
+          {
+            "name": "Upgrade",
+            "value": "websocket"
+          },
+          {
+            "name": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "name": "Sec-WebSocket-Key",
+            "value": "dGhlIHNhbXBsZSBub25jZQ=="
+          },
+          {
+            "name": "Sec-WebSocket-Version",
+            "value": "13"
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 101,
+      "sizes": {
+        "headers": 129,
+        "body": 0
+      },
+      "header": {
+        "firstLine": "HTTP/1.1 101 Switching Protocols",
+        "headers": [
+          {
+            "name": "Upgrade",
+            "value": "websocket"
+          },
+          {
+            "name": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "name": "Sec-WebSocket-Accept",
+            "value": "s3pPLMBiTxaQ9kYGzzhZRbK+xOo="
+          }
+        ]
+      }
+    },
+    "messages": [
+      {
+        "type": "TEXT",
+        "direction": "SEND",
+        "text": "{\"op\":\"subscribe\",\"room\":\"general\"}",
+        "time": "2024-03-04T10:21:42.100+00:00"
+      },
+      {
+        "type": "TEXT",
+        "direction": "RECEIVE",
+        "text": "{\"op\":\"message\",\"text\":\"hi\"}",
+        "time": "2024-03-04T10:21:43.000+00:00"
+      },
+      {
+        "type": "BINARY",
+        "direction": "RECEIVE",
+        "encoded": "AAEC/w==",
+        "time": "2024-03-04T10:21:44.000+00:00"
+      }
+    ]
+  }
+]

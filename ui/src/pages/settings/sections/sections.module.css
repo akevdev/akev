@@ -1,0 +1,488 @@
+.select {
+  width: 168px;
+}
+
+.wideSelect {
+  width: 220px;
+}
+
+.textInput {
+  width: 300px;
+  max-width: 100%;
+}
+
+.numberInput {
+  width: 128px;
+}
+
+/* "Apply" ↔ "✓ Applied" without the row jumping. */
+.applyButton {
+  min-width: 92px;
+}
+
+.inlineGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.listening {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1-5);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.listeningDot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-full);
+  background: var(--success);
+  box-shadow: 0 0 0 3px var(--success-soft);
+}
+
+.listeningDotOff {
+  background: var(--warning);
+  box-shadow: 0 0 0 3px var(--warning-soft);
+}
+
+.addr {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-sm);
+  user-select: text;
+  -webkit-user-select: text;
+  /* Long paths and URLs wrap rather than squeeze the setting's label. */
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.callout svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.calloutWarning {
+  background: var(--warning-soft);
+  color: var(--text);
+}
+
+.calloutWarning svg {
+  color: var(--warning);
+}
+
+.calloutInfo {
+  background: var(--info-soft);
+  color: var(--text);
+}
+
+.calloutInfo svg {
+  color: var(--info);
+}
+
+.subField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1-5);
+  margin-top: var(--sp-1);
+}
+
+.subLabel {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.hint {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+/* ---- CA details */
+.caGrid {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  align-items: baseline;
+  row-gap: var(--sp-2-5);
+  column-gap: var(--sp-4);
+  padding: var(--sp-4) 0;
+}
+
+.caKey {
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+}
+
+.caValue {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  color: var(--text);
+}
+
+.fingerprint {
+  min-width: 0;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-code);
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.caFooter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+  padding: var(--sp-3) 0 var(--sp-4);
+  border-top: 1px solid var(--border);
+}
+
+/* ---- usage meter */
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1-5);
+  max-width: 420px;
+}
+
+.meterLabels {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+/* ---- shortcuts */
+.shortcutToolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.shortcutSearch {
+  flex: 0 1 320px;
+}
+
+.shortcutCount {
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+}
+
+.shortcutGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.shortcutRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  min-height: 36px;
+  padding: var(--sp-1) 0;
+}
+
+.shortcutRow + .shortcutRow {
+  border-top: 1px solid var(--border);
+}
+
+.shortcutDesc {
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+}
+
+.shortcutKeys {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  flex-shrink: 0;
+}
+
+.or {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+.shortcutSpacer {
+  flex: 1;
+}
+
+.shortcutHint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.shortcutConflict {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--warning-soft);
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+
+.shortcutConflict > svg {
+  flex-shrink: 0;
+  color: var(--warning);
+}
+
+.shortcutConflictText {
+  flex: 1;
+  min-width: 240px;
+}
+
+.fixedKeys {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  padding: 0 var(--sp-1-5);
+}
+
+.bindingChip {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-h-sm);
+  padding: 0 var(--sp-1-5);
+  border: 1px dashed transparent;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.bindingChip:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+.bindingChanged {
+  background: var(--accent-soft);
+}
+
+.bindingRecording {
+  border-color: var(--border-focus);
+  background: var(--accent-soft);
+}
+
+.recordingText {
+  color: var(--accent-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+}
+
+/* ---- about */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--bg-subtle);
+}
+
+.heroMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-lg);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm), 0 0 0 1px var(--border);
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.heroTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--text);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.015em;
+}
+
+.planButton {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: none;
+  cursor: pointer;
+}
+
+.planButton:hover > span {
+  filter: brightness(1.12);
+}
+
+.heroSub {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.heroLicensee {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
+}
+
+.heroLicenseeName {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+}
+
+.licenses {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--sp-1) var(--sp-4);
+  margin: 0;
+  padding: 0 0 var(--sp-2);
+  list-style: none;
+}
+
+.license {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  min-width: 0;
+  padding: var(--sp-1) 0;
+  font-size: var(--fs-sm);
+}
+
+.licenseName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.licenseKind {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+.licenseCount {
+  color: var(--text-subtle);
+}
+
+.trademarks {
+  margin: 0;
+  padding: var(--sp-2) 0 var(--sp-1);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.empty {
+  padding: var(--sp-8) 0;
+}
+
+.presetLabel {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+.presetHost {
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+}
+
+.contents {
+  display: contents;
+}
+
+.overrideNote {
+  color: var(--text-subtle);
+}
+
+.overrideNote code {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+}
+
+/* The override note + "Use port 8000" on their own line under "Listening on …". */
+.overrideLine {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+
+.useStored {
+  flex-shrink: 0;
+}
+
+.releaseNotes {
+  margin: 0;
+  max-height: 220px;
+  overflow: auto;
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  background: var(--bg-subtle);
+  font: inherit;
+  font-size: 12px;
+  white-space: pre-wrap;
+  color: var(--text-muted);
+}

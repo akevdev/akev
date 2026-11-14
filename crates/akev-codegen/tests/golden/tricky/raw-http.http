@@ -1,0 +1,13 @@
+PATCH /api/notes/1?q=a%20b&x=$y&z='" HTTP/1.1
+Host: example.com
+Content-Type: text/plain; charset=utf-8
+X-Quote: it's "quoted" `cmd` $HOME %PATH% \back\
+X-Unicode: héllo 日本 ✓
+X-Eq: =starts-with-equals
+Content-Length: 242
+
+Line 1: it's "quoted" and 'single'
+Line 2: $HOME ${HOME} `whoami` $(id) %PATH% 100% #{x} #@y !!
+	Tabbed: back\slash \n \\ """ ''' ``` --%
+Unicode: héllo — 日本語 🚀 ‘smart’ “quotes”
+'@ at line start, and a trailing backslash \

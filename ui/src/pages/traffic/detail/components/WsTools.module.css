@@ -1,0 +1,359 @@
+/* WebSocket tools in the Messages tab: paused messages and the composer. */
+
+.spacer {
+  flex: 1;
+}
+
+/* ---------------------------------------------------------------- shared bits */
+
+.dir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-xs);
+}
+
+.dirSent {
+  color: var(--accent-text);
+  background: var(--accent-soft);
+}
+
+.dirReceived {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-medium);
+  border-radius: var(--r-xs);
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.editor {
+  border-radius: var(--r-sm);
+  background: var(--bg-panel);
+  box-shadow: inset 0 0 0 1px var(--border);
+  transition: box-shadow var(--dur-fast) var(--ease);
+}
+
+.editor:focus-within {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.editorInvalid,
+.editorInvalid:focus-within {
+  box-shadow: inset 0 0 0 1px var(--danger);
+}
+
+.meta {
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  white-space: nowrap;
+}
+
+.error {
+  min-width: 0;
+  color: var(--danger);
+  font-size: var(--fs-2xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag {
+  flex-shrink: 0;
+  padding: 0 5px;
+  border-radius: var(--r-xs);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-medium);
+  line-height: 16px;
+}
+
+.tagInjected {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.tagQueued {
+  background: var(--bg-active);
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------------- paused messages */
+
+.paused {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 1;
+  max-height: 65%;
+  min-height: 112px;
+  border-top: 1px solid color-mix(in srgb, var(--warning) 30%, transparent);
+  background: var(--warning-soft);
+  animation: var(--anim-fade-in) var(--dur) var(--ease);
+}
+
+.pausedHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 4px 10px 4px 12px;
+}
+
+.pausedIcon {
+  flex-shrink: 0;
+  color: var(--warning);
+}
+
+.pausedTitle {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 8px;
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.pausedSub {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+}
+
+.pausedList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: 0 10px 10px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  background: var(--bg-elevated);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--warning) 26%, transparent);
+}
+
+.cardBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  min-width: 0;
+}
+
+.cardActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.cardWhat {
+  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.kind {
+  padding: 0 5px;
+  border-radius: var(--r-xs);
+  background: var(--bg-active);
+  color: var(--text-muted);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-medium);
+  line-height: 16px;
+}
+
+.kindBinary {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.timer {
+  color: var(--warning);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.timerLate {
+  color: var(--danger);
+}
+
+/* ---------------------------------------------------------------- composer */
+
+.composer {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 6px 10px 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.composerClosed {
+  padding-bottom: 6px;
+}
+
+.composerBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  min-height: 28px;
+  min-width: 0;
+}
+
+.composerToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 6px 0 2px;
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+.composerToggle:hover {
+  background: var(--bg-hover);
+}
+
+.composerToggle svg {
+  color: var(--text-muted);
+}
+
+.chevron {
+  transition: transform var(--dur) var(--ease);
+}
+
+.chevronClosed {
+  transform: rotate(-90deg);
+}
+
+/* ---------------------------------------------------------------- history */
+
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.historyHead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+}
+
+.historyToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 4px 0 0;
+  border-radius: var(--r-xs);
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-medium);
+}
+
+.historyToggle:hover {
+  color: var(--text);
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  max-height: 78px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.historyRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 26px;
+  padding: 0 6px;
+  border-radius: var(--r-sm);
+  text-align: left;
+}
+
+.historyRow:hover {
+  background: var(--bg-hover);
+}
+
+.historyTime {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-2xs);
+}
+
+.historyPreview {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.composerRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.composerEditor {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Hidden when the detail pane is narrow. */
+@container (max-width: 600px) {
+  .wideOnly {
+    display: none;
+  }
+}
+
+@container (max-width: 480px) {
+  .toggleLabel {
+    display: none;
+  }
+}

@@ -1,0 +1,56 @@
+.group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-weight: var(--fw-medium);
+  font-feature-settings: normal;
+  line-height: 1;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.md {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  font-size: var(--fs-2xs);
+  border-radius: var(--r-xs);
+}
+
+.sm {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  font-size: calc(10px * var(--ui-scale));
+  border-radius: 3px;
+}
+
+.default {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.subtle {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-subtle);
+  min-width: 0;
+  padding: 0 1px;
+}
+
+.inverse {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-on-accent);
+}

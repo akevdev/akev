@@ -1,0 +1,148 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--bg-subtle);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5) 0;
+}
+
+.cardTitles {
+  flex: 1;
+  min-width: 0;
+}
+
+.cardTitle {
+  color: var(--text);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+}
+
+.cardDescription {
+  margin-top: var(--sp-1);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  flex-shrink: 0;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-1) var(--sp-5) var(--sp-1);
+}
+
+.row {
+  display: grid;
+  /* The label keeps a readable width even beside a long value (paths wrap instead). */
+  grid-template-columns: minmax(min(14rem, 45%), 1fr) auto;
+  column-gap: var(--sp-6);
+  row-gap: var(--sp-2);
+  align-items: center;
+  padding: var(--sp-4) 0;
+  min-width: 0;
+  scroll-margin-top: var(--sp-6);
+  border-radius: var(--r-sm);
+}
+
+.row + .row {
+  border-top: 1px solid var(--border);
+}
+
+.row[data-flash] {
+  animation: akev-setting-flash 1.6s var(--ease);
+}
+
+@keyframes akev-setting-flash {
+  0%,
+  35% {
+    box-shadow: 0 0 0 6px var(--accent-soft);
+    background: var(--accent-soft);
+  }
+  100% {
+    box-shadow: 0 0 0 6px transparent;
+    background: transparent;
+  }
+}
+
+.stacked {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.title {
+  color: var(--text);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+}
+
+.description {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.stacked .control {
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.message {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+.message svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.warning {
+  color: var(--warning);
+}
+
+.extra {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2-5);
+  min-width: 0;
+}

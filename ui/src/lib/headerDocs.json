@@ -1,0 +1,938 @@
+{
+ "accept": {
+  "name": "Accept",
+  "side": "req",
+  "category": "negotiation",
+  "summary": "Media types the client is willing to receive, in order of preference (q-values).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept"
+ },
+ "accept-ch": {
+  "name": "Accept-CH",
+  "side": "res",
+  "category": "client-hints",
+  "summary": "Lists the Client Hints the server wants the browser to send on subsequent requests.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept-CH"
+ },
+ "accept-charset": {
+  "name": "Accept-Charset",
+  "side": "req",
+  "category": "negotiation",
+  "summary": "Character encodings the client understands. Deprecated: browsers no longer send it.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept-Charset"
+ },
+ "accept-encoding": {
+  "name": "Accept-Encoding",
+  "side": "req",
+  "category": "negotiation",
+  "summary": "Content codings (gzip, br, zstd, deflate) the client can decode.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept-Encoding"
+ },
+ "accept-language": {
+  "name": "Accept-Language",
+  "side": "req",
+  "category": "negotiation",
+  "summary": "Natural languages the client prefers, e.g. en-US,en;q=0.9.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept-Language"
+ },
+ "accept-patch": {
+  "name": "Accept-Patch",
+  "side": "res",
+  "category": "negotiation",
+  "summary": "Media types the server accepts in a PATCH request body.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept-Patch"
+ },
+ "accept-post": {
+  "name": "Accept-Post",
+  "side": "res",
+  "category": "negotiation",
+  "summary": "Media types the server accepts in a POST request body.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept-Post"
+ },
+ "accept-ranges": {
+  "name": "Accept-Ranges",
+  "side": "res",
+  "category": "range",
+  "summary": "Whether the server supports range requests and in which unit (usually bytes).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept-Ranges"
+ },
+ "access-control-allow-credentials": {
+  "name": "Access-Control-Allow-Credentials",
+  "side": "res",
+  "category": "cors",
+  "summary": "Allows the response to be exposed to frontend JS when the request carried credentials.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Credentials"
+ },
+ "access-control-allow-headers": {
+  "name": "Access-Control-Allow-Headers",
+  "side": "res",
+  "category": "cors",
+  "summary": "Request headers allowed in the actual cross-origin request (preflight response).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Headers"
+ },
+ "access-control-allow-methods": {
+  "name": "Access-Control-Allow-Methods",
+  "side": "res",
+  "category": "cors",
+  "summary": "HTTP methods allowed for the actual cross-origin request (preflight response).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Methods"
+ },
+ "access-control-allow-origin": {
+  "name": "Access-Control-Allow-Origin",
+  "side": "res",
+  "category": "cors",
+  "summary": "Which origin may read this response cross-origin: one origin, * or null.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Origin"
+ },
+ "access-control-expose-headers": {
+  "name": "Access-Control-Expose-Headers",
+  "side": "res",
+  "category": "cors",
+  "summary": "Response headers that frontend JS is allowed to read on a cross-origin response.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Expose-Headers"
+ },
+ "access-control-max-age": {
+  "name": "Access-Control-Max-Age",
+  "side": "res",
+  "category": "cors",
+  "summary": "How long (seconds) a preflight result may be cached by the browser.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Max-Age"
+ },
+ "access-control-request-headers": {
+  "name": "Access-Control-Request-Headers",
+  "side": "req",
+  "category": "cors",
+  "summary": "Sent in a preflight: the headers the actual request will use.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Request-Headers"
+ },
+ "access-control-request-method": {
+  "name": "Access-Control-Request-Method",
+  "side": "req",
+  "category": "cors",
+  "summary": "Sent in a preflight: the method the actual request will use.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Request-Method"
+ },
+ "age": {
+  "name": "Age",
+  "side": "res",
+  "category": "caching",
+  "summary": "Seconds the response has been sitting in a proxy or CDN cache.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Age"
+ },
+ "allow": {
+  "name": "Allow",
+  "side": "res",
+  "category": "general",
+  "summary": "Methods supported by the target resource (required on 405 responses).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Allow"
+ },
+ "alt-svc": {
+  "name": "Alt-Svc",
+  "side": "res",
+  "category": "connection",
+  "summary": "Advertises alternative services for this origin, e.g. HTTP/3 on another port (h3=\":443\").",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Alt-Svc"
+ },
+ "alt-used": {
+  "name": "Alt-Used",
+  "side": "req",
+  "category": "connection",
+  "summary": "The alternative service the client is currently using.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Alt-Used"
+ },
+ "authorization": {
+  "name": "Authorization",
+  "side": "req",
+  "category": "auth",
+  "summary": "Credentials for the server: Basic, Bearer token, Digest, AWS signatures, etc.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Authorization"
+ },
+ "cache-control": {
+  "name": "Cache-Control",
+  "side": "both",
+  "category": "caching",
+  "summary": "Caching directives for browsers and shared caches: max-age, no-store, private, immutable…",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control"
+ },
+ "clear-site-data": {
+  "name": "Clear-Site-Data",
+  "side": "res",
+  "category": "security",
+  "summary": "Asks the browser to clear cookies, storage and/or cache for this origin.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Clear-Site-Data"
+ },
+ "connection": {
+  "name": "Connection",
+  "side": "both",
+  "category": "connection",
+  "summary": "Hop-by-hop connection options (keep-alive, close, upgrade). Forbidden in HTTP/2.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Connection"
+ },
+ "content-disposition": {
+  "name": "Content-Disposition",
+  "side": "res",
+  "category": "content",
+  "summary": "Whether the body is shown inline or downloaded as an attachment, with a filename.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Disposition"
+ },
+ "content-dpr": {
+  "name": "Content-DPR",
+  "side": "res",
+  "category": "client-hints",
+  "summary": "Device pixel ratio of the served image (legacy Client Hints).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-DPR"
+ },
+ "content-encoding": {
+  "name": "Content-Encoding",
+  "side": "both",
+  "category": "content",
+  "summary": "Codings applied to the body (gzip, br, zstd). The client must decode in reverse order.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Encoding"
+ },
+ "content-language": {
+  "name": "Content-Language",
+  "side": "res",
+  "category": "content",
+  "summary": "Natural language(s) of the intended audience of the body.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Language"
+ },
+ "content-length": {
+  "name": "Content-Length",
+  "side": "both",
+  "category": "content",
+  "summary": "Size of the body in bytes, after content coding.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Length"
+ },
+ "content-location": {
+  "name": "Content-Location",
+  "side": "res",
+  "category": "content",
+  "summary": "An alternate URL for the returned content.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Location"
+ },
+ "content-range": {
+  "name": "Content-Range",
+  "side": "res",
+  "category": "range",
+  "summary": "Where a partial body belongs in the full representation, e.g. bytes 0-1023/4096.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Range"
+ },
+ "content-security-policy": {
+  "name": "Content-Security-Policy",
+  "side": "res",
+  "category": "security",
+  "summary": "Restricts which scripts, styles, frames and connections the page may load or make.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy"
+ },
+ "content-security-policy-report-only": {
+  "name": "Content-Security-Policy-Report-Only",
+  "side": "res",
+  "category": "security",
+  "summary": "Like CSP, but only reports violations without enforcing them.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy-Report-Only"
+ },
+ "content-type": {
+  "name": "Content-Type",
+  "side": "both",
+  "category": "content",
+  "summary": "Media type of the body, e.g. application/json; charset=utf-8.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Type"
+ },
+ "cookie": {
+  "name": "Cookie",
+  "side": "req",
+  "category": "cookies",
+  "summary": "Cookies previously set by the server (via Set-Cookie) sent back with the request.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cookie"
+ },
+ "critical-ch": {
+  "name": "Critical-CH",
+  "side": "res",
+  "category": "client-hints",
+  "summary": "Client Hints that are critical: the browser retries the request if they were missing.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Critical-CH"
+ },
+ "cross-origin-embedder-policy": {
+  "name": "Cross-Origin-Embedder-Policy",
+  "side": "res",
+  "category": "security",
+  "summary": "Requires cross-origin resources to opt in (CORP/CORS) before the document may embed them.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Embedder-Policy"
+ },
+ "cross-origin-opener-policy": {
+  "name": "Cross-Origin-Opener-Policy",
+  "side": "res",
+  "category": "security",
+  "summary": "Isolates the browsing context group from cross-origin popups/openers.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Opener-Policy"
+ },
+ "cross-origin-resource-policy": {
+  "name": "Cross-Origin-Resource-Policy",
+  "side": "res",
+  "category": "security",
+  "summary": "Limits which origins may load this resource (same-site, same-origin, cross-origin).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Resource-Policy"
+ },
+ "date": {
+  "name": "Date",
+  "side": "both",
+  "category": "general",
+  "summary": "When the message was generated (HTTP-date).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Date"
+ },
+ "device-memory": {
+  "name": "Device-Memory",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Approximate device RAM in GiB (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Device-Memory"
+ },
+ "downlink": {
+  "name": "Downlink",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Approximate effective bandwidth in Mbps (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Downlink"
+ },
+ "dnt": {
+  "name": "DNT",
+  "side": "req",
+  "category": "privacy",
+  "summary": "Do Not Track preference (deprecated, ignored by most sites).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/DNT"
+ },
+ "early-data": {
+  "name": "Early-Data",
+  "side": "req",
+  "category": "connection",
+  "summary": "Set by an intermediary when the request was sent in TLS 1.3 early data (0-RTT).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Early-Data"
+ },
+ "ect": {
+  "name": "ECT",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Effective connection type: slow-2g, 2g, 3g or 4g (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ECT"
+ },
+ "etag": {
+  "name": "ETag",
+  "side": "res",
+  "category": "caching",
+  "summary": "Opaque version identifier of the resource, used for conditional requests.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag"
+ },
+ "expect": {
+  "name": "Expect",
+  "side": "req",
+  "category": "general",
+  "summary": "Expectations the server must meet, typically 100-continue before sending a large body.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Expect"
+ },
+ "expect-ct": {
+  "name": "Expect-CT",
+  "side": "res",
+  "category": "security",
+  "summary": "Certificate Transparency enforcement (obsolete).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Expect-CT"
+ },
+ "expires": {
+  "name": "Expires",
+  "side": "res",
+  "category": "caching",
+  "summary": "Date after which the response is considered stale. Ignored when Cache-Control max-age is set.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Expires"
+ },
+ "forwarded": {
+  "name": "Forwarded",
+  "side": "req",
+  "category": "proxies",
+  "summary": "Standard form of X-Forwarded-*: original client IP, host and protocol seen by proxies.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Forwarded"
+ },
+ "from": {
+  "name": "From",
+  "side": "req",
+  "category": "general",
+  "summary": "Email address of the human controlling the user agent (used by crawlers).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/From"
+ },
+ "host": {
+  "name": "Host",
+  "side": "req",
+  "category": "general",
+  "summary": "Host and port of the target server. Required in HTTP/1.1 (:authority in HTTP/2).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Host"
+ },
+ "if-match": {
+  "name": "If-Match",
+  "side": "req",
+  "category": "conditional",
+  "summary": "Only perform the request if the resource's ETag matches (optimistic locking).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-Match"
+ },
+ "if-modified-since": {
+  "name": "If-Modified-Since",
+  "side": "req",
+  "category": "conditional",
+  "summary": "Only return the body if the resource changed after this date; otherwise 304.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-Modified-Since"
+ },
+ "if-none-match": {
+  "name": "If-None-Match",
+  "side": "req",
+  "category": "conditional",
+  "summary": "Only return the body if the ETag differs; otherwise 304 Not Modified.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-None-Match"
+ },
+ "if-range": {
+  "name": "If-Range",
+  "side": "req",
+  "category": "range",
+  "summary": "Make a range request conditional: send the range only if the resource is unchanged.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-Range"
+ },
+ "if-unmodified-since": {
+  "name": "If-Unmodified-Since",
+  "side": "req",
+  "category": "conditional",
+  "summary": "Only perform the request if the resource has not changed since this date.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-Unmodified-Since"
+ },
+ "keep-alive": {
+  "name": "Keep-Alive",
+  "side": "both",
+  "category": "connection",
+  "summary": "Parameters (timeout, max) for a persistent HTTP/1.1 connection.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Keep-Alive"
+ },
+ "last-modified": {
+  "name": "Last-Modified",
+  "side": "res",
+  "category": "caching",
+  "summary": "When the origin believes the resource last changed; used with If-Modified-Since.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Last-Modified"
+ },
+ "link": {
+  "name": "Link",
+  "side": "res",
+  "category": "general",
+  "summary": "Typed links to related resources: preload, preconnect, pagination (rel=next)…",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Link"
+ },
+ "location": {
+  "name": "Location",
+  "side": "res",
+  "category": "redirects",
+  "summary": "Target URL of a redirect (3xx) or of a newly created resource (201).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Location"
+ },
+ "max-forwards": {
+  "name": "Max-Forwards",
+  "side": "req",
+  "category": "proxies",
+  "summary": "Limits the number of proxies a TRACE/OPTIONS request may traverse.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Max-Forwards"
+ },
+ "nel": {
+  "name": "NEL",
+  "side": "res",
+  "category": "reporting",
+  "summary": "Network Error Logging policy: report failed fetches to a reporting endpoint.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/NEL"
+ },
+ "no-vary-search": {
+  "name": "No-Vary-Search",
+  "side": "res",
+  "category": "caching",
+  "summary": "Query parameters that don't affect the response, for cache key matching."
+ },
+ "origin": {
+  "name": "Origin",
+  "side": "req",
+  "category": "cors",
+  "summary": "Origin (scheme, host, port) that initiated a CORS or POST request.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Origin"
+ },
+ "origin-agent-cluster": {
+  "name": "Origin-Agent-Cluster",
+  "side": "res",
+  "category": "security",
+  "summary": "Requests that the document be placed in an origin-keyed agent cluster."
+ },
+ "permissions-policy": {
+  "name": "Permissions-Policy",
+  "side": "res",
+  "category": "security",
+  "summary": "Enables or disables browser features (camera, geolocation…) for the page and its frames.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy"
+ },
+ "pragma": {
+  "name": "Pragma",
+  "side": "both",
+  "category": "caching",
+  "summary": "Legacy HTTP/1.0 caching directive (no-cache). Superseded by Cache-Control.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Pragma"
+ },
+ "priority": {
+  "name": "Priority",
+  "side": "req",
+  "category": "connection",
+  "summary": "Requested response priority (urgency u=0..7, incremental i) for HTTP/2 and HTTP/3."
+ },
+ "proxy-authenticate": {
+  "name": "Proxy-Authenticate",
+  "side": "res",
+  "category": "auth",
+  "summary": "Authentication scheme a proxy requires (sent with 407).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Proxy-Authenticate"
+ },
+ "proxy-authorization": {
+  "name": "Proxy-Authorization",
+  "side": "req",
+  "category": "auth",
+  "summary": "Credentials for authenticating with a proxy server.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Proxy-Authorization"
+ },
+ "range": {
+  "name": "Range",
+  "side": "req",
+  "category": "range",
+  "summary": "Requests only part of the resource, e.g. bytes=0-1023.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Range"
+ },
+ "referer": {
+  "name": "Referer",
+  "side": "req",
+  "category": "privacy",
+  "summary": "Address of the page that linked to or requested this resource.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referer"
+ },
+ "referrer-policy": {
+  "name": "Referrer-Policy",
+  "side": "res",
+  "category": "privacy",
+  "summary": "Controls how much referrer information is sent with requests from this page.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy"
+ },
+ "refresh": {
+  "name": "Refresh",
+  "side": "res",
+  "category": "redirects",
+  "summary": "Non-standard: reload or redirect after a number of seconds.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Refresh"
+ },
+ "report-to": {
+  "name": "Report-To",
+  "side": "res",
+  "category": "reporting",
+  "summary": "Defines reporting endpoints (legacy; replaced by Reporting-Endpoints)."
+ },
+ "reporting-endpoints": {
+  "name": "Reporting-Endpoints",
+  "side": "res",
+  "category": "reporting",
+  "summary": "Named endpoints that receive CSP, NEL and other browser reports."
+ },
+ "retry-after": {
+  "name": "Retry-After",
+  "side": "res",
+  "category": "general",
+  "summary": "How long to wait before retrying (with 429, 503 or a redirect).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Retry-After"
+ },
+ "rtt": {
+  "name": "RTT",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Approximate round-trip time in ms (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/RTT"
+ },
+ "save-data": {
+  "name": "Save-Data",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "The user opted into reduced data usage.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Save-Data"
+ },
+ "sec-ch-prefers-color-scheme": {
+  "name": "Sec-CH-Prefers-Color-Scheme",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "User's preferred colour scheme: light or dark (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-CH-Prefers-Color-Scheme"
+ },
+ "sec-ch-prefers-reduced-motion": {
+  "name": "Sec-CH-Prefers-Reduced-Motion",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "User prefers reduced motion (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-CH-Prefers-Reduced-Motion"
+ },
+ "sec-ch-ua": {
+  "name": "Sec-CH-UA",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Browser brands and significant versions (User-Agent Client Hints).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-CH-UA"
+ },
+ "sec-ch-ua-arch": {
+  "name": "Sec-CH-UA-Arch",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "CPU architecture of the device, e.g. x86 or arm (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-CH-UA-Arch"
+ },
+ "sec-ch-ua-full-version-list": {
+  "name": "Sec-CH-UA-Full-Version-List",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Full version for each browser brand (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-CH-UA-Full-Version-List"
+ },
+ "sec-ch-ua-mobile": {
+  "name": "Sec-CH-UA-Mobile",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "?1 if the browser is on a mobile device (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-CH-UA-Mobile"
+ },
+ "sec-ch-ua-model": {
+  "name": "Sec-CH-UA-Model",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Device model name (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-CH-UA-Model"
+ },
+ "sec-ch-ua-platform": {
+  "name": "Sec-CH-UA-Platform",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Operating system name, e.g. \"Windows\" or \"macOS\" (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-CH-UA-Platform"
+ },
+ "sec-ch-ua-platform-version": {
+  "name": "Sec-CH-UA-Platform-Version",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Operating system version (Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-CH-UA-Platform-Version"
+ },
+ "sec-fetch-dest": {
+  "name": "Sec-Fetch-Dest",
+  "side": "req",
+  "category": "fetch-metadata",
+  "summary": "What the response will be used for: document, script, image, empty (fetch/XHR)…",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-Fetch-Dest"
+ },
+ "sec-fetch-mode": {
+  "name": "Sec-Fetch-Mode",
+  "side": "req",
+  "category": "fetch-metadata",
+  "summary": "Request mode: navigate, cors, no-cors, same-origin or websocket.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-Fetch-Mode"
+ },
+ "sec-fetch-site": {
+  "name": "Sec-Fetch-Site",
+  "side": "req",
+  "category": "fetch-metadata",
+  "summary": "Relationship between initiator and target: same-origin, same-site, cross-site or none.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-Fetch-Site"
+ },
+ "sec-fetch-user": {
+  "name": "Sec-Fetch-User",
+  "side": "req",
+  "category": "fetch-metadata",
+  "summary": "?1 when the navigation was triggered by a user activation.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-Fetch-User"
+ },
+ "sec-gpc": {
+  "name": "Sec-GPC",
+  "side": "req",
+  "category": "privacy",
+  "summary": "Global Privacy Control: the user does not consent to their data being sold or shared.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-GPC"
+ },
+ "sec-purpose": {
+  "name": "Sec-Purpose",
+  "side": "req",
+  "category": "fetch-metadata",
+  "summary": "Why the request was made, e.g. prefetch or prerender."
+ },
+ "sec-websocket-accept": {
+  "name": "Sec-WebSocket-Accept",
+  "side": "res",
+  "category": "websocket",
+  "summary": "Server's proof that it accepted the WebSocket handshake (hash of the client key).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-WebSocket-Accept"
+ },
+ "sec-websocket-extensions": {
+  "name": "Sec-WebSocket-Extensions",
+  "side": "both",
+  "category": "websocket",
+  "summary": "Negotiated WebSocket extensions, e.g. permessage-deflate.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-WebSocket-Extensions"
+ },
+ "sec-websocket-key": {
+  "name": "Sec-WebSocket-Key",
+  "side": "req",
+  "category": "websocket",
+  "summary": "Random nonce the client sends to open a WebSocket handshake.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-WebSocket-Key"
+ },
+ "sec-websocket-protocol": {
+  "name": "Sec-WebSocket-Protocol",
+  "side": "both",
+  "category": "websocket",
+  "summary": "Requested / selected WebSocket subprotocol(s).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-WebSocket-Protocol"
+ },
+ "sec-websocket-version": {
+  "name": "Sec-WebSocket-Version",
+  "side": "both",
+  "category": "websocket",
+  "summary": "WebSocket protocol version (13).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-WebSocket-Version"
+ },
+ "server": {
+  "name": "Server",
+  "side": "res",
+  "category": "general",
+  "summary": "Software used by the origin server, e.g. nginx or cloudflare.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Server"
+ },
+ "server-timing": {
+  "name": "Server-Timing",
+  "side": "res",
+  "category": "performance",
+  "summary": "Server-side performance metrics shown in browser devtools (db;dur=53).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Server-Timing"
+ },
+ "service-worker-allowed": {
+  "name": "Service-Worker-Allowed",
+  "side": "res",
+  "category": "general",
+  "summary": "Broadens the scope a service worker script may control.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Service-Worker-Allowed"
+ },
+ "set-cookie": {
+  "name": "Set-Cookie",
+  "side": "res",
+  "category": "cookies",
+  "summary": "Stores a cookie in the client, with attributes like Expires, Path, Secure, HttpOnly, SameSite.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie"
+ },
+ "sourcemap": {
+  "name": "SourceMap",
+  "side": "res",
+  "category": "general",
+  "summary": "Link to a source map for the served JavaScript or CSS.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/SourceMap"
+ },
+ "strict-transport-security": {
+  "name": "Strict-Transport-Security",
+  "side": "res",
+  "category": "security",
+  "summary": "HSTS: forces HTTPS for this host (and optionally subdomains) for max-age seconds.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security"
+ },
+ "te": {
+  "name": "TE",
+  "side": "req",
+  "category": "connection",
+  "summary": "Transfer codings the client accepts; in HTTP/2 only 'trailers' is allowed.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/TE"
+ },
+ "timing-allow-origin": {
+  "name": "Timing-Allow-Origin",
+  "side": "res",
+  "category": "performance",
+  "summary": "Origins allowed to see detailed Resource Timing values for this response.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Timing-Allow-Origin"
+ },
+ "trailer": {
+  "name": "Trailer",
+  "side": "both",
+  "category": "general",
+  "summary": "Names of header fields that will be sent as trailers after the body.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Trailer"
+ },
+ "transfer-encoding": {
+  "name": "Transfer-Encoding",
+  "side": "both",
+  "category": "connection",
+  "summary": "Hop-by-hop body framing, usually chunked. Not used in HTTP/2.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Transfer-Encoding"
+ },
+ "upgrade": {
+  "name": "Upgrade",
+  "side": "both",
+  "category": "connection",
+  "summary": "Asks to switch protocols on this connection, e.g. to websocket.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Upgrade"
+ },
+ "upgrade-insecure-requests": {
+  "name": "Upgrade-Insecure-Requests",
+  "side": "req",
+  "category": "security",
+  "summary": "The client prefers an encrypted, authenticated response (HTTPS upgrade).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Upgrade-Insecure-Requests"
+ },
+ "user-agent": {
+  "name": "User-Agent",
+  "side": "req",
+  "category": "general",
+  "summary": "Identifies the client application, OS and version.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent"
+ },
+ "vary": {
+  "name": "Vary",
+  "side": "res",
+  "category": "caching",
+  "summary": "Request headers that affect the response; caches must key on them (e.g. Accept-Encoding).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Vary"
+ },
+ "via": {
+  "name": "Via",
+  "side": "both",
+  "category": "proxies",
+  "summary": "Proxies the message passed through, added by each intermediary.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Via"
+ },
+ "viewport-width": {
+  "name": "Viewport-Width",
+  "side": "req",
+  "category": "client-hints",
+  "summary": "Layout viewport width in CSS pixels (legacy Client Hint).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Viewport-Width"
+ },
+ "want-content-digest": {
+  "name": "Want-Content-Digest",
+  "side": "req",
+  "category": "integrity",
+  "summary": "Asks the server to include a Content-Digest of the body."
+ },
+ "content-digest": {
+  "name": "Content-Digest",
+  "side": "both",
+  "category": "integrity",
+  "summary": "Digest (e.g. sha-256) of the message content, for integrity checks."
+ },
+ "warning": {
+  "name": "Warning",
+  "side": "both",
+  "category": "general",
+  "summary": "Deprecated: extra information about possible problems with the message.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Warning"
+ },
+ "www-authenticate": {
+  "name": "WWW-Authenticate",
+  "side": "res",
+  "category": "auth",
+  "summary": "Authentication method(s) the server requires to access the resource (sent with 401).",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/WWW-Authenticate"
+ },
+ "x-content-type-options": {
+  "name": "X-Content-Type-Options",
+  "side": "res",
+  "category": "security",
+  "summary": "nosniff: forbid the browser from MIME-sniffing away from the declared Content-Type.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options"
+ },
+ "x-dns-prefetch-control": {
+  "name": "X-DNS-Prefetch-Control",
+  "side": "res",
+  "category": "performance",
+  "summary": "Enables or disables DNS prefetching for links on the page.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-DNS-Prefetch-Control"
+ },
+ "x-forwarded-for": {
+  "name": "X-Forwarded-For",
+  "side": "req",
+  "category": "proxies",
+  "summary": "De-facto standard: originating client IP and the chain of proxies.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Forwarded-For"
+ },
+ "x-forwarded-host": {
+  "name": "X-Forwarded-Host",
+  "side": "req",
+  "category": "proxies",
+  "summary": "De-facto standard: the original Host requested by the client.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Forwarded-Host"
+ },
+ "x-forwarded-proto": {
+  "name": "X-Forwarded-Proto",
+  "side": "req",
+  "category": "proxies",
+  "summary": "De-facto standard: the protocol (http/https) the client used to connect.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Forwarded-Proto"
+ },
+ "x-frame-options": {
+  "name": "X-Frame-Options",
+  "side": "res",
+  "category": "security",
+  "summary": "Whether the page may be framed (DENY / SAMEORIGIN). Superseded by CSP frame-ancestors.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options"
+ },
+ "x-powered-by": {
+  "name": "X-Powered-By",
+  "side": "res",
+  "category": "general",
+  "summary": "Non-standard: the framework or runtime behind the server (often removed for security)."
+ },
+ "x-request-id": {
+  "name": "X-Request-ID",
+  "side": "both",
+  "category": "general",
+  "summary": "Non-standard: unique id used to correlate a request across services and logs."
+ },
+ "x-requested-with": {
+  "name": "X-Requested-With",
+  "side": "req",
+  "category": "general",
+  "summary": "Non-standard: XMLHttpRequest when sent by many JS libraries.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Requested-With"
+ },
+ "x-xss-protection": {
+  "name": "X-XSS-Protection",
+  "side": "res",
+  "category": "security",
+  "summary": "Legacy XSS filter control. Deprecated; modern browsers ignore it — use CSP instead.",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-XSS-Protection"
+ },
+ ":authority": {
+  "name": ":authority",
+  "side": "req",
+  "category": "http2",
+  "summary": "HTTP/2 pseudo-header: the target host and port (replaces Host)."
+ },
+ ":method": {
+  "name": ":method",
+  "side": "req",
+  "category": "http2",
+  "summary": "HTTP/2 pseudo-header: the request method."
+ },
+ ":path": {
+  "name": ":path",
+  "side": "req",
+  "category": "http2",
+  "summary": "HTTP/2 pseudo-header: path and query of the target URL."
+ },
+ ":scheme": {
+  "name": ":scheme",
+  "side": "req",
+  "category": "http2",
+  "summary": "HTTP/2 pseudo-header: the URL scheme (http or https)."
+ },
+ ":status": {
+  "name": ":status",
+  "side": "res",
+  "category": "http2",
+  "summary": "HTTP/2 pseudo-header: the response status code."
+ },
+ ":protocol": {
+  "name": ":protocol",
+  "side": "req",
+  "category": "http2",
+  "summary": "Extended CONNECT pseudo-header (RFC 8441), e.g. websocket over HTTP/2."
+ }
+}

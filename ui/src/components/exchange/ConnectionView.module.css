@@ -1,0 +1,407 @@
+.root {
+  padding: var(--sp-4);
+  min-width: 0;
+  background: var(--bg-panel);
+  overflow: auto;
+  container-type: inline-size;
+  container-name: connection;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'client' 'ctls' 'upstream' 'cert';
+  gap: var(--sp-3);
+  align-items: start;
+}
+
+.aClient {
+  grid-area: client;
+}
+.aTls {
+  grid-area: ctls;
+}
+.aUpstream {
+  grid-area: upstream;
+}
+.aCert {
+  grid-area: cert;
+}
+
+/* Wide: client side on the left, server side on the right. */
+@container connection (min-width: 780px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: 'client upstream' 'ctls cert';
+  }
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-panel);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 36px;
+  padding: 0 var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.cardHead > svg {
+  color: var(--text-subtle);
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.cardBody {
+  padding: 2px var(--sp-3);
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.note > svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: var(--text-subtle);
+}
+
+.app {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: var(--fw-medium);
+  color: var(--text);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.alpnOn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ------------------------------------------------------------------ certificate */
+.certHero {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+}
+
+.certIcon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  flex-shrink: 0;
+}
+
+.certIcon.valid {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.certIcon.expiring,
+.certIcon.not-yet-valid,
+.certIcon.unknown {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.certIcon.expired {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.certTitle {
+  min-width: 0;
+  flex: 1;
+}
+
+.certName {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+.certIssuer {
+  margin-top: 2px;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.validity {
+  padding: var(--sp-1) var(--sp-3) var(--sp-3);
+}
+
+.validityTrack {
+  position: relative;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--bg-active);
+  overflow: hidden;
+}
+
+.validityFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--r-full);
+}
+
+.validityFill.valid {
+  background: var(--success);
+}
+
+.validityFill.expiring,
+.validityFill.not-yet-valid,
+.validityFill.unknown {
+  background: var(--warning);
+}
+
+.validityFill.expired {
+  background: var(--danger);
+}
+
+.validityLabels {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-top: 6px;
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+}
+
+.validityLabels strong {
+  font-weight: var(--fw-semibold);
+}
+
+.validityLabels .valid {
+  color: var(--success);
+}
+.validityLabels .expiring,
+.validityLabels .not-yet-valid,
+.validityLabels .unknown {
+  color: var(--warning);
+}
+.validityLabels .expired {
+  color: var(--danger);
+}
+
+.certBody {
+  padding: 0 var(--sp-3) 2px;
+  border-top: 1px solid var(--border);
+}
+
+.fingerprint {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.02em;
+  word-break: break-all;
+}
+
+.moreButton {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+
+.moreButton:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ certificate chain */
+.trustNote {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: var(--sp-3) var(--sp-3) var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+  color: var(--text);
+}
+
+.trustNote > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.trust-success {
+  background: var(--success-soft);
+}
+.trust-success > svg {
+  color: var(--success);
+}
+.trust-warning {
+  background: var(--warning-soft);
+}
+.trust-warning > svg {
+  color: var(--warning);
+}
+.trust-neutral {
+  background: var(--bg-subtle);
+}
+.trust-neutral > svg {
+  color: var(--text-subtle);
+}
+
+.chain {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--sp-3) var(--sp-2);
+}
+
+.chainNode {
+  position: relative;
+}
+
+/* The line linking each certificate to the next one. */
+.chainNode:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 30px;
+  bottom: -6px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--border-strong);
+}
+
+.chainHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--sp-1) 0;
+  text-align: start;
+  border-radius: var(--r-sm);
+}
+
+button.chainHead {
+  cursor: pointer;
+}
+
+button.chainHead:hover .chainName {
+  color: var(--accent-text);
+}
+
+.chainDot {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-full);
+  background: var(--bg-active);
+  color: var(--text-muted);
+}
+
+.role-leaf {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.role-root {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.chainText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.chainName {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  overflow-wrap: anywhere;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.chainMeta {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.chainBadges {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-shrink: 0;
+}
+
+.chainChevron {
+  color: var(--text-subtle);
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.chainChevronOpen {
+  transform: rotate(90deg);
+}
+
+.chainDetails {
+  margin: 0 0 var(--sp-2) calc(24px + var(--sp-2));
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.chainDetails .validity {
+  padding-top: var(--sp-3);
+}
+
+.chainUnused .chainName,
+.chainUnused .chainDot {
+  opacity: 0.6;
+}
+
+.chainAnchor .chainName {
+  color: var(--success);
+}

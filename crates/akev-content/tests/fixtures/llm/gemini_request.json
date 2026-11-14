@@ -1,0 +1,33 @@
+{
+  "systemInstruction": {
+    "parts": [
+      {
+        "text": "You are a product analyst. Summarise customer reviews into themes with mention counts. Be factual and brief."
+      }
+    ]
+  },
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        {
+          "text": "Summarise these reviews of the Aurora X2 headphones:\n\n1. \"Battery lasts forever, but the app keeps disconnecting.\"\n2. \"Best noise cancelling I've owned. Ear cups get warm after an hour.\"\n3. \"App crashed twice during setup. Sound is great though.\"\n4. \"Comfortable, light, battery easily 30+ hours.\"\n5. \"ANC is superb on flights; the case feels cheap.\""
+        }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "temperature": 0.2,
+    "maxOutputTokens": 1024,
+    "thinkingConfig": {
+      "thinkingBudget": 512,
+      "includeThoughts": true
+    }
+  },
+  "safetySettings": [
+    {
+      "category": "HARM_CATEGORY_HARASSMENT",
+      "threshold": "BLOCK_ONLY_HIGH"
+    }
+  ]
+}

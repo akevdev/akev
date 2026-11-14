@@ -1,0 +1,155 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.bar {
+  --tab-h: 34px;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  height: var(--tab-h);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.sm {
+  --tab-h: 30px;
+}
+
+.scroller {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.scroller[data-fade-left] {
+  mask-image: linear-gradient(to right, transparent 0, black 24px);
+}
+
+.scroller[data-fade-right] {
+  mask-image: linear-gradient(to left, transparent 0, black 24px);
+}
+
+.scroller[data-fade-left][data-fade-right] {
+  mask-image: linear-gradient(to right, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+}
+
+.list {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.sm .trigger {
+  font-size: var(--fs-xs);
+  padding: 0 7px;
+}
+
+.trigger::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  opacity: 0;
+  transition:
+    transform var(--dur) var(--ease-out),
+    opacity var(--dur) var(--ease-out);
+}
+
+.trigger:hover:not([data-disabled]) {
+  color: var(--text);
+}
+
+.trigger[data-state='active'] {
+  color: var(--text);
+}
+
+.trigger[data-state='active']::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.trigger[data-disabled] {
+  color: var(--text-disabled);
+  cursor: default;
+}
+
+.trigger:focus-visible {
+  outline-offset: -4px;
+  border-radius: var(--r-sm);
+}
+
+.count {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 5px;
+  border-radius: var(--r-full);
+  background: var(--bg-active);
+  color: var(--text-muted);
+  font-size: var(--fs-2xs);
+  line-height: 16px;
+  text-align: center;
+}
+
+.trigger[data-state='active'] .count {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.zero {
+  opacity: 0.6;
+}
+
+.badge {
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-regular);
+}
+
+.trailing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.content:focus-visible {
+  outline: none;
+}

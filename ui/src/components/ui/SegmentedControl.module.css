@@ -1,0 +1,108 @@
+.root {
+  --seg-h: var(--control-h);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: var(--seg-h);
+  padding: 2px;
+  gap: 1px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  isolation: isolate;
+  /* Never stretch in column flex/grid containers (use the `block` prop to fill the width). */
+  width: fit-content;
+  max-width: 100%;
+}
+
+.sm {
+  --seg-h: var(--control-h-sm);
+  border-radius: 5px;
+}
+
+.block {
+  display: flex;
+  width: 100%;
+}
+
+.block .item {
+  flex: 1;
+}
+
+.thumb {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  z-index: -1;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    0 0 0 1px var(--border-strong);
+}
+
+.sm .thumb {
+  border-radius: 3px;
+}
+
+.animate {
+  transition:
+    transform var(--dur) var(--ease-out),
+    width var(--dur) var(--ease-out);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 100%;
+  padding: 0 10px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.sm .item {
+  padding: 0 8px;
+  font-size: var(--fs-xs);
+  border-radius: 3px;
+}
+
+.item:hover:not([data-disabled]) {
+  color: var(--text);
+}
+
+.item[data-state='on'],
+.item[aria-checked='true'] {
+  color: var(--text);
+}
+
+.item[data-disabled] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.item:focus-visible {
+  outline-offset: -1px;
+}
+
+.iconOnly {
+  padding: 0 7px;
+}
+
+.count {
+  font-size: var(--fs-2xs);
+  color: var(--text-subtle);
+  font-weight: var(--fw-medium);
+}
+
+.item[data-state='on'] .count,
+.item[aria-checked='true'] .count {
+  color: var(--text-muted);
+}

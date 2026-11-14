@@ -1,0 +1,72 @@
+{
+  "model": "gpt-5",
+  "instructions": "You are a helpful assistant. Use tools when needed.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "What's 2 + 2? Then tell me the weather in Paris."
+        },
+        {
+          "type": "input_image",
+          "image_url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAA8CAIAAAAWtijjAAAAk0lEQVR42u3XwQmAMBBFwVTiMWANtmkHNpFiPKUKEREbCDkJumTgVTCHv0ma5kWdEgJAgAABAgQIECA1gY7zUidAgAABAhQRaN1K3AAB+j+QAAECBMg76KPbBAiQDTLSgAABUvDfPCBAcYEECBAgQIAAAQIEqNld62gBGgZoz/mtAAECZINiAgkQIECAAAECBGjsHma2DI5aF0wsAAAAAElFTkSuQmCC"
+        }
+      ]
+    },
+    {
+      "type": "reasoning",
+      "id": "rs_68c1a",
+      "summary": [
+        {
+          "type": "summary_text",
+          "text": "Arithmetic is trivial; the weather needs the tool."
+        }
+      ],
+      "encrypted_content": "gAAAAABo..."
+    },
+    {
+      "type": "function_call",
+      "id": "fc_68c1b",
+      "call_id": "call_P4r1s",
+      "name": "get_weather",
+      "arguments": "{\"city\":\"Paris\"}",
+      "status": "completed"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_P4r1s",
+      "output": "{\"temp_c\":12,\"conditions\":\"cloudy\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "get_weather",
+      "description": "Current weather for a city.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "city"
+        ]
+      },
+      "strict": true
+    },
+    {
+      "type": "web_search_preview"
+    }
+  ],
+  "reasoning": {
+    "effort": "low",
+    "summary": "auto"
+  },
+  "max_output_tokens": 2000,
+  "store": true,
+  "stream": true
+}

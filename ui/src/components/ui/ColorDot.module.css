@@ -1,0 +1,12 @@
+.dot {
+  display: inline-block;
+  flex-shrink: 0;
+  border-radius: var(--r-full);
+  background: var(--dot-color);
+}
+
+.selected {
+  box-shadow:
+    0 0 0 2px var(--bg-elevated),
+    0 0 0 3.5px var(--dot-color);
+}

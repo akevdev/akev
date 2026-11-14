@@ -1,0 +1,5 @@
+.colorItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}

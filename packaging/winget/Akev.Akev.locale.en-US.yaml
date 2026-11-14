@@ -1,0 +1,23 @@
+PackageIdentifier: Akev.Akev
+PackageVersion: @VERSION@
+PackageLocale: en-US
+Publisher: Akev
+PublisherUrl: https://akev.dev
+PublisherSupportUrl: https://github.com/akevdev/akev/issues
+PrivacyUrl: https://akev.dev/privacy/
+PackageName: Akev
+PackageUrl: https://akev.dev
+License: AGPL-3.0-or-later
+LicenseUrl: https://github.com/akevdev/akev/blob/main/LICENSE
+ShortDescription: Fast HTTP(S) debugging proxy to intercept, inspect, mock and replay traffic.
+Description: Akev intercepts HTTP, HTTPS, HTTP/2, HTTP/3, WebSocket and gRPC traffic from browsers, apps, terminals, Android devices and containers, and lets you inspect, breakpoint, mock, rewrite and replay it.
+Tags:
+  - http
+  - https
+  - proxy
+  - debugging
+  - mitm
+  - developer-tools
+ReleaseNotesUrl: https://github.com/akevdev/akev/releases/tag/v@VERSION@
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0

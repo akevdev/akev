@@ -1,0 +1,134 @@
+.editor {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border-input);
+  border-radius: var(--r-md);
+  background: var(--bg-input);
+  overflow: hidden;
+}
+
+.disabled {
+  opacity: 0.6;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  max-height: 232px;
+  margin: 0;
+  padding: var(--sp-1) 0;
+  overflow-y: auto;
+  list-style: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 30px;
+  padding: 0 var(--sp-1) 0 var(--sp-3);
+  outline-offset: -2px;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.row:hover,
+.row:focus-visible {
+  background: var(--bg-hover);
+}
+
+.editingRow {
+  flex-wrap: wrap;
+  padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-2);
+  background: var(--bg-hover);
+}
+
+.editInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowError {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-basis: 100%;
+  padding: 0 var(--sp-1);
+  color: var(--danger);
+  font-size: var(--fs-xs);
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-sm);
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.row:hover .rowActions,
+.row:focus-visible .rowActions,
+.row:focus-within .rowActions {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .rowActions {
+    opacity: 1;
+  }
+}
+
+.empty {
+  padding: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+}
+
+.addRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  padding: var(--sp-1-5);
+  background: var(--bg-subtle);
+}
+
+.addInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  padding: 0 var(--sp-2) var(--sp-2);
+  background: var(--bg-subtle);
+  color: var(--danger);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+.error svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}

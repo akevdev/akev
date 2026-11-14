@@ -1,0 +1,5 @@
+[test]
+# A DOM (happy-dom) for the component tests (`*.test.tsx`, see `src/test/render.tsx`). It
+# registers browser globals for every test file; the pure-logic tests don't depend on their
+# absence. Playwright end-to-end tests live in `e2e/` as `*.e2e.ts`, which `bun test` ignores.
+preload = ["./src/test/dom.ts", "./src/test/cleanup.ts"]

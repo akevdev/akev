@@ -1,0 +1,429 @@
+/* ----------------------------------------------------------------- scroller */
+
+.scroller {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  outline: none;
+  contain: strict;
+}
+
+.inner {
+  position: relative;
+  width: 100%;
+}
+
+.slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0 6px;
+}
+
+.dragging {
+  cursor: grabbing;
+}
+
+.dragging * {
+  cursor: grabbing !important;
+}
+
+/* ----------------------------------------------------------------- rows */
+
+.row {
+  --indent: calc(var(--depth, 0) * 18px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  padding: 0 4px 0 calc(16px + var(--indent));
+  border-radius: var(--r-sm);
+  cursor: default;
+  outline: none;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.row.selected {
+  background: var(--bg-selected);
+}
+
+.scroller:focus-within .row.selected {
+  background: var(--bg-selected-strong);
+}
+
+.row.selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.row:focus-visible {
+  box-shadow: inset 0 0 0 var(--focus-ring-width) var(--border-focus);
+}
+
+/* Nested rows get a faint guide line at their parent's indent. */
+.row[data-nested]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--indent) - 9px);
+  width: 1px;
+  background: var(--border-strong);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.inactive .content,
+.inactive .iconTile,
+.inactive .groupTitle,
+.inactive .folderIcon,
+.inactive .count {
+  opacity: 0.5;
+}
+
+.dragSource {
+  opacity: 0.35;
+}
+
+.hasError .iconTile {
+  box-shadow: inset 0 0 0 1px var(--danger);
+}
+
+/* ----------------------------------------------------------------- cells */
+
+.handle {
+  position: absolute;
+  left: calc(var(--indent) + 0px);
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 24px;
+  margin-top: -12px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--text-subtle);
+  cursor: grab;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.row:hover .handle,
+.row:focus-visible .handle {
+  opacity: 1;
+}
+
+.handle:hover {
+  color: var(--text);
+}
+
+.switchCell {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.iconTile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-sm);
+  color: var(--accent-text);
+  background: var(--accent-soft);
+}
+
+.iconTile[data-category='modify'] {
+  color: var(--info);
+  background: var(--info-soft);
+}
+
+.iconTile[data-category='connection'] {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.iconTile[data-category='websocket'] {
+  color: var(--k-ws);
+  background: color-mix(in srgb, var(--k-ws) 14%, transparent);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  gap: 1px;
+}
+
+.title {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+  color: var(--text);
+}
+
+.sub {
+  font-size: var(--fs-xs);
+  line-height: var(--lh-tight);
+  color: var(--text-muted);
+}
+
+.sub :global(*) {
+  color: inherit !important;
+  font-weight: inherit !important;
+}
+
+.main {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-tight);
+  color: var(--text-muted);
+}
+
+.errorIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--danger);
+}
+
+.draftDot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-full);
+  background: var(--warning);
+  box-shadow: 0 0 0 3px var(--warning-soft);
+}
+
+.menuButton {
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.row:hover .menuButton,
+.row.selected .menuButton,
+.menuButton[data-state='open'] {
+  opacity: 1;
+}
+
+/* ----------------------------------------------------------------- hit pill */
+
+.pillSlot {
+  display: inline-flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  min-width: 34px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: var(--r-full);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+  background: var(--bg-active);
+  outline: none;
+  cursor: default;
+}
+
+.pillExhausted {
+  color: var(--text-subtle);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-disabled);
+}
+
+.pillFlash {
+  animation: pill-flash 900ms var(--ease-out);
+}
+
+@keyframes pill-flash {
+  0% {
+    color: var(--text-on-accent);
+    background: var(--accent);
+    transform: scale(1.12);
+  }
+  40% {
+    transform: scale(1);
+  }
+  100% {
+    color: var(--text-muted);
+    background: var(--bg-active);
+  }
+}
+
+.pillTip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pillTipMuted {
+  color: var(--text-muted);
+}
+
+/* ----------------------------------------------------------------- groups */
+
+.groupRow {
+  gap: 6px;
+}
+
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-left: -2px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--text-subtle);
+  cursor: pointer;
+}
+
+.chevron:hover {
+  color: var(--text);
+  background: var(--bg-active);
+}
+
+.chevronIcon {
+  transition: transform var(--dur) var(--ease);
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+.folderIcon {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+}
+
+.groupTitle {
+  min-width: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+.count {
+  flex-shrink: 0;
+  min-width: 18px;
+  height: 16px;
+  padding: 0 5px;
+  border-radius: var(--r-full);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  line-height: 16px;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-active);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.renameInput {
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  padding: 0 6px;
+  margin-left: -6px;
+  border: 1px solid var(--border-focus);
+  border-radius: var(--r-xs);
+  outline: none;
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  background: var(--bg-input);
+}
+
+/* ----------------------------------------------------------------- drop indicators */
+
+.dropLine {
+  position: absolute;
+  top: 0;
+  left: calc(12px + var(--depth, 0) * 18px);
+  right: 10px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dropLine::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  border: 2px solid var(--accent);
+  background: var(--bg-panel);
+}
+
+.dropGroup {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  right: 6px;
+  border-radius: var(--r-sm);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ----------------------------------------------------------------- drag preview */
+
+.preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  max-width: 420px;
+  padding: 0 12px 0 8px;
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  color: var(--text);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-lg);
+  cursor: grabbing;
+  transform: rotate(-0.6deg);
+}
+
+.previewGroup {
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}

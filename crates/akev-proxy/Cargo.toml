@@ -1,0 +1,92 @@
+[package]
+name = "akev-proxy"
+description = "Akev's intercepting proxy engine: HTTP/1.1, HTTP/2, TLS MITM, CONNECT, SOCKS, WebSockets"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+akev-core = { workspace = true }
+akev-ca = { workspace = true }
+akev-rules = { workspace = true }
+akev-content = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+futures = { workspace = true }
+async-trait = { workspace = true }
+pin-project-lite = { workspace = true }
+bytes = { workspace = true }
+http = { workspace = true }
+httparse = { workspace = true }
+h2 = { workspace = true }
+quinn = { workspace = true }
+h3 = { workspace = true }
+h3-quinn = { workspace = true }
+url = { workspace = true }
+percent-encoding = { workspace = true }
+rustls = { workspace = true }
+tokio-rustls = { workspace = true }
+rustls-pki-types = { workspace = true }
+rustls-webpki = { workspace = true }
+rustls-native-certs = { workspace = true }
+webpki-roots = { workspace = true }
+x509-parser = { workspace = true }
+sha1 = { workspace = true }
+sha2 = { workspace = true }
+md-5 = { workspace = true }
+hex = { workspace = true }
+base64 = { workspace = true }
+tungstenite = { workspace = true }
+hickory-resolver = { workspace = true, features = ["https-ring"] }
+rquickjs = { version = "0.9" }
+p12-keystore = "0.4.1"
+memchr = { workspace = true }
+socket2 = { workspace = true }
+parking_lot = { workspace = true }
+dashmap = { workspace = true }
+arc-swap = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+rand = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+time = { workspace = true }
+
+[target.'cfg(any(target_os = "linux", target_os = "macos"))'.dependencies]
+libc = "0.2"
+
+# Upstream TLS fingerprint impersonation (BoringSSL). Off by default: building BoringSSL
+# needs cmake, a C/C++ compiler and libclang (see https://akev.dev/docs/tls-impersonation/).
+boring2 = { version = "=5.0.0-alpha.13", optional = true }
+tokio-boring2 = { version = "=5.0.0-alpha.13", optional = true }
+http2 = { version = "0.5.20", features = ["unstable"], optional = true }
+flate2 = { workspace = true, optional = true }
+brotli = { workspace = true, optional = true }
+zstd = { workspace = true, optional = true }
+
+[features]
+default = []
+# Parser entry points for the fuzz targets in `fuzz/` (`akev_proxy::fuzzing`).
+fuzzing = []
+# Browser TLS/HTTP2 fingerprints for upstream connections (`proxy.tlsProfile`).
+impersonate = ["dep:boring2", "dep:tokio-boring2", "dep:http2", "dep:flate2", "dep:brotli", "dep:zstd"]
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = [
+    "Win32_Foundation",
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_Networking_WinSock",
+    "Win32_System_Threading",
+] }
+
+[dev-dependencies]
+rcgen = { workspace = true }
+tokio-tungstenite = { workspace = true }
+reqwest = { workspace = true, features = ["http2"] }
+tempfile = { workspace = true }
+
+[lints]
+workspace = true

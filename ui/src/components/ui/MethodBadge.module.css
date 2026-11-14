@@ -1,0 +1,41 @@
+.method {
+  display: inline-flex;
+  align-items: center;
+  color: var(--method-color);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-feature-settings: normal;
+}
+
+.sm {
+  font-size: var(--fs-2xs);
+}
+
+.fixed {
+  width: 56px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pill {
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--method-color) 14%, transparent);
+}
+
+.pill.sm {
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+
+.pill.fixed {
+  justify-content: center;
+}

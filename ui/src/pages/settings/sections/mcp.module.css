@@ -1,0 +1,129 @@
+.commandInput {
+  width: 240px;
+}
+
+.clients {
+  padding: var(--sp-2) 0 var(--sp-4);
+  border-top: 1px solid var(--border);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding-top: var(--sp-4);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.step {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}
+
+.step strong {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.install {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.paths {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.paths li {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.pathOs {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.docs {
+  padding: 0 0 var(--sp-4);
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+}
+
+.callout {
+  margin: var(--sp-3) 0 var(--sp-2);
+}
+
+.tools {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+
+.tools th {
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-subtle);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.tools td {
+  padding: var(--sp-1-5) var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  vertical-align: baseline;
+}
+
+.tools th:first-child,
+.tools td:first-child {
+  padding-left: 0;
+}
+
+.tools th:last-child,
+.tools td:last-child {
+  padding-right: 0;
+}
+
+.tools tr:last-child td {
+  border-bottom: none;
+}
+
+.toolName {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-ligatures: none;
+  white-space: nowrap;
+}
+
+.toolPurpose {
+  color: var(--text-muted);
+  line-height: var(--lh-base);
+}
+
+.toolPlan {
+  white-space: nowrap;
+}
+
+.shield {
+  color: var(--text-subtle);
+}

@@ -1,0 +1,94 @@
+[{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "The user asks about the sky colour.",
+            "thought": true
+          }
+        ],
+        "role": "model"
+      },
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "totalTokenCount": 9
+  },
+  "modelVersion": "gemini-2.5-pro",
+  "responseId": "Xk9QabCd"
+},
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "The sky is blue because"
+          }
+        ],
+        "role": "model"
+      },
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "totalTokenCount": 9
+  },
+  "modelVersion": "gemini-2.5-pro",
+  "responseId": "Xk9QabCd"
+},
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": " of Rayleigh scattering."
+          }
+        ],
+        "role": "model"
+      },
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "totalTokenCount": 9
+  },
+  "modelVersion": "gemini-2.5-pro",
+  "responseId": "Xk9QabCd"
+},
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "name": "lookup",
+              "args": {
+                "q": "rayleigh scattering"
+              }
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "index": 0,
+      "finishReason": "STOP"
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "candidatesTokenCount": 12,
+    "totalTokenCount": 40,
+    "thoughtsTokenCount": 19,
+    "cachedContentTokenCount": 4
+  },
+  "modelVersion": "gemini-2.5-pro",
+  "responseId": "Xk9QabCd"
+}]

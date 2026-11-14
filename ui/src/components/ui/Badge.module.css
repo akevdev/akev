@@ -1,0 +1,83 @@
+.badge {
+  --badge-fg: var(--text-muted);
+  --badge-bg: var(--bg-active);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: var(--r-full);
+  background: var(--badge-bg);
+  color: var(--badge-fg);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-feature-settings: 'cv11', 'ss01', 'tnum';
+}
+
+.sm {
+  height: 16px;
+  padding: 0 5px;
+  gap: 3px;
+  font-size: var(--fs-2xs);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-feature-settings: normal;
+}
+
+.outline {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--badge-fg) 40%, transparent);
+}
+
+.neutral {
+  --badge-fg: var(--text-muted);
+  --badge-bg: var(--bg-active);
+}
+
+.accent {
+  --badge-fg: var(--accent-text);
+  --badge-bg: var(--accent-soft);
+}
+
+.success {
+  --badge-fg: var(--success);
+  --badge-bg: var(--success-soft);
+}
+
+.warning {
+  --badge-fg: var(--warning);
+  --badge-bg: var(--warning-soft);
+}
+
+.danger {
+  --badge-fg: var(--danger);
+  --badge-bg: var(--danger-soft);
+}
+
+.info {
+  --badge-fg: var(--info);
+  --badge-bg: var(--info-soft);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.sm .dot {
+  width: 5px;
+  height: 5px;
+}
+
+.pulse {
+  animation: var(--anim-pulse) 1.6s var(--ease-in-out) infinite;
+}

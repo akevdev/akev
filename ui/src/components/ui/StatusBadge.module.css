@@ -1,0 +1,75 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.code {
+  color: var(--status-color);
+  font-feature-settings: 'cv11', 'ss01', 'tnum';
+}
+
+.withError {
+  text-decoration: underline wavy var(--danger);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.text {
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.error {
+  color: var(--s-err);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-xs);
+}
+
+.paused {
+  color: var(--warning);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-xs);
+}
+
+.tunnel {
+  height: 16px;
+  padding: 0 5px;
+  border-radius: var(--r-xs);
+  background: var(--bg-active);
+  color: var(--text-muted);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-medium);
+}
+
+.none {
+  color: var(--text-subtle);
+}
+
+.pending {
+  width: 16px;
+  height: 14px;
+  justify-content: flex-start;
+}
+
+.pendingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--text-subtle);
+  animation: var(--anim-pulse) 1.2s var(--ease-in-out) infinite;
+}
+
+.liveDot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--r-full);
+  background: var(--k-ws);
+  animation: var(--anim-pulse) 1.6s var(--ease-in-out) infinite;
+}

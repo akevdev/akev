@@ -1,0 +1,118 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-crash);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-app);
+  animation: var(--anim-fade-in) var(--dur-slow) var(--ease);
+}
+
+/* Focus lands on the screen itself until it has a button; no ring around the whole window. */
+.screen:focus-visible {
+  outline: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 440px;
+  text-align: center;
+}
+
+.logoWrap {
+  animation: var(--anim-pulse) 2.4s var(--ease-in-out) infinite;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-full);
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+.text {
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  color: var(--text-muted);
+}
+
+.text code {
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+  background: var(--bg-active);
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+
+.help {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  animation: var(--anim-slide-up) var(--dur-slow) var(--ease-out);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.banner {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  z-index: var(--z-banner);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 6px 0 12px;
+  translate: -50% 0;
+  background: var(--bg-elevated);
+  color: var(--text);
+  border-radius: var(--r-full);
+  box-shadow: var(--shadow-lg), inset 0 0 0 1px var(--danger-soft);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  animation: var(--anim-slide-down) var(--dur-slow) var(--ease-out);
+}
+
+.banner svg {
+  color: var(--danger);
+}
+
+.bannerAction {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--r-full);
+  background: var(--bg-active);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.bannerAction:hover {
+  background: color-mix(in srgb, var(--bg-active), var(--text) 8%);
+}

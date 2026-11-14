@@ -1,0 +1,50 @@
+[package]
+name = "akev-desktop"
+description = "Akev desktop app (Tauri 2 shell around the Akev core)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[lib]
+name = "akev_desktop"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "akev-desktop"
+path = "src/main.rs"
+
+[features]
+# Browser TLS fingerprints for upstream connections (BoringSSL; see akev-proxy).
+impersonate = ["akev-api/impersonate"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+akev-api = { workspace = true }
+akev-core = { workspace = true }
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-opener = "2"
+# In-app updates: signed packages from GitHub Releases (latest.json), installed on request.
+tauri-plugin-updater = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-window-state = "2"
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+percent-encoding = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# Reads the desktop's window-button layout for the custom title bar (the gtk Tauri itself uses).
+gtk = "0.18"
+
+[lints]
+workspace = true

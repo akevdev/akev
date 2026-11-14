@@ -1,0 +1,22 @@
+.content {
+  z-index: var(--z-popover);
+  max-width: min(480px, calc(100vw - 16px));
+  max-height: var(--radix-popover-content-available-height);
+  overflow: auto;
+  padding: 12px;
+  background: var(--bg-elevated);
+  color: var(--text);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--fs-base);
+  transform-origin: var(--radix-popover-content-transform-origin);
+  animation: var(--anim-pop-in) var(--dur-fast) var(--ease-out);
+}
+
+.flush {
+  padding: 0;
+}
+
+.content:focus-visible {
+  outline: none;
+}

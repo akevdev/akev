@@ -1,0 +1,226 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg-panel);
+}
+
+.toolbarTitle {
+  padding: 0 var(--sp-1);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+}
+
+.toolbarActive {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  padding: 0 var(--sp-2);
+  color: var(--success);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+}
+
+.toolbarDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: currentColor;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--sp-8) var(--sp-12);
+}
+
+@media (max-width: 1100px) {
+  .content {
+    padding: var(--sp-5) var(--sp-5) var(--sp-10);
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.title {
+  color: var(--text);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.015em;
+  line-height: var(--lh-tight);
+}
+
+.subtitle {
+  max-width: 760px;
+  color: var(--text-muted);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+}
+
+.overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--sp-3);
+  align-items: stretch;
+}
+
+/* ---- sticky search + chips */
+.filters {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin: calc(-1 * var(--sp-2)) calc(-1 * var(--sp-2)) calc(-1 * var(--sp-1));
+  padding: var(--sp-2);
+  background: var(--bg-panel);
+}
+
+.search {
+  flex: 0 1 320px;
+  min-width: 240px;
+}
+
+/* ---- grid */
+.catalog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--sp-3);
+}
+
+/* "N not available on this computer" disclosure under the grid. */
+.dormantToggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  height: var(--control-h-lg);
+  margin-top: var(--sp-1);
+  padding: 0 var(--sp-3) 0 var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  text-align: left;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.dormantToggle:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.dormantChevron {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+  transition: transform var(--dur) var(--ease);
+}
+
+.dormantToggle[aria-expanded='true'] .dormantChevron {
+  transform: rotate(90deg);
+}
+
+.dormantTitle {
+  flex-shrink: 0;
+  font-weight: var(--fw-medium);
+}
+
+.dormantNames {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-subtle);
+}
+
+.dormantNames::before {
+  content: '·';
+  margin-right: var(--sp-2);
+}
+
+.state {
+  padding: var(--sp-10) 0;
+}
+
+.skeletonCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 168px;
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--bg-subtle);
+}
+
+.skeletonFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.manualHint {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 168px;
+  padding: var(--sp-4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-lg);
+  color: var(--text);
+  text-align: left;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.manualHint:hover {
+  border-color: var(--text-subtle);
+  background: var(--bg-hover);
+}
+
+.manualHintText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.manualHintTitle {
+  font-weight: var(--fw-semibold);
+}
+
+.manualHintDesc {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-base);
+}

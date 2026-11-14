@@ -1,0 +1,199 @@
+/* Shared field chrome for Input, TextArea, SearchInput, NumberInput, Combobox, Select trigger. */
+
+.wrap {
+  --field-h: var(--control-h);
+  --field-px: 9px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: var(--field-h);
+  padding: 0 var(--field-px);
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-size: var(--fs-base);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
+  cursor: text;
+}
+
+.wrap:hover:not([data-disabled]) {
+  border-color: var(--border-strong);
+}
+
+.wrap:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.wrap[data-invalid] {
+  border-color: var(--danger);
+}
+
+.wrap[data-invalid]:focus-within {
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+.wrap[data-disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.wrap[data-readonly] {
+  background: var(--bg-subtle);
+}
+
+.sm {
+  --field-h: var(--control-h-sm);
+  --field-px: 7px;
+  font-size: var(--fs-sm);
+  border-radius: 5px;
+}
+
+.lg {
+  --field-h: var(--control-h-lg);
+  --field-px: 11px;
+  font-size: var(--fs-md);
+  border-radius: var(--r-md);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: 1.3;
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.input::-webkit-search-cancel-button,
+.input::-webkit-search-decoration {
+  appearance: none;
+}
+
+.mono .input,
+.mono.textarea {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-size: var(--fs-sm);
+  font-feature-settings: normal;
+}
+
+.adornment {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+  gap: 4px;
+}
+
+.adornment svg {
+  display: block;
+}
+
+.unit {
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-right: -4px;
+  border-radius: var(--r-xs);
+  color: var(--text-subtle);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.clear:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+/* ---- textarea */
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: 64px;
+  padding: 6px 9px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  resize: vertical;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+
+.textarea:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.textarea:focus,
+.textarea:focus-visible {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.textarea[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.textarea:disabled {
+  opacity: 0.5;
+}
+
+.autoResize {
+  resize: none;
+  overflow-y: auto;
+}
+
+/* ---- number stepper */
+.stepper {
+  display: flex;
+  flex-direction: column;
+  margin-right: -6px;
+  height: calc(100% - 6px);
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 16px;
+  border-radius: 3px;
+  color: var(--text-subtle);
+  cursor: pointer;
+}
+
+.step:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}

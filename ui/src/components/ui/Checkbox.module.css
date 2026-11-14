@@ -1,0 +1,70 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  background: var(--bg-input);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border-strong), var(--text) 12%);
+  color: var(--text-on-accent);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+
+.root:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border-strong), var(--text) 30%);
+}
+
+.root[data-state='checked'],
+.root[data-state='indeterminate'] {
+  background: var(--accent);
+  box-shadow: inset 0 0 0 1px transparent;
+}
+
+.root:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.indicator {
+  display: flex;
+  animation: var(--anim-pop-in) var(--dur-fast) var(--ease-out);
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.row .root {
+  margin-top: 1px;
+}
+
+.labelWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.label {
+  font-size: var(--fs-base);
+  color: var(--text);
+  line-height: var(--lh-tight);
+}
+
+.description {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.disabled .labelWrap {
+  opacity: 0.5;
+  cursor: default;
+}

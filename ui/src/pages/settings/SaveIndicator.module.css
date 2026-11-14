@@ -1,0 +1,37 @@
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-1-5);
+  min-width: 96px;
+  height: var(--control-h-sm);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-full);
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  transition:
+    opacity var(--dur-slow) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.idle {
+  opacity: 0;
+}
+
+.saved {
+  color: var(--success);
+  animation: akev-saved-in var(--dur) var(--ease-out);
+}
+
+.error {
+  color: var(--danger);
+}
+
+@keyframes akev-saved-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}

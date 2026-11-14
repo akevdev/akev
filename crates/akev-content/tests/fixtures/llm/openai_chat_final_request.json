@@ -1,0 +1,112 @@
+{
+  "model": "gpt-4.1",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are Atlas, a concise travel assistant. Use the tools for anything that depends on live data (weather, opening hours). Answer in Markdown."
+    },
+    {
+      "role": "user",
+      "content": "I'm in Ljubljana tomorrow afternoon. Do I need an umbrella, and what's a good indoor plan if it rains?"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_Wx9fT2qLm4Hc",
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "arguments": "{\"city\": \"Ljubljana\", \"date\": \"2026-11-10\", \"units\": \"metric\"}"
+          }
+        },
+        {
+          "id": "call_Q7nB3vKs81Pz",
+          "type": "function",
+          "function": {
+            "name": "search_places",
+            "arguments": "{\"query\": \"indoor museums and markets\", \"city\": \"Ljubljana\", \"open_now\": false}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_Wx9fT2qLm4Hc",
+      "content": "{\"city\": \"Ljubljana\", \"date\": \"2026-11-10\", \"hourly\": [{\"time\": \"12:00\", \"temp_c\": 10, \"precip_mm\": 0.0, \"precip_prob\": 35}, {\"time\": \"13:00\", \"temp_c\": 9, \"precip_mm\": 0.6, \"precip_prob\": 80}, {\"time\": \"16:00\", \"temp_c\": 8, \"precip_mm\": 1.4, \"precip_prob\": 85}], \"summary\": \"Light rain from 13:00\"}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_Q7nB3vKs81Pz",
+      "content": "{\"results\": [{\"name\": \"National Gallery of Slovenia\", \"category\": \"museum\", \"hours\": \"10:00–18:00\", \"rating\": 4.6}, {\"name\": \"House of Experiments\", \"category\": \"science centre\", \"hours\": \"11:00–19:00\", \"rating\": 4.7}, {\"name\": \"Central Market (Plečnik arcades)\", \"category\": \"market\", \"hours\": \"07:00–16:00\", \"rating\": 4.5}]}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Hourly forecast for a city and date.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "City name"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "units": {
+              "type": "string",
+              "enum": [
+                "metric",
+                "imperial"
+              ]
+            }
+          },
+          "required": [
+            "city",
+            "date"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "search_places",
+        "description": "Find places (museums, cafés, sights) in a city.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "open_now": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "query",
+            "city"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "temperature": 0.3,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  }
+}

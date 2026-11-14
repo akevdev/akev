@@ -1,0 +1,18 @@
+PackageIdentifier: Akev.Akev
+PackageVersion: @VERSION@
+InstallerType: nullsoft
+Scope: user
+InstallModes:
+  - interactive
+  - silent
+UpgradeBehavior: install
+ReleaseDate: @DATE@
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/akevdev/akev/releases/download/v@VERSION@/Akev_@VERSION@_x64-setup.exe
+    InstallerSha256: @SHA:Akev_@VERSION@_x64-setup.exe@
+  - Architecture: arm64
+    InstallerUrl: https://github.com/akevdev/akev/releases/download/v@VERSION@/Akev_@VERSION@_arm64-setup.exe
+    InstallerSha256: @SHA:Akev_@VERSION@_arm64-setup.exe@
+ManifestType: installer
+ManifestVersion: 1.6.0

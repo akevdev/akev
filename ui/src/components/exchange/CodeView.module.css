@@ -1,0 +1,106 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-panel);
+}
+
+.fill {
+  flex: 1;
+  height: 100%;
+}
+
+/* ------------------------------------------------------------------ toolbar (32px) */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 32px;
+  padding: 0 var(--sp-1-5) 0 var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.target {
+  width: 200px;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.spacer {
+  flex: 1;
+  min-width: 0;
+}
+
+.meta {
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.inlineError {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  color: var(--warning);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.retry {
+  color: var(--accent-text);
+  font-weight: var(--fw-medium);
+  border-radius: var(--r-xs);
+  padding: 0 2px;
+}
+
+.retry:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ content */
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.root:not(.fill) .content {
+  flex: none;
+}
+
+.stale {
+  opacity: 0.55;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  padding: var(--sp-6) var(--sp-4);
+}
+
+.loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--sp-3) var(--sp-4);
+}

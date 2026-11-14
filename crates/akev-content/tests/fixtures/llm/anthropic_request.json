@@ -1,0 +1,128 @@
+{
+  "model": "claude-sonnet-4-5",
+  "max_tokens": 16000,
+  "system": [
+    {
+      "type": "text",
+      "text": "You are Forge, an autonomous coding agent working in the acme/checkout repository (TypeScript, Vitest).\n\nRules:\n- Read code before changing it.\n- Keep diffs minimal and add a regression test for every bug fix.\n- Say what you found in one or two sentences before calling a tool.",
+      "cache_control": {
+        "type": "ephemeral"
+      }
+    }
+  ],
+  "thinking": {
+    "type": "enabled",
+    "budget_tokens": 4096
+  },
+  "tools": [
+    {
+      "name": "read_file",
+      "description": "Read a UTF-8 file from the repository.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Repository-relative path"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "edit_file",
+      "description": "Replace an exact string in a file. Fails if old_string is not unique.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "old_string": {
+            "type": "string"
+          },
+          "new_string": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "old_string",
+          "new_string"
+        ]
+      }
+    },
+    {
+      "name": "run_tests",
+      "description": "Run the Vitest suite, optionally filtered by a name pattern.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string"
+          }
+        }
+      },
+      "cache_control": {
+        "type": "ephemeral"
+      }
+    }
+  ],
+  "tool_choice": {
+    "type": "auto"
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Customers report the checkout total is one cent short for some EUR orders (screenshot attached). Find the bug and fix it."
+        },
+        {
+          "type": "image",
+          "source": {
+            "type": "base64",
+            "media_type": "image/png",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAGAAAAA8CAIAAAAWtijjAAAAk0lEQVR42u3XwQmAMBBFwVTiMWANtmkHNpFiPKUKEREbCDkJumTgVTCHv0ma5kWdEgJAgAABAgQIECA1gY7zUidAgAABAhQRaN1K3AAB+j+QAAECBMg76KPbBAiQDTLSgAABUvDfPCBAcYEECBAgQIAAAQIEqNld62gBGgZoz/mtAAECZINiAgkQIECAAAECBGjsHma2DI5aF0wsAAAAAElFTkSuQmCC"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "thinking",
+          "thinking": "A one-cent discrepancy smells like floating-point rounding when converting euros to cents. Start with the money helpers.",
+          "signature": "EqQBCkgIBRABGAIiQL2x9Rk3mHkT0p4mXz9Vb1nQ"
+        },
+        {
+          "type": "text",
+          "text": "This looks like a rounding issue — let me read the money helpers first."
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01A9mK2xQ7vR4tN8bH3cZ5wP",
+          "name": "read_file",
+          "input": {
+            "path": "src/money.ts"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01A9mK2xQ7vR4tN8bH3cZ5wP",
+          "content": "export function toCents(amount: number): number {\n  return Math.floor(amount * 100);\n}\n\nexport function formatEur(cents: number): string {\n  return (cents / 100).toFixed(2) + ' €';\n}\n"
+        }
+      ]
+    }
+  ],
+  "stream": true
+}

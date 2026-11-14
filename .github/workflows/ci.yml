@@ -1,0 +1,318 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Desktop/CLI packages are built by release.yml (tags, or run it by hand for a test build).
+
+# Pull requests from forks run here too: the token can read the repository and nothing else.
+permissions:
+  contents: read
+
+# A new push to a pull request cancels its older runs; every push to main is tested.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  # The JVM agent is built from source; CI must never silently ship a build without it.
+  AKEV_AGENT_REQUIRE_JDK: '1'
+  # Line tables keep backtraces readable but make test binaries several times smaller; full
+  # debug info for ~60 test binaries exhausts the hosted runners' disk (lld dies with SIGBUS).
+  CARGO_PROFILE_DEV_DEBUG: line-tables-only
+
+jobs:
+  ui:
+    name: UI (lint, typecheck, test, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+        working-directory: ui
+      - run: bun run lint
+        working-directory: ui
+      - run: bun x tsc --noEmit
+        working-directory: ui
+      - run: bun test
+        working-directory: ui
+      - run: bun run build
+        working-directory: ui
+      - name: Bundle size budget
+        run: bun run size
+        working-directory: ui
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-dist
+          path: ui/dist
+
+  e2e:
+    name: UI end-to-end (Playwright, real daemon)
+    needs: ui
+    runs-on: ubuntu-latest
+    env:
+      AKEV_E2E_PROJECT: daemon
+      # This daemon trusts the test license key (crates/akev-api/tests/common/pro.rs), so the
+      # activation flow runs too. The build is only used here, never shipped.
+      AKEV_LICENSE_PUBLIC_KEY: A6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg
+      AKEV_E2E_TEST_LICENSE: '1'
+    steps:
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: ui-dist
+          path: ui/dist
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+        working-directory: ui
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          # AKEV_LICENSE_PUBLIC_KEY changes akev-api's build: keep this cache apart.
+          key: e2e
+      - name: Build the daemon (debug)
+        run: cargo build -p akev-cli
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+        working-directory: ui
+      - name: End-to-end tests
+        run: bun run e2e
+        working-directory: ui
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: e2e-results
+          path: ui/test-results
+          retention-days: 7
+
+  visual:
+    name: UI visual regression (Playwright)
+    runs-on: ubuntu-latest
+    # The image the baselines in ui/e2e/visual/__screenshots__ were rendered in: same browser,
+    # fonts and rendering on every machine. Keep its version in step with @playwright/test.
+    container: mcr.microsoft.com/playwright:v1.65.0-noble
+    env:
+      AKEV_E2E_PROJECT: visual
+    steps:
+      - uses: actions/checkout@v5
+      - name: unzip (for setup-bun)
+        run: apt-get update && apt-get install -y --no-install-recommends unzip
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+        working-directory: ui
+      - name: Screenshots against the mock backend
+        run: bun run e2e
+        working-directory: ui
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: visual-diffs
+          path: ui/test-results
+          retention-days: 7
+
+  rust:
+    name: Rust (${{ matrix.os }})
+    needs: ui
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      # Warnings fail the build on Linux (the lint gate); on macOS/Windows they're reported but
+      # don't hide the test results behind platform-specific lint noise.
+      RUSTFLAGS: ${{ matrix.os == 'ubuntu-latest' && '-D warnings' || '' }}
+    steps:
+      - name: Free disk space
+        if: runner.os == 'Linux'
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: ui-dist
+          path: ui/dist
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --all-targets
+        if: runner.os == 'Linux'
+      # Run every test binary even after a failure, so one CI round reports all of them.
+      - run: cargo test --no-fail-fast
+
+  jvm-attach:
+    name: JVM attach (Java ${{ matrix.java }}, ${{ matrix.os }})
+    needs: ui
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        java: ['8', '11', '17', '21', '25']
+    runs-on: ${{ matrix.os }}
+    env:
+      RUSTFLAGS: ${{ matrix.os == 'ubuntu-latest' && '-D warnings' || '' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: ui-dist
+          path: ui/dist
+      - uses: actions/setup-java@v5
+        with:
+          # Temurin has no Java 8 build for Apple Silicon (macos-latest); Zulu ships a native one.
+          distribution: ${{ (matrix.java == '8' && matrix.os == 'macos-latest') && 'zulu' || 'temurin' }}
+          java-version: ${{ matrix.java }}
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      # The agent is compiled to Java 8 bytecode; attach it to a real JVM of each version and
+      # check traffic is intercepted, decrypted and restored. Fail if the test skipped itself.
+      - name: Attach to a running JVM
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo test -p akev-intercept --test java_agent -- --nocapture 2>&1 | tee jvm.log
+          cargo test -p akev-api --test jvm_attach -- --nocapture 2>&1 | tee -a jvm.log
+          if grep -q "skipping: no JDK" jvm.log; then echo "JDK not detected"; exit 1; fi
+
+  impersonate:
+    name: TLS impersonation (BoringSSL, ${{ matrix.os }})
+    needs: ui
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      RUSTFLAGS: ${{ matrix.os == 'ubuntu-latest' && '-D warnings' || '' }}
+      CARGO_PROFILE_DEV_DEBUG: line-tables-only
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/download-artifact@v5
+        with:
+          name: ui-dist
+          path: ui/dist
+      - name: Free disk space
+        if: runner.os == 'Linux'
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y cmake clang libclang-dev
+      - if: runner.os == 'macOS'
+        run: brew list cmake >/dev/null 2>&1 || brew install cmake
+      - if: runner.os == 'Windows'
+        uses: ilammy/setup-nasm@v1
+      - if: runner.os == 'Windows'
+        shell: bash
+        run: echo "LIBCLANG_PATH=C:\\Program Files\\LLVM\\bin" >> "$GITHUB_ENV"
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy -p akev-proxy -p akev-api -p akev-cli --features akev-proxy/impersonate --all-targets
+        if: runner.os == 'Linux'
+      - run: cargo test -p akev-proxy -p akev-api --features akev-proxy/impersonate,akev-api/impersonate
+
+  desktop:
+    name: Desktop shell and tools (clippy, tests)
+    needs: ui
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: -D warnings
+    steps:
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/download-artifact@v5
+        with:
+          name: ui-dist
+          path: ui/dist
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libayatana-appindicator3-dev
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      # Not default workspace members (webkit2gtk headers), so the rust job skips them.
+      - run: cargo clippy -p akev-desktop -p akev-loadgen --all-targets
+      - run: cargo test -p akev-desktop -p akev-loadgen
+
+  msrv:
+    name: Minimum supported Rust version
+    needs: ui
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/download-artifact@v5
+        with:
+          name: ui-dist
+          path: ui/dist
+      - name: Read rust-version
+        id: msrv
+        run: echo "version=$(sed -n 's/^rust-version = "\(.*\)"$/\1/p' Cargo.toml)" >> "$GITHUB_OUTPUT"
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ steps.msrv.outputs.version }}
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo check --locked
+
+  deny:
+    name: Dependencies (licences, advisories, sources)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: check
+          arguments: --all-features
+  fuzz:
+    name: Fuzz parsers (60 s each)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: fuzz
+      - run: cargo install cargo-fuzz --locked
+      - run: cargo fuzz build
+      # Every target for about a minute, starting from the hand-made seeds; a crash fails the
+      # job and its input is kept as an artifact (reproduce with `cargo fuzz run <target> <file>`).
+      - name: Run targets
+        run: |
+          set -e
+          for target in $(cargo fuzz list); do
+            echo "::group::$target"
+            mkdir -p "fuzz/corpus/$target"
+            cargo fuzz run "$target" "fuzz/corpus/$target" "fuzz/seeds/$target" -- \
+              -max_total_time=60 -rss_limit_mb=2048 -timeout=10
+            echo "::endgroup::"
+          done
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: fuzz-artifacts
+          path: fuzz/artifacts
