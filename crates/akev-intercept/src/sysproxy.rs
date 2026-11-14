@@ -1702,7 +1702,7 @@ impl Interceptor for SystemProxyInterceptor {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::host::testutil::{fake_env, make_exe};
+    use crate::host::testutil::{fake_env, make_exe, native};
     use crate::runner::mock::MockRunner;
     use crate::runner::{CommandOutput, ProcessEntry};
     use crate::util::testctx::ctx;
@@ -2423,7 +2423,7 @@ mod tests {
         make_exe(&dir.path().join("usr/bin/kwriteconfig6"), "");
         make_exe(&dir.path().join("usr/bin/dbus-send"), "");
         let env = fake_env(Os::Linux, dir.path()).with_var("XDG_CURRENT_DESKTOP", "KDE");
-        let cfg = dir.path().join("home/.config/kioslaverc");
+        let cfg = native(dir.path(), "home/.config/kioslaverc");
         std::fs::create_dir_all(cfg.parent().unwrap()).unwrap();
         std::fs::write(&cfg, "[Proxy Settings]\nProxyType=0\nNoProxyFor=corp\n").unwrap();
         let runner = MockRunner::new();

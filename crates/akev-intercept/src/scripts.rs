@@ -569,8 +569,10 @@ mod tests {
             .unwrap();
         assert!(
             out.status.success(),
-            "{}",
-            String::from_utf8_lossy(&out.stderr)
+            "{shell} exited with {}\nstderr: {}\nstdout: {}",
+            out.status,
+            String::from_utf8_lossy(&out.stderr),
+            String::from_utf8_lossy(&out.stdout)
         );
         String::from_utf8_lossy(&out.stdout).into_owned()
     }
@@ -764,10 +766,13 @@ mod tests {
         assert!(after_reset.contains("Akev interception disabled"));
         assert!(!after_reset.contains("__AKEV_OLD"));
 
-        // The function defined by the setup script does the same.
-        let via_fn = run_and_dump("bash", pre, &setup, "akev_off\n", &names);
-        assert!(via_fn.contains("HTTP_PROXY=UNSET\n"));
-        assert!(via_fn.contains("NO_PROXY=corp.example\n"));
+        // The function defined by the setup script does the same. (`have`: on Windows a bare
+        // `bash` is System32's WSL launcher, which fails without a Linux distribution.)
+        if have("bash") {
+            let via_fn = run_and_dump("bash", pre, &setup, "akev_off\n", &names);
+            assert!(via_fn.contains("HTTP_PROXY=UNSET\n"));
+            assert!(via_fn.contains("NO_PROXY=corp.example\n"));
+        }
 
         // Reset in a fresh shell (never set up) doesn't touch user variables.
         let untouched = run_and_dump(

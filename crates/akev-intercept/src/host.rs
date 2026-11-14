@@ -145,14 +145,31 @@ impl HostEnv {
 
     /// Directories listed in `PATH`.
     pub fn path_dirs(&self) -> Vec<PathBuf> {
-        self.var("PATH")
-            .map(|p| {
-                p.split(self.os.path_separator())
-                    .filter(|d| !d.is_empty())
-                    .map(PathBuf::from)
-                    .collect()
-            })
-            .unwrap_or_default()
+        let Some(path) = self.var("PATH") else {
+            return Vec::new();
+        };
+        let mut dirs: Vec<String> = Vec::new();
+        for part in path.split(self.os.path_separator()) {
+            // A `:`-separated PATH only meets drive letters when the Windows build checks the
+            // Linux and macOS code paths (with fake directories under C:\…): keep
+            // `C:\dir` whole instead of splitting it into `C` and `\dir`.
+            if cfg!(windows)
+                && self.os != Os::Windows
+                && part.starts_with('\\')
+                && dirs
+                    .last()
+                    .is_some_and(|d| d.len() == 1 && d.as_bytes()[0].is_ascii_alphabetic())
+            {
+                let drive = dirs.pop().unwrap_or_default();
+                dirs.push(format!("{drive}:{part}"));
+            } else {
+                dirs.push(part.to_string());
+            }
+        }
+        dirs.into_iter()
+            .filter(|d| !d.is_empty())
+            .map(PathBuf::from)
+            .collect()
     }
 
     /// Find an executable by name in `PATH` (honouring `PATHEXT` on Windows).
@@ -240,12 +257,20 @@ pub(crate) mod testutil {
         }
     }
 
+    /// `base` joined with the `/`-separated `rel` one component at a time, as the code under
+    /// test builds paths (`join("profiles").join(id)`). Expected paths compared as strings
+    /// need this: on Windows `join("profiles/chrome")` keeps its `/` and won't match.
+    pub fn native(base: &Path, rel: &str) -> PathBuf {
+        rel.split('/')
+            .fold(base.to_path_buf(), |p, part| p.join(part))
+    }
+
     /// A Linux-like env rooted in `root`, with `PATH=<root>/usr/bin` and home `<root>/home`.
     pub fn fake_env(os: Os, root: &Path) -> HostEnv {
         let mut env = HostEnv::empty(os);
         env.root = root.to_path_buf();
         env.home = Some(root.join("home"));
-        let path = root.join("usr/bin");
+        let path = native(root, "usr/bin");
         std::fs::create_dir_all(&path).unwrap();
         env.with_var("PATH", path.to_string_lossy())
     }

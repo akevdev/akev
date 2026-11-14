@@ -374,7 +374,7 @@ impl Interceptor for ChromiumInterceptor {
 mod tests {
     use super::*;
     use crate::host::Os;
-    use crate::host::testutil::{fake_env, make_exe};
+    use crate::host::testutil::{fake_env, make_exe, native};
     use crate::runner::ProcessEntry;
     use crate::runner::mock::MockRunner;
     use crate::util::testctx::ctx;
@@ -452,18 +452,18 @@ mod tests {
         assert_eq!(info.version.as_deref(), Some("131.0.6778.85"));
         assert_eq!(
             info.metadata["path"],
-            json!(dir.path().join("usr/bin/google-chrome"))
+            json!(native(dir.path(), "usr/bin/google-chrome"))
         );
         assert_eq!(
             info.metadata["profileDir"],
-            json!(c.data_dir.join("profiles/chrome"))
+            json!(native(&c.data_dir, "profiles/chrome"))
         );
 
         // A browser left over from a previous Akev run counts as active.
-        std::fs::create_dir_all(c.data_dir.join("profiles/chrome")).unwrap();
+        std::fs::create_dir_all(native(&c.data_dir, "profiles/chrome")).unwrap();
         let profile_arg = format!(
             "--user-data-dir={}",
-            c.data_dir.join("profiles/chrome").display()
+            native(&c.data_dir, "profiles/chrome").display()
         );
         runner.processes.lock().extend([
             ProcessEntry {
@@ -505,7 +505,7 @@ mod tests {
         let args = specs[0].args_lossy();
         assert!(args.contains(&format!(
             "--user-data-dir={}",
-            c.data_dir.join("profiles/chrome").display()
+            native(&c.data_dir, "profiles/chrome").display()
         )));
         assert!(args.contains(&"--proxy-server=http://127.0.0.1:8000".to_string()));
         assert!(args.contains(&format!(
@@ -513,7 +513,7 @@ mod tests {
             c.ca_spki_fingerprint
         )));
         assert_eq!(args.last().unwrap(), "https://example.com");
-        assert!(c.data_dir.join("profiles/chrome").is_dir());
+        assert!(native(&c.data_dir, "profiles/chrome").is_dir());
         assert!(i.info(&c).await.active);
 
         i.deactivate(&c, json!({})).await.unwrap();
@@ -583,7 +583,7 @@ mod tests {
     #[tokio::test]
     async fn outdated_running_instance_is_restarted() {
         let (_dir, runner, i, c) = setup();
-        let profile = c.data_dir.join("profiles/chrome");
+        let profile = native(&c.data_dir, "profiles/chrome");
         std::fs::create_dir_all(&profile).unwrap();
         // Still running from before the proxy port changed (8000 → now 8000; it uses 7000).
         runner.processes.lock().push(browser_process(
@@ -651,7 +651,7 @@ mod tests {
     #[tokio::test]
     async fn up_to_date_running_instance_gets_a_new_window() {
         let (_dir, runner, i, c) = setup();
-        let profile = c.data_dir.join("profiles/chrome");
+        let profile = native(&c.data_dir, "profiles/chrome");
         std::fs::create_dir_all(&profile).unwrap();
         runner.processes.lock().push(browser_process(
             900,

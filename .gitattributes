@@ -1,0 +1,3 @@
+# Golden outputs are compared byte for byte, and the raw HTTP ones contain CRLF on purpose:
+# never convert their line endings (Git for Windows would turn LF into CRLF on checkout).
+crates/akev-codegen/tests/golden/** -text

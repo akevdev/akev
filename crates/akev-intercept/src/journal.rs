@@ -224,17 +224,20 @@ mod tests {
             default_data_dirs(&env),
             vec![dir.path().join("home/.local/share/akev")]
         );
+        // An absolute XDG_DATA_HOME on every platform (`/xdg` has no drive letter on Windows,
+        // where the tests check the Linux rules too).
+        let xdg = dir.path().join("xdg");
         let env = env
-            .with_var("XDG_DATA_HOME", "/xdg")
+            .with_var("XDG_DATA_HOME", xdg.to_string_lossy())
             .with_var("AKEV_DATA_DIR", "/custom");
         assert_eq!(
             default_data_dirs(&env),
-            vec![PathBuf::from("/custom"), PathBuf::from("/xdg/akev")]
+            vec![PathBuf::from("/custom"), xdg.join("akev")]
         );
         // `$AKEV_DATA_DIR` isn't the platform dir: its journals go to the recovery dir.
         assert!(
             journal_file(&env, Path::new("/custom"), "android-proxy.json")
-                .starts_with("/xdg/akev/recovery")
+                .starts_with(xdg.join("akev/recovery"))
         );
         let mut mac = HostEnv::empty(Os::MacOs);
         mac.home = Some("/Users/me".into());

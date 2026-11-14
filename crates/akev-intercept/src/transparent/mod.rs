@@ -266,6 +266,8 @@ mod tests {
         }
     }
 
+    // The per-app plan needs the real user id (`getuid`), which only Unix has.
+    #[cfg(unix)]
     #[tokio::test]
     async fn activation_returns_the_plan() {
         let dir = tempfile::tempdir().unwrap();

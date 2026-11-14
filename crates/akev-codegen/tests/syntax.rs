@@ -277,7 +277,10 @@ fn java_snippets_compile() {
         |n, _| format!("{n}/Main.java"),
         |p| {
             let out = p.parent().expect("parent").join("classes");
+            // The snippet is written as UTF-8; javac before Java 18 reads sources in the
+            // platform encoding (windows-1252 on Windows) unless told otherwise.
             run(Command::new("javac")
+                .args(["-encoding", "UTF-8"])
                 .arg("-Xlint:none")
                 .arg("-d")
                 .arg(out)

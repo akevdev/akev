@@ -3,7 +3,7 @@
 //! `crates/akev-api/tests/jvm_attach.rs`.
 
 use super::*;
-use crate::host::testutil::{fake_env, make_exe};
+use crate::host::testutil::{fake_env, make_exe, native};
 use crate::runner::mock::{MockRunner, line_of};
 use crate::runner::{CommandOutput, ProcessEntry};
 use crate::util::testctx::ctx;
@@ -328,7 +328,7 @@ async fn next_java_is_tried_when_one_lacks_the_attach_api() {
     });
     let i = JvmInterceptor::new(sys);
     let res = i.activate(&m.ctx, json!({"pid": TARGET})).await.unwrap();
-    assert_eq!(res.metadata["java"], json!(other.join("bin/java")));
+    assert_eq!(res.metadata["java"], json!(native(&other, "bin/java")));
     let programs: Vec<PathBuf> = m
         .runner
         .calls
@@ -338,9 +338,9 @@ async fn next_java_is_tried_when_one_lacks_the_attach_api() {
         .map(|s| PathBuf::from(&s.program))
         .collect();
     #[cfg(unix)]
-    assert_eq!(programs, vec![target_java, other.join("bin/java")]);
+    assert_eq!(programs, vec![target_java, native(&other, "bin/java")]);
     #[cfg(not(unix))]
-    assert_eq!(programs.last(), Some(&other.join("bin/java")));
+    assert_eq!(programs.last(), Some(&native(&other, "bin/java")));
 }
 
 #[tokio::test]
