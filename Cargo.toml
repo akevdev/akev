@@ -143,7 +143,7 @@ dirs = "6"
 tempfile = "3"
 socket2 = { version = "0.6", features = ["all"] }
 hickory-resolver = "0.26"
-sysinfo = "0.37"
+sysinfo = "0.38"
 lru = "0.19"
 open = "5"
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream", "gzip", "brotli", "zstd"] }
