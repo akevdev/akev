@@ -112,7 +112,7 @@ h3-quinn = "0.0.10"
 # web server
 axum = { version = "0.8", features = ["ws", "macros", "multipart"] }
 tower = { version = "0.5", features = ["util"] }
-tower-http = { version = "0.6", features = ["cors", "compression-full", "trace", "set-header"] }
+tower-http = { version = "0.7", features = ["cors", "compression-full", "trace", "set-header"] }
 rust-embed = { version = "8", features = ["compression", "mime-guess"] }
 mime_guess = "2"
 
