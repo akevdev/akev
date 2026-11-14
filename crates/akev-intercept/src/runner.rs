@@ -371,7 +371,45 @@ fn timed_out(spec: &CommandSpec) -> io::Error {
     )
 }
 
+/// Windows: stop the programs we start from inheriting our own stdin, stdout and stderr by
+/// accident.
+///
+/// `CreateProcess` gives a child *every* inheritable handle of ours, not just the ones passed
+/// as its stdio, and our standard handles are inheritable (that's how we received them). A
+/// long-lived program we start (the adb server that `adb devices` launches, a browser, a
+/// terminal) would then hold the pipe our output goes to open after we exit, and whatever
+/// reads it to the end (`akev … | tee`, a CI step) waits until that program exits too.
+/// Clearing the flag only stops this accidental inheritance: a child meant to share our stdio
+/// (`Stdio::inherit`) gets its own inheritable duplicate from the standard library.
+#[cfg(windows)]
+fn keep_std_handles_private() {
+    use std::sync::Once;
+    use windows_sys::Win32::Foundation::{
+        HANDLE_FLAG_INHERIT, INVALID_HANDLE_VALUE, SetHandleInformation,
+    };
+    use windows_sys::Win32::System::Console::{
+        GetStdHandle, STD_ERROR_HANDLE, STD_INPUT_HANDLE, STD_OUTPUT_HANDLE,
+    };
+
+    static ONCE: Once = Once::new();
+    ONCE.call_once(|| {
+        for which in [STD_INPUT_HANDLE, STD_OUTPUT_HANDLE, STD_ERROR_HANDLE] {
+            // SAFETY: `GetStdHandle` has no preconditions. `SetHandleInformation` only changes
+            // the inherit flag of one of our own handles; a process without a console (the
+            // desktop app) has null standard handles, which are skipped.
+            unsafe {
+                let handle = GetStdHandle(which);
+                if !handle.is_null() && handle != INVALID_HANDLE_VALUE {
+                    SetHandleInformation(handle, HANDLE_FLAG_INHERIT, 0);
+                }
+            }
+        }
+    });
+}
+
 fn base_command(spec: &CommandSpec) -> tokio::process::Command {
+    #[cfg(windows)]
+    keep_std_handles_private();
     let mut cmd = tokio::process::Command::new(&spec.program);
     cmd.args(&spec.args);
     for key in &spec.env_remove {
@@ -921,5 +959,33 @@ mod tests {
     async fn system_runner_lists_own_process() {
         let procs = SystemRunner.processes(false).await.unwrap();
         assert!(procs.iter().any(|p| p.pid == std::process::id()));
+    }
+
+    /// The JVM attach CI job hung for hours on Windows: the adb server that `adb devices`
+    /// started had inherited the test process's stdout, the pipe CI was reading to its end.
+    #[cfg(windows)]
+    #[test]
+    fn commands_dont_inherit_our_std_handles() {
+        use windows_sys::Win32::Foundation::{
+            GetHandleInformation, HANDLE_FLAG_INHERIT, INVALID_HANDLE_VALUE,
+        };
+        use windows_sys::Win32::System::Console::{
+            GetStdHandle, STD_ERROR_HANDLE, STD_OUTPUT_HANDLE,
+        };
+
+        let _ = base_command(&CommandSpec::new("cmd"));
+        for which in [STD_OUTPUT_HANDLE, STD_ERROR_HANDLE] {
+            let mut flags = 0;
+            // SAFETY: both calls only read information about one of our own handles.
+            let known = unsafe {
+                let handle = GetStdHandle(which);
+                !handle.is_null()
+                    && handle != INVALID_HANDLE_VALUE
+                    && GetHandleInformation(handle, &mut flags) != 0
+            };
+            if known {
+                assert_eq!(flags & HANDLE_FLAG_INHERIT, 0, "std handle {which}");
+            }
+        }
     }
 }
