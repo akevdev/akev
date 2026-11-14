@@ -558,7 +558,7 @@ impl Interceptor for FirefoxInterceptor {
 mod tests {
     use super::*;
     use crate::host::Os;
-    use crate::host::testutil::{fake_env, make_exe};
+    use crate::host::testutil::{fake_env, make_exe, native};
     use crate::runner::CommandOutput;
     use crate::runner::mock::{MockRunner, line_of};
     use crate::util::testctx::ctx;
@@ -661,7 +661,7 @@ mod tests {
             .unwrap();
         assert!(res.success);
         assert_eq!(res.metadata["needsManualTrust"], json!(false));
-        let profile = c.data_dir.join("profiles/firefox");
+        let profile = native(&c.data_dir, "profiles/firefox");
         let user_js = std::fs::read_to_string(profile.join("user.js")).unwrap();
         assert!(user_js.contains("\"network.proxy.http_port\", 8000"));
 
@@ -716,7 +716,7 @@ mod tests {
     #[tokio::test]
     async fn already_trusted_profile_skips_dialog() {
         let (_dir, runner, i, c) = setup(false);
-        let profile = c.data_dir.join("profiles/firefox");
+        let profile = native(&c.data_dir, "profiles/firefox");
         std::fs::create_dir_all(&profile).unwrap();
         let mut db = b"SQLite format 3\0".to_vec();
         db.extend_from_slice(&c.ca_der);
@@ -752,7 +752,7 @@ mod tests {
         // Launched for port 7000 (before a port change), still running.
         let mut old = c.clone();
         old.proxy_port = 7000;
-        let profile = c.data_dir.join("profiles/firefox");
+        let profile = native(&c.data_dir, "profiles/firefox");
         std::fs::create_dir_all(&profile).unwrap();
         std::fs::write(profile.join("user.js"), profile_user_js(&old)).unwrap();
         runner.processes.lock().push(firefox_process(900, &profile));

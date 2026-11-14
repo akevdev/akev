@@ -28,8 +28,9 @@ env:
   GH_REPO: ${{ github.repository }}
   IMPERSONATE: akev-cli/impersonate,akev-api/impersonate,akev-proxy/impersonate
   # The JVM agent is compiled from source with this JDK (to Java 8 bytecode); no JDK, no build.
+  # 21: Temurin has no 17 for Windows on Arm64.
   AKEV_AGENT_REQUIRE_JDK: '1'
-  AGENT_JDK: '17'
+  AGENT_JDK: '21'
 
 jobs:
   prepare:

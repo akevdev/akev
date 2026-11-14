@@ -886,7 +886,9 @@ async fn compose_with_http_version_http3() {
     let (chain, key) = origin_ca.leaf(&["localhost"], false);
     let origin = spawn_h3(chain, key, None).await;
     let mut settings = common::proxy_settings();
-    settings.connect_timeout_ms = 1000;
+    // Long enough for the refused TCP connect at the end: Windows retries a SYN answered with
+    // a reset for a second or two (per address) before reporting the refusal.
+    settings.connect_timeout_ms = 5000;
     let mut proxy = h3_proxy(RuleSet::default(), settings).await;
     let request = EditableRequest {
         method: "POST".into(),

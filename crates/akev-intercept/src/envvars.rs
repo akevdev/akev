@@ -434,7 +434,7 @@ pub async fn ensure_java_truststore(ctx: &InterceptContext, sys: &Sys) -> Option
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::host::testutil::{fake_env, make_exe};
+    use crate::host::testutil::{fake_env, make_exe, native};
     use crate::runner::CommandOutput;
     use crate::runner::mock::MockRunner;
     use crate::util::testctx::ctx;
@@ -625,7 +625,7 @@ mod tests {
         let lines = runner.call_lines();
         assert_eq!(lines.len(), 2);
         assert!(lines[0].starts_with("keytool -importkeystore -noprompt -srckeystore"));
-        assert!(lines[0].contains("lib/security/cacerts"));
+        assert!(lines[0].contains(&*native(&jdk, "lib/security/cacerts").to_string_lossy()));
         assert!(lines[1].starts_with("keytool -importcert -noprompt -alias akev-ca"));
 
         // Cached: no more keytool runs; env vars now carry the trust store.
