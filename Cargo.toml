@@ -139,7 +139,7 @@ uuid = { version = "1", features = ["v4", "v7", "serde"] }
 time = { version = "0.3", features = ["serde", "formatting", "parsing", "macros"] }
 rand = "0.9"
 clap = { version = "4", features = ["derive", "env", "wrap_help"] }
-dirs = "6"
+dirs = "7"
 tempfile = "3"
 socket2 = { version = "0.6", features = ["all"] }
 hickory-resolver = "0.26"
