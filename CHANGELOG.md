@@ -6,6 +6,8 @@ user-visible change.
 
 ## Unreleased
 
+## 0.1.0 — 2026-11-15
+
 The first public release.
 
 - Capture HTTP/1.1, HTTP/2, HTTP/3, WebSocket, SSE and gRPC traffic from browsers, terminals,
