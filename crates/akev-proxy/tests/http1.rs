@@ -874,3 +874,49 @@ async fn ntlm_authenticated_upstream_connections_are_never_shared_between_client
     assert!(head.starts_with("HTTP/1.1 200"), "{head}");
     assert_eq!(body, b"secret data for NTLM alice-token");
 }
+
+/// CA regeneration restarts the proxy on the old one's listening socket: the address can't
+/// be lost to another program meanwhile, and a client connecting during the restart waits in
+/// the backlog and is served by the new proxy instead of being refused.
+#[tokio::test]
+async fn a_restarted_proxy_takes_over_the_listening_socket() {
+    let upstream = spawn_http_upstream().await;
+    let proxy = start_proxy(no_rules(), Arc::new(NoBreakpoints)).await;
+    let addr = proxy.addr();
+    let listener = proxy
+        .handle
+        .shutdown_keep_listener()
+        .await
+        .expect("the listening socket is kept");
+    assert_eq!(listener.local_addr().unwrap(), addr);
+    assert!(
+        proxy.handle.shutdown_keep_listener().await.is_none(),
+        "a stopped proxy has no socket left to give"
+    );
+
+    let mut conn = tokio::net::TcpStream::connect(addr)
+        .await
+        .expect("connecting while no proxy runs is queued, not refused");
+    conn.write_all(
+        format!(
+            "GET http://{upstream}/hello HTTP/1.1\r\nHost: {upstream}\r\nConnection: close\r\n\r\n"
+        )
+        .as_bytes(),
+    )
+    .await
+    .unwrap();
+
+    let restarted = start_proxy_on(listener).await;
+    assert_eq!(restarted.addr(), addr);
+    let mut buf = Vec::new();
+    let (head, body) =
+        tokio::time::timeout(Duration::from_secs(10), read_response(&mut conn, &mut buf))
+            .await
+            .expect("the queued client is served");
+    assert!(head.starts_with("HTTP/1.1 200"), "{head}");
+    assert_eq!(body, b"hello");
+    restarted.handle.shutdown().await;
+
+    // A plain shutdown closes the socket: new clients are refused.
+    assert!(tokio::net::TcpStream::connect(addr).await.is_err());
+}

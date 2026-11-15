@@ -31,6 +31,7 @@ use matchset::{FilterDelta, MatchSet};
 use messages::{ClientMessage, ServerMessage};
 use std::collections::HashSet;
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 use tokio::sync::broadcast::error::{RecvError, TryRecvError};
 use tokio::sync::mpsc;
@@ -494,6 +495,15 @@ impl Conn {
     }
 }
 
+/// Clears the flag when dropped, also if the task holding it panics.
+struct ResetOnDrop(Arc<AtomicBool>);
+
+impl Drop for ResetOnDrop {
+    fn drop(&mut self) {
+        self.0.store(false, Ordering::Release);
+    }
+}
+
 /// Background tasks feeding the bus: `stats` every 2 s, `rule-stats` (≤ 2/s, on change),
 /// interceptor state polling, and the CA expiry check.
 pub(crate) fn spawn_background_tasks(app: &Arc<App>) {
@@ -511,6 +521,7 @@ pub(crate) fn spawn_background_tasks(app: &Arc<App>) {
         }
         ca_tick.tick().await; // the first notice is sent per connection
         let mut last_rule_stats = String::new();
+        let refreshing = Arc::new(AtomicBool::new(false));
         loop {
             tokio::select! {
                 changed = shutdown.changed() => {
@@ -534,8 +545,15 @@ pub(crate) fn spawn_background_tasks(app: &Arc<App>) {
                     }
                 }
                 _ = interceptor_tick.tick() => {
-                    if a.has_stream_clients() {
-                        a.refresh_interceptors(false).await;
+                    // Detecting interceptors runs external tools and can take seconds: it runs
+                    // on its own (one at a time) so `stats` and `rule-stats` stay on time.
+                    if a.has_stream_clients() && !refreshing.swap(true, Ordering::AcqRel) {
+                        let a = a.clone();
+                        let done = ResetOnDrop(refreshing.clone());
+                        tokio::spawn(async move {
+                            let _done = done;
+                            a.refresh_interceptors(false).await;
+                        });
                     }
                 }
                 _ = ca_tick.tick() => {

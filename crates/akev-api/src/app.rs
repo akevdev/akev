@@ -789,16 +789,17 @@ impl App {
         let ca = Arc::new(ca);
         let old_proxy = self.proxy();
         let addr = old_proxy.local_addr();
-        old_proxy.shutdown().await;
+        // The new proxy takes over the old one's listening socket, so it keeps the port and
+        // bind address (including `--proxy-port` / `--proxy-bind` overrides): clients keep
+        // working, a session kept local with `--proxy-bind 127.0.0.1` isn't reopened to the
+        // network, and no other program can take the port while the proxy restarts.
+        let listener = old_proxy.shutdown_keep_listener().await;
         let settings = self.settings();
-        // Restart on the live listener (port and bind, including `--proxy-port` /
-        // `--proxy-bind` overrides): clients keep working and a session that was kept local
-        // with `--proxy-bind 127.0.0.1` isn't silently reopened to the network.
         let mut proxy_settings = settings.proxy.clone();
         proxy_settings.port = addr.port();
         proxy_settings.bind_address = self.proxy_bind();
         let new_proxy = match self
-            .start_proxy(proxy_settings.clone(), &settings, ca.clone())
+            .start_proxy(proxy_settings.clone(), &settings, ca.clone(), listener)
             .await
         {
             Ok(p) => p,
@@ -810,7 +811,7 @@ impl App {
                 );
                 let mut fallback = proxy_settings.clone();
                 fallback.port = preferred;
-                self.start_proxy(fallback, &settings, ca.clone())
+                self.start_proxy(fallback, &settings, ca.clone(), None)
                     .await
                     .map_err(|e| {
                         ApiError::internal(format!(
@@ -861,16 +862,20 @@ impl App {
         proxy: akev_core::settings::ProxySettings,
         settings: &Settings,
         ca: Arc<CertificateAuthority>,
+        listener: Option<akev_proxy::Listener>,
     ) -> akev_proxy::Result<ProxyHandle> {
-        akev_proxy::start(ProxyOptions {
+        let options = ProxyOptions {
             settings: self.effective_proxy(&proxy),
             capture: settings.capture.clone(),
             ca,
             rules: self.rules.clone(),
             sink: self.recording.clone() as Arc<dyn EventSink>,
             breakpoints: self.breakpoints.clone(),
-        })
-        .await
+        };
+        match listener {
+            Some(l) => akev_proxy::start_on(options, l).await,
+            None => akev_proxy::start(options).await,
+        }
     }
 
     // ----- interceptors -----

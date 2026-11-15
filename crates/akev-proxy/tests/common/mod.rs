@@ -166,6 +166,34 @@ pub async fn start_proxy_engine(
     }
 }
 
+/// Start a proxy without rules on the listening socket of a stopped one, as CA regeneration
+/// does ([`ProxyHandle::shutdown_keep_listener`]).
+pub async fn start_proxy_on(listener: akev_proxy::Listener) -> TestProxy {
+    let ca = Arc::new(CertificateAuthority::generate().expect("CA"));
+    let (tx, rx) = mpsc::unbounded_channel();
+    let handle = akev_proxy::start_on(
+        ProxyOptions {
+            settings: proxy_settings(),
+            capture: CaptureSettings {
+                detect_processes: false,
+                ..Default::default()
+            },
+            ca: ca.clone(),
+            rules: Arc::new(RulesEngine::new(RuleSet::default())),
+            sink: Arc::new(ChannelSink(tx)),
+            breakpoints: Arc::new(NoBreakpoints),
+        },
+        listener,
+    )
+    .await
+    .expect("proxy starts");
+    TestProxy {
+        handle,
+        events: rx,
+        ca,
+    }
+}
+
 /// Read one HTTP/1 request (head + Content-Length/chunked body). Returns (raw head, body).
 pub async fn read_request<S: AsyncRead + Unpin>(
     s: &mut S,
