@@ -39,7 +39,7 @@ md-5 = { workspace = true }
 hex = { workspace = true }
 base64 = { workspace = true }
 hickory-resolver = { workspace = true, features = ["https-ring"] }
-rquickjs = { version = "0.9" }
+rquickjs = { version = "0.14" }
 p12-keystore = "0.4.1"
 memchr = { workspace = true }
 socket2 = { workspace = true }

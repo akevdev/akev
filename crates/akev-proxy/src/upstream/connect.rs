@@ -31,11 +31,14 @@ use tokio_rustls::TlsConnector;
 /// Delay before starting the next connection attempt (RFC 8305 "Connection Attempt Delay").
 pub(crate) const ATTEMPT_DELAY: Duration = Duration::from_millis(250);
 
-/// Local endpoints of the live outgoing TCP connections opened by this process (with a count:
-/// Linux may reuse an ephemeral port for connections to different destinations).
-fn local_endpoints() -> &'static DashMap<SocketAddr, u32> {
-    static ENDPOINTS: OnceLock<DashMap<SocketAddr, u32>> = OnceLock::new();
-    ENDPOINTS.get_or_init(DashMap::new)
+/// The live outgoing TCP connections opened by this process, as `(local, remote)` pairs.
+///
+/// The local endpoint alone is not enough: Linux gives one ephemeral port to connections to
+/// different destinations, so an unrelated client can connect to the proxy from the very
+/// address one of our upstream sockets uses. The count is defensive; a live pair is unique.
+fn connections() -> &'static DashMap<(SocketAddr, SocketAddr), u32> {
+    static CONNECTIONS: OnceLock<DashMap<(SocketAddr, SocketAddr), u32>> = OnceLock::new();
+    CONNECTIONS.get_or_init(DashMap::new)
 }
 
 /// IPv4-mapped IPv6 addresses compare as IPv4 (dual-stack listeners report them that way).
@@ -43,33 +46,40 @@ fn canonical_endpoint(addr: SocketAddr) -> SocketAddr {
     SocketAddr::new(super::proxy::bypass::canonical_ip(addr.ip()), addr.port())
 }
 
-/// Whether `addr` is the local end of a live outgoing connection made by an upstream client
-/// in this process — i.e. a connection the proxy accepted from itself (a proxy loop).
-pub(crate) fn is_local_endpoint(addr: SocketAddr) -> bool {
-    local_endpoints().contains_key(&canonical_endpoint(addr))
+/// Whether a connection accepted from `peer` on `local` is a live outgoing connection made by
+/// an upstream client in this process — i.e. the proxy accepted a connection from itself (a
+/// proxy loop).
+pub(crate) fn is_own_connection(peer: SocketAddr, local: SocketAddr) -> bool {
+    connections().contains_key(&(canonical_endpoint(peer), canonical_endpoint(local)))
 }
 
-/// An outgoing TCP stream whose local address is registered for loop detection while it
-/// lives.
+/// An outgoing TCP stream registered for loop detection while it lives.
 pub(crate) struct TrackedTcp {
     stream: TcpStream,
-    local: Option<SocketAddr>,
+    key: Option<(SocketAddr, SocketAddr)>,
 }
 
 impl TrackedTcp {
     pub(crate) fn new(stream: TcpStream) -> Self {
-        let local = stream.local_addr().ok().map(canonical_endpoint);
-        if let Some(addr) = local {
-            *local_endpoints().entry(addr).or_insert(0) += 1;
+        // The kernel's own view of the remote end, which is what the accepting side sees as
+        // its local address (also when connecting to an unspecified address means loopback).
+        let key = match (stream.local_addr(), stream.peer_addr()) {
+            (Ok(local), Ok(remote)) => {
+                Some((canonical_endpoint(local), canonical_endpoint(remote)))
+            }
+            _ => None,
+        };
+        if let Some(key) = key {
+            *connections().entry(key).or_insert(0) += 1;
         }
-        TrackedTcp { stream, local }
+        TrackedTcp { stream, key }
     }
 }
 
 impl Drop for TrackedTcp {
     fn drop(&mut self) {
-        if let Some(addr) = self.local {
-            local_endpoints().remove_if_mut(&addr, |_, count| {
+        if let Some(key) = self.key {
+            connections().remove_if_mut(&key, |_, count| {
                 *count = count.saturating_sub(1);
                 *count == 0
             });
@@ -502,25 +512,58 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn tracked_streams_register_their_local_endpoint() {
+    async fn tracked_streams_register_their_connection() {
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
         let addr = listener.local_addr().unwrap();
         let stream = TcpStream::connect(addr).await.unwrap();
         let (accepted, peer) = listener.accept().await.unwrap();
-        assert!(!is_local_endpoint(peer));
+        assert!(!is_own_connection(peer, addr));
         let tracked = TrackedTcp::new(stream);
-        // What the accepting side sees as the peer is our local endpoint, also when reported
-        // as an IPv4-mapped address by a dual-stack listener.
-        assert!(is_local_endpoint(peer));
-        let mapped = match peer.ip() {
-            IpAddr::V4(v4) => SocketAddr::new(IpAddr::V6(v4.to_ipv6_mapped()), peer.port()),
-            IpAddr::V6(_) => peer,
+        // The accepting side sees our connection as `peer` → `addr`, also when a dual-stack
+        // listener reports both as IPv4-mapped addresses.
+        assert!(is_own_connection(peer, addr));
+        let mapped = |a: SocketAddr| match a.ip() {
+            IpAddr::V4(v4) => SocketAddr::new(IpAddr::V6(v4.to_ipv6_mapped()), a.port()),
+            IpAddr::V6(_) => a,
         };
-        assert!(is_local_endpoint(mapped));
-        assert!(!is_local_endpoint(addr));
+        assert!(is_own_connection(mapped(peer), mapped(addr)));
+        // The accepted socket itself is not one of ours.
+        assert!(!is_own_connection(addr, peer));
         drop(tracked);
-        assert!(!is_local_endpoint(peer));
+        assert!(!is_own_connection(peer, addr));
         drop(accepted);
+    }
+
+    /// Linux gives one ephemeral port to connections to different destinations: a client
+    /// sharing the local endpoint of one of our upstream sockets is not a loop.
+    #[cfg(target_os = "linux")]
+    #[tokio::test]
+    async fn a_shared_local_endpoint_is_not_a_loop() {
+        use tokio::net::{TcpListener, TcpSocket};
+        let ours = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let theirs = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let socket = |local: SocketAddr| {
+            let s = TcpSocket::new_v4().unwrap();
+            s.set_reuseaddr(true).unwrap();
+            s.bind(local).unwrap();
+            s
+        };
+        let first = socket("127.0.0.1:0".parse().unwrap());
+        let local = first.local_addr().unwrap();
+        let tracked = TrackedTcp::new(first.connect(ours.local_addr().unwrap()).await.unwrap());
+        let other = socket(local)
+            .connect(theirs.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (_a, ours_peer) = ours.accept().await.unwrap();
+        let (_b, theirs_peer) = theirs.accept().await.unwrap();
+        assert_eq!(ours_peer, theirs_peer, "both connections come from {local}");
+        assert!(is_own_connection(ours_peer, ours.local_addr().unwrap()));
+        assert!(!is_own_connection(
+            theirs_peer,
+            theirs.local_addr().unwrap()
+        ));
+        drop((tracked, other));
     }
 
     #[tokio::test]
