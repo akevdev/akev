@@ -176,6 +176,7 @@ fn session_roundtrip_is_lossless() {
     assert_eq!(&file[..4], &[0x28, 0xb5, 0x2f, 0xfd], "zstd-compressed");
 
     let target = store();
+    skip_ids_of(&source);
     let ids = target.load_session(&mut file.as_slice()).unwrap();
     let originals = source.summaries();
     assert_eq!(ids.len(), originals.len());

@@ -61,6 +61,25 @@ impl Env {
         self.json(reqwest::Method::GET, "/api/wireguard", None)
             .await
     }
+
+    /// PUT `body` to /api/wireguard with a free loopback `port` added. The port is found by
+    /// binding and releasing a socket, so a parallel test can take it before the server binds
+    /// it; try another port when the server didn't start. Returns the port and the response.
+    async fn put_on_free_port(&self, body: Value) -> (u16, Value) {
+        let mut tries = 0;
+        loop {
+            tries += 1;
+            let port = free_udp_port();
+            let mut body = body.clone();
+            body["port"] = json!(port);
+            let info = self
+                .json(reqwest::Method::PUT, "/api/wireguard", Some(body))
+                .await;
+            if info["running"] == true || tries == 5 {
+                return (port, info);
+            }
+        }
+    }
 }
 
 fn free_udp_port() -> u16 {
@@ -117,13 +136,8 @@ async fn wireguard_mode_via_the_api() {
     assert_eq!(keys.server.public_key().to_base64(), server_key);
 
     // Enable it live on a free loopback port.
-    let port = free_udp_port();
-    let info = env
-        .json(
-            reqwest::Method::PUT,
-            "/api/wireguard",
-            Some(json!({ "enabled": true, "port": port, "bindAddress": "127.0.0.1" })),
-        )
+    let (port, info) = env
+        .put_on_free_port(json!({ "enabled": true, "bindAddress": "127.0.0.1" }))
         .await;
     assert_eq!(info["running"], true, "{info}");
     assert_eq!(info["listenAddr"], format!("127.0.0.1:{port}"));
@@ -309,15 +323,8 @@ async fn busy_port_and_invalid_settings() {
     assert_eq!(info["listenAddr"], format!("127.0.0.1:{port}"));
     assert!(info["error"].is_null());
     // Another port moves it.
-    let other = free_udp_port();
-    let info = env
-        .json(
-            reqwest::Method::PUT,
-            "/api/wireguard",
-            Some(json!({ "port": other })),
-        )
-        .await;
-    assert_eq!(info["listenAddr"], format!("127.0.0.1:{other}"));
+    let (other, info) = env.put_on_free_port(json!({})).await;
+    assert_eq!(info["listenAddr"], format!("127.0.0.1:{other}"), "{info}");
 
     let mut settings = env.json(reqwest::Method::GET, "/api/settings", None).await;
     settings["proxy"]["wireguard"]["bindAddress"] = json!("not-an-ip");
