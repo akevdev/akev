@@ -466,13 +466,20 @@ fn accept(shared: &Arc<Shared>, core: &Arc<Core>, stream: TcpStream, peer: Socke
     shared.tracker.spawn(async move {
         let shared = task_shared;
         let _active = CounterGuard::new(&shared.stats.active_connections);
+        let original = original_destination(&core, &stream, peer, local);
+        // One of Akev's own upstream sockets, as accepted here or as it was sent (the redirect
+        // is invisible to the sender, whose remote end is the original destination).
+        let own = || {
+            shared.upstream.is_own_connection(peer, local)
+                || original.is_some_and(|dst| shared.upstream.is_own_connection(peer, dst))
+        };
         // One of Akev's own upstream sockets registers itself right after its connect
         // completes, which can be just after we accepted it: check again once it has sent
         // something (or shortly after, for server-speaks-first protocols).
-        if !shared.upstream.is_own_connection(peer) {
+        if !own() {
             let _ = tokio::time::timeout(Duration::from_millis(100), stream.readable()).await;
         }
-        if shared.upstream.is_own_connection(peer) {
+        if own() {
             refuse_loop(&core, peer);
             return;
         }
@@ -480,7 +487,7 @@ fn accept(shared: &Arc<Shared>, core: &Arc<Core>, stream: TcpStream, peer: Socke
         if !is_host_address(peer.ip()) && !shared.admit(peer.ip()) {
             return;
         }
-        let Some((io, ctx)) = admit(&shared, &core, stream, peer, local) else {
+        let Some((io, ctx)) = admit(&shared, &core, stream, peer, local, original) else {
             return;
         };
         let client = shared.clients.register(peer.ip());
@@ -505,22 +512,32 @@ fn refuse_loop(core: &Core, peer: SocketAddr) {
     }
 }
 
-/// Look up the original destination, record the connection and build its context.
+/// Where a redirected connection was really going; `None` when it wasn't redirected.
+fn original_destination(
+    core: &Core,
+    stream: &TcpStream,
+    peer: SocketAddr,
+    local: SocketAddr,
+) -> Option<SocketAddr> {
+    let lookup = core.lookup.read().clone();
+    match lookup.original_destination(stream, peer, local) {
+        Ok(dst) => origdst::redirected_destination(dst, local),
+        Err(e) => {
+            tracing::debug!(%peer, error = %e, "original destination lookup failed");
+            None
+        }
+    }
+}
+
+/// Record the connection and build its context.
 fn admit(
     shared: &Arc<Shared>,
     core: &Arc<Core>,
     stream: TcpStream,
     peer: SocketAddr,
     local: SocketAddr,
+    original: Option<SocketAddr>,
 ) -> Option<(ClientIo, ConnCtx)> {
-    let lookup = core.lookup.read().clone();
-    let original = match lookup.original_destination(&stream, peer, local) {
-        Ok(dst) => origdst::redirected_destination(dst, local),
-        Err(e) => {
-            tracing::debug!(%peer, error = %e, "original destination lookup failed");
-            None
-        }
-    };
     shared
         .stats
         .total_connections

@@ -486,17 +486,22 @@ impl UpstreamClient {
         self.inner.connect_raw(host, port, restrict_loopback).await
     }
 
-    /// Proxy-loop detection: whether `peer` — the remote address of a connection accepted by
-    /// the inbound side — is the local end of a live outgoing connection opened by an upstream
-    /// client in this process. That happens when a request is forwarded back to the proxy
+    /// Proxy-loop detection: whether the connection the inbound side accepted from `peer` on
+    /// its address `local` is a live outgoing connection opened by an upstream client in this
+    /// process. Both ends are compared, since Linux gives one ephemeral port to connections to
+    /// different destinations. A loop happens when a request is forwarded back to the proxy
     /// itself (an upstream proxy, system proxy, PAC result or DNS override pointing at Akev),
     /// which would otherwise recurse until resources run out. The pipeline should refuse such
     /// requests (HTTP Toolkit answers them with "Passthrough loop detected").
     ///
     /// IPv4-mapped IPv6 peers (dual-stack listeners) are matched against their IPv4 form. The
     /// check is a lock-free hash lookup, cheap enough to run for every accepted connection.
-    pub fn is_own_connection(&self, peer: std::net::SocketAddr) -> bool {
-        connect::is_local_endpoint(peer)
+    pub fn is_own_connection(
+        &self,
+        peer: std::net::SocketAddr,
+        local: std::net::SocketAddr,
+    ) -> bool {
+        connect::is_own_connection(peer, local)
     }
 }
 

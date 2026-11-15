@@ -246,10 +246,17 @@ fn memory_limit_is_enforced() {
     let src = "function onRequest(req) { var a = []; while (true) { a.push(new Array(1000000).fill(1)); } }";
     let err = run_on_request(src, req("GET", "http://x.test/"), Bytes::new()).unwrap_err();
     assert!(err.to_string().contains("memory"), "{err}");
+    // Doubling a string ends at the memory limit or the engine's maximum string length,
+    // whichever comes first (concatenated strings may not be flattened right away).
     let src = "function onRequest(req) { var s = 'x'; while (true) { s = s + s; } }";
     let err = run_on_request(src, req("GET", "http://x.test/"), Bytes::new()).unwrap_err();
     let msg = err.to_string();
-    assert!(msg.contains("memory") || msg.contains("length"), "{msg}");
+    assert!(
+        ["memory", "length", "too long"]
+            .iter()
+            .any(|m| msg.contains(m)),
+        "{msg}"
+    );
 }
 
 #[test]
@@ -576,18 +583,19 @@ fn stringify_replacement_matches_native_behaviour() {
     }
 }
 
-/// QuickJS's interrupt handler only runs between bytecode instructions. A backtracking regular
-/// expression or a long built-in loop never reaches it, and used to block the caller (a proxied
-/// request, a rule save) for as long as the native call took.
+/// QuickJS's interrupt handler runs between bytecode instructions and at the checks some
+/// built-ins make in their own loops (regular expressions, `indexOf`). A built-in loop without
+/// such a check never reaches it, and used to block the caller (a proxied request, a rule
+/// save) for as long as the native call took.
 #[test]
 fn uninterruptible_work_cannot_hang_the_caller() {
-    // Each of these runs for tens of seconds natively.
-    let regex = "/(a*)*b/.test('a'.repeat(28));";
-    let builtin = "Array(2 ** 30).indexOf(1);";
+    // Each of these runs for over ten seconds natively without checking for interrupts.
+    let join = "Array(2 ** 29).join('');";
+    let search = "'a'.repeat(2 ** 21).indexOf('a'.repeat(2 ** 12) + 'b');";
     let cases = [
-        ("regex", "onRequest", regex),
-        ("built-in loop", "onRequest", builtin),
-        ("onResponse regex", "onResponse", regex),
+        ("join", "onRequest", join),
+        ("substring search", "onRequest", search),
+        ("onResponse join", "onResponse", join),
     ];
     std::thread::scope(|scope| {
         for (what, hook, code) in cases {
@@ -616,14 +624,14 @@ fn uninterruptible_work_cannot_hang_the_caller() {
     });
 
     // Rule compilation runs top-level code: a stuck script is rejected within about a second
-    // instead of holding the rules lock until the regex finishes.
+    // instead of holding the rules lock until the native call returns.
     let start = Instant::now();
     let e = RulesEngine::new(set(vec![
         rule(
             "stuck",
             vec![],
             Action::Script {
-                source: "/(a*)*b/.test('a'.repeat(28));\nfunction onRequest(r) {}".into(),
+                source: format!("{search}\nfunction onRequest(r) {{}}"),
             },
         ),
         rule(
@@ -640,4 +648,30 @@ fn uninterruptible_work_cannot_hang_the_caller() {
     assert_eq!(errors.len(), 1, "{errors:?}");
     assert_eq!(errors[0].0.as_str(), "stuck");
     assert!(errors[0].1.contains("can't be interrupted"), "{errors:?}");
+}
+
+/// A regular expression that backtracks catastrophically is stopped by the interrupt handler
+/// like plain slow code: an ordinary time-limit error, no thread left running.
+#[test]
+fn backtracking_regexes_are_interrupted() {
+    let regex = "/(a*)*b/.test('a'.repeat(28));";
+    let start = Instant::now();
+    let src = format!("function onRequest(req) {{ {regex} return req; }}");
+    let err = run_on_request(&src, req("GET", "http://x.test/"), Bytes::new())
+        .unwrap_err()
+        .to_string();
+    let elapsed = start.elapsed();
+    assert!(elapsed.as_secs_f64() < 3.5, "took {elapsed:?}");
+    assert!(err.contains("CPU time limit"), "{err}");
+    assert!(!err.contains("can't be interrupted"), "{err}");
+
+    // At the top level it is slow code, not a broken rule: it fails when it runs.
+    let e = RulesEngine::new(set(vec![rule(
+        "slow",
+        vec![],
+        Action::Script {
+            source: format!("{regex}\nfunction onRequest(r) {{}}"),
+        },
+    )]));
+    assert!(e.errors().is_empty(), "{:?}", e.errors());
 }

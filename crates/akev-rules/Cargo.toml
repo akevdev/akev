@@ -27,7 +27,7 @@ thiserror = { workspace = true }
 tracing = { workspace = true }
 rand = { workspace = true }
 httpdate = "1.0"
-rquickjs = { version = "0.9", optional = true, features = ["classes", "properties"] }
+rquickjs = { version = "0.14", optional = true, features = ["classes", "properties"] }
 
 [dev-dependencies]
 tempfile = { workspace = true }

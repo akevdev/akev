@@ -150,7 +150,7 @@ fn spawn_connection(shared: &Arc<Shared>, stream: TcpStream, peer: SocketAddr) {
         Err(_) => return,
     };
     let _ = stream.set_nodelay(true);
-    if shared.upstream.is_own_connection(peer) {
+    if shared.upstream.is_own_connection(peer, local) {
         // An upstream proxy / PAC / DNS override points back at Akev itself: refuse instead of
         // recursing until file descriptors run out.
         tracing::warn!(%peer, "proxy loop detected (connection from Akev's own upstream socket); closing");

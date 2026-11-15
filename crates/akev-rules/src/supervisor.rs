@@ -1,8 +1,9 @@
 //! Hard wall-clock limits for script execution (feature `scripting`).
 //!
-//! QuickJS enforces the script time limit with its interrupt handler, which only runs between
-//! bytecode instructions. A regular expression that backtracks catastrophically, or a long
-//! native loop such as `Array(2 ** 32 - 1).indexOf(1)`, never reaches it, and a running thread
+//! QuickJS enforces the script time limit with its interrupt handler, which runs between
+//! bytecode instructions and at the checks some built-ins make in their own loops (regular
+//! expressions, `indexOf`). A native loop without such a check, such as
+//! `Array(2 ** 30).join('')` or a long substring search, never reaches it, and a running thread
 //! can't be cancelled. So every script call runs on its own thread, supervised from the
 //! calling thread:
 //!
@@ -202,7 +203,7 @@ impl Supervisor {
             if counts.abandoned >= self.max_abandoned {
                 return Err(Failure::Busy(format!(
                     "scripts are suspended: {} earlier script call(s) exceeded the time limit \
-                     inside a regular expression or built-in function that can't be interrupted, \
+                     inside a built-in function that can't be interrupted, \
                      and are still running",
                     counts.abandoned
                 )));

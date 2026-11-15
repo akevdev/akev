@@ -1054,8 +1054,8 @@ async fn proxy_loops_are_detectable_by_the_inbound_side() {
     let (addr, _) = spawn_server(move |mut s, _| {
         let checker = checker.clone();
         async move {
-            let peer = s.peer_addr().unwrap();
-            let looped = checker.is_own_connection(peer);
+            let (peer, local) = (s.peer_addr().unwrap(), s.local_addr().unwrap());
+            let looped = checker.is_own_connection(peer, local);
             let mut buf = BytesMut::new();
             while read_request(&mut s, &mut buf).await.is_some() {
                 let body = if looped { "loop" } else { "no-loop" };
@@ -1086,7 +1086,7 @@ async fn proxy_loops_are_detectable_by_the_inbound_side() {
     let mut response = vec![0u8; 256];
     let n = foreign.read(&mut response).await.unwrap();
     assert!(String::from_utf8_lossy(&response[..n]).ends_with("no-loop"));
-    assert!(!c.is_own_connection(foreign.local_addr().unwrap()));
+    assert!(!c.is_own_connection(foreign.local_addr().unwrap(), addr));
 }
 
 #[tokio::test]

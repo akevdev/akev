@@ -18,13 +18,14 @@
 //!
 //! * The time limit covers the whole call (runtime start-up, script evaluation and the hook).
 //!   QuickJS's interrupt handler stops the script at the deadline, and JS code can't catch
-//!   that. Some work can't be interrupted, such as a regular expression that backtracks
-//!   catastrophically or a long built-in loop like `Array(2 ** 32 - 1).indexOf(1)`. So every
-//!   call also runs on its own thread, under a hard wall-clock watchdog: the caller gets an
-//!   error at most 0.5s after the deadline, even when the script is still stuck. The stuck
-//!   thread is abandoned and ends when the native call returns. While a few abandoned threads
-//!   are still running, new script calls fail at once instead of piling up more stuck
-//!   threads. At most a few dozen scripts run at once; further calls wait for a free slot.
+//!   that. It also stops regular expressions (catastrophic backtracking included) and some
+//!   long built-in loops such as `indexOf`, but other built-ins can't be interrupted, such as
+//!   `Array(2 ** 30).join('')` or a long substring search. So every call also runs on its own
+//!   thread, under a hard wall-clock watchdog: the caller gets an error at most 0.5s after the
+//!   deadline, even when the script is still stuck. The stuck thread is abandoned and ends
+//!   when the native call returns. While a few abandoned threads are still running, new
+//!   script calls fail at once instead of piling up more stuck threads. At most a few dozen
+//!   scripts run at once; further calls wait for a free slot.
 //! * Recursion is limited (deep JS recursion, `JSON.parse` / `JSON.stringify` of deeply nested
 //!   data, `console.log` of such values) and raises a catchable `RangeError: Maximum call stack
 //!   size exceeded`; it can never overflow the native stack. `JSON.stringify` keeps its
@@ -622,7 +623,7 @@ mod imp {
             // time), this would leave a stuck thread behind on every call.
             Err(Failure::Abandoned) => Err(format!(
                 "script error: top-level code didn't stop at the {}ms time limit: it is stuck in a \
-                 regular expression or built-in function that can't be interrupted",
+                 built-in function that can't be interrupted",
                 SYNTAX_CHECK_LIMIT.as_millis()
             )),
             Err(Failure::Crashed(e)) => Err(format!("script error: {e}")),
@@ -851,8 +852,8 @@ mod imp {
             Ok(result) => result,
             Err(Failure::Busy(reason)) => Err(RulesError::Script(reason)),
             Err(Failure::Abandoned) => Err(RulesError::Script(format!(
-                "script exceeded the {}s CPU time limit inside a regular expression or built-in \
-                 function that can't be interrupted (the call was abandoned and runs on in the \
+                "script exceeded the {}s CPU time limit inside a built-in function that can't be \
+                 interrupted (the call was abandoned and runs on in the \
                  background until it returns)",
                 TIME_LIMIT.as_secs()
             ))),
