@@ -376,6 +376,7 @@ fn har_roundtrip_preserves_traffic() {
     let source = rich_store();
     let har = serde_json::to_vec(&source.export_har(None)).unwrap();
     let target = store();
+    skip_ids_of(&source);
     let ids = target.import_har(&har).unwrap();
     assert_eq!(ids.len(), 8);
     assert!(ids.windows(2).all(|w| w[0] < w[1]), "fresh ids in order");

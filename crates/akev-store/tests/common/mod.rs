@@ -22,6 +22,15 @@ pub fn store_with(f: impl FnOnce(&mut CaptureSettings)) -> Arc<Store> {
     Store::new(s, None)
 }
 
+/// Imports and session loads take fresh ids from the process-wide counter, which starts at 1,
+/// while test stores ingest hand-picked ids from 1 up. Move the counter past `store`'s ids so a
+/// copy can't reuse them by chance when its test is the first to run.
+pub fn skip_ids_of(store: &Store) {
+    if let Some(max) = store.summaries().iter().map(|s| s.id.0).max() {
+        ExchangeId::reserve(max);
+    }
+}
+
 pub fn headers(pairs: &[(&str, &str)]) -> Headers {
     Headers(
         pairs
