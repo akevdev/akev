@@ -205,6 +205,11 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: echo "LIBCLANG_PATH=C:\\Program Files\\LLVM\\bin" >> "$GITHUB_ENV"
+      # MSVC can't assemble BoringSSL's Arm64 assembly; build its portable C code instead.
+      - name: BoringSSL without assembly (Windows Arm64)
+        if: matrix.target == 'aarch64-pc-windows-msvc'
+        shell: bash
+        run: echo "CMAKE_TOOLCHAIN_FILE_aarch64_pc_windows_msvc=$(cygpath -m "$GITHUB_WORKSPACE/.github/boringssl-no-asm.cmake")" >> "$GITHUB_ENV"
       - uses: Swatinem/rust-cache@v2
         with:
           key: release-${{ matrix.target }}
