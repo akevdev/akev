@@ -22,16 +22,20 @@ pub(crate) const PORT_FALLBACK_RANGE: u16 = 100;
 pub(crate) struct ListenerHandle {
     pub addr: SocketAddr,
     stop: CancellationToken,
-    done: Option<oneshot::Receiver<()>>,
+    /// The accept loop hands the listening socket back here when it stops.
+    done: Option<oneshot::Receiver<TcpListener>>,
 }
 
 impl ListenerHandle {
-    /// Stop accepting and wait until the listening socket is closed.
-    pub(crate) async fn stop(&mut self) {
+    /// Stop accepting and take the listening socket back from the accept loop (`None` if it
+    /// was already stopped or didn't stop in time). Dropping the result closes the socket.
+    pub(crate) async fn stop(&mut self) -> Option<TcpListener> {
         self.stop.cancel();
-        if let Some(done) = self.done.take() {
-            let _ = tokio::time::timeout(Duration::from_secs(5), done).await;
-        }
+        let done = self.done.take()?;
+        tokio::time::timeout(Duration::from_secs(5), done)
+            .await
+            .ok()?
+            .ok()
     }
 }
 
@@ -134,8 +138,8 @@ pub(crate) fn spawn_accept_loop(
                 }
             }
         }
-        drop(listener);
-        let _ = done_tx.send(());
+        // Nobody waiting (the handle was dropped): the socket comes back and is closed here.
+        let _ = done_tx.send(listener);
     });
     Ok(ListenerHandle {
         addr,

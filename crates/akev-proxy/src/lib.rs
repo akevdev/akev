@@ -204,9 +204,35 @@ struct Inner {
 /// How long in-flight exchanges get to finish on shutdown before connections are dropped.
 const SHUTDOWN_GRACE: std::time::Duration = std::time::Duration::from_secs(3);
 
+/// The listening socket of a stopped proxy, kept open for its successor (see
+/// [`ProxyHandle::shutdown_keep_listener`] and [`start_on`]).
+#[derive(Debug)]
+pub struct Listener(tokio::net::TcpListener);
+
+impl Listener {
+    /// The address the socket is bound to.
+    pub fn local_addr(&self) -> std::io::Result<SocketAddr> {
+        self.0.local_addr()
+    }
+}
+
 /// Start the proxy. Tries `settings.port`, then the following ports up to +100 if busy
 /// (port 0 = OS-assigned).
 pub async fn start(options: ProxyOptions) -> Result<ProxyHandle> {
+    start_with(options, None).await
+}
+
+/// Start the proxy on the listening socket of one that was shut down with
+/// [`ProxyHandle::shutdown_keep_listener`], ignoring `settings.port` and `bind_address`: the
+/// address stays the same, and nothing else can take the port in between.
+pub async fn start_on(options: ProxyOptions, listener: Listener) -> Result<ProxyHandle> {
+    start_with(options, Some(listener.0)).await
+}
+
+async fn start_with(
+    options: ProxyOptions,
+    listener: Option<tokio::net::TcpListener>,
+) -> Result<ProxyHandle> {
     let ProxyOptions {
         settings,
         capture,
@@ -220,7 +246,10 @@ pub async fn start(options: ProxyOptions) -> Result<ProxyHandle> {
     let tls = tls::TlsConfigs::new(ca.clone())
         .map_err(|e| ProxyError::Other(format!("TLS setup failed: {e}")))?;
     let process_resolver = Arc::new(process::SystemProcessResolver::new());
-    let listener = server::bind(settings.port, &settings.bind_address).map_err(ProxyError::Bind)?;
+    let listener = match listener {
+        Some(l) => l,
+        None => server::bind(settings.port, &settings.bind_address).map_err(ProxyError::Bind)?,
+    };
     let quic = http3::QuicListener::new(ca.clone());
     let shutdown = tokio_util::sync::CancellationToken::new();
     let shared = Arc::new(Shared {
@@ -406,9 +435,21 @@ impl ProxyHandle {
 
     /// Stop accepting and close all connections.
     pub async fn shutdown(&self) {
+        self.stop(false).await;
+    }
+
+    /// Shut down like [`ProxyHandle::shutdown`], but keep the listening socket open and return
+    /// it for [`start_on`]. Clients that connect meanwhile wait in its backlog for the new
+    /// proxy instead of being refused. `None` if the proxy was already shut down.
+    pub async fn shutdown_keep_listener(&self) -> Option<Listener> {
+        self.stop(true).await
+    }
+
+    async fn stop(&self, keep_listener: bool) -> Option<Listener> {
         let shared = &self.inner.shared;
         shared.shutdown.cancel();
-        self.inner.listener.lock().await.stop().await;
+        // Not kept: closed right away, so new clients are refused rather than left waiting.
+        let listener = (self.inner.listener.lock().await.stop().await).filter(|_| keep_listener);
         self.inner.transparent.shutdown().await;
         self.inner.quic.stop();
         shared.tracker.close();
@@ -421,6 +462,7 @@ impl ProxyHandle {
         shared.hard_stop.cancel();
         let _ =
             tokio::time::timeout(std::time::Duration::from_secs(2), shared.tracker.wait()).await;
+        listener.map(Listener)
     }
 }
 

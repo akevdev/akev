@@ -40,7 +40,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
       publish: ${{ steps.version.outputs.publish }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Check versions
         id: version
         shell: bash
@@ -86,7 +86,7 @@ jobs:
     name: Web UI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
         working-directory: ui
@@ -96,7 +96,7 @@ jobs:
         working-directory: ui
       - run: bun run build
         working-directory: ui
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ui-dist
           path: ui/dist
@@ -105,7 +105,7 @@ jobs:
     name: Third-party licence notices
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
         working-directory: ui
@@ -114,7 +114,7 @@ jobs:
         with:
           tool: cargo-about
       - run: scripts/third-party-notices.sh THIRD-PARTY-NOTICES.md
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: notices
           path: THIRD-PARTY-NOTICES.md
@@ -128,8 +128,8 @@ jobs:
     steps:
       - name: Free disk space
         run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-      - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           name: ui-dist
           path: ui/dist
@@ -173,12 +173,12 @@ jobs:
       BUNDLE: target/${{ matrix.target }}/release/bundle
       EXE: ${{ startsWith(matrix.os, 'windows') && '.exe' || '' }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           name: ui-dist
           path: ui/dist
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with:
           name: notices
           path: .
@@ -351,7 +351,7 @@ jobs:
           ls -l dist
           [ "$(ls dist | wc -l)" -ge 2 ] || { echo "::error::no desktop packages were produced"; exit 1; }
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: release-${{ matrix.name }}
           path: dist/*
@@ -377,13 +377,13 @@ jobs:
             os: ubuntu-24.04-arm
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           name: notices
           path: .
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
         if: needs.prepare.outputs.publish == 'true'
         with:
           registry: ghcr.io
@@ -396,7 +396,7 @@ jobs:
           echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/akev" >> "$GITHUB_OUTPUT"
           p=${{ matrix.platform }}; echo "slug=${p//\//-}" >> "$GITHUB_OUTPUT"
       - id: build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           platforms: ${{ matrix.platform }}
@@ -413,7 +413,7 @@ jobs:
           touch "$RUNNER_TEMP/digests/${DIGEST#sha256:}"
         env:
           DIGEST: ${{ steps.build.outputs.digest }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: digest-${{ steps.image.outputs.slug }}
           path: ${{ runner.temp }}/digests/*
@@ -425,13 +425,13 @@ jobs:
     if: needs.prepare.outputs.publish == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with:
           pattern: digest-*
           path: ${{ runner.temp }}/digests
           merge-multiple: true
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -454,8 +454,8 @@ jobs:
     env:
       VERSION: ${{ needs.prepare.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           pattern: release-*
           path: dist
@@ -510,10 +510,10 @@ jobs:
         run: cosign sign-blob --yes --bundle SHA256SUMS.sigstore.json SHA256SUMS
       - name: Build provenance
         if: needs.prepare.outputs.publish == 'true'
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: dist/*
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: release-checksums
           path: |

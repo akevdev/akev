@@ -284,7 +284,9 @@ async fn attach_routes_a_running_jvm_through_akev_and_restore_sends_it_direct() 
     if !out.status.success() {
         let err = String::from_utf8_lossy(&out.stderr);
         if err.contains("java.net.http") {
-            eprintln!("skipping: Java 11+ is needed (java.net.http): {err}");
+            // Without javac's messages: CI turns its `File.java:N: error:` lines into error
+            // annotations on a job that passed.
+            eprintln!("skipping: Java 11+ is needed (java.net.http)");
             return;
         }
         panic!("javac failed: {err}");

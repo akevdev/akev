@@ -651,9 +651,8 @@ fn network_url_for(addr: SocketAddr, lan: &[Ipv4Addr]) -> String {
 
 /// 32 random bytes, hex encoded.
 fn generate_token() -> String {
-    use rand::RngCore;
     let mut bytes = [0u8; 32];
-    rand::rng().fill_bytes(&mut bytes);
+    rand::fill(&mut bytes[..]);
     hex::encode(bytes)
 }
 

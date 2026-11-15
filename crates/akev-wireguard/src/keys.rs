@@ -22,7 +22,7 @@ impl PrivateKey {
     /// A fresh random key.
     pub fn generate() -> Self {
         let mut bytes = [0u8; 32];
-        rand::Rng::fill(&mut rand::rng(), &mut bytes[..]);
+        rand::fill(&mut bytes[..]);
         Self::from_bytes(bytes)
     }
 
