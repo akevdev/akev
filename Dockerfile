@@ -10,6 +10,11 @@
 # needs the token: a custom one must be at least 24 characters, and without AKEV_TOKEN a
 # random one is generated and printed in the log (`docker logs`). The proxy only accepts
 # clients from loopback and private networks by default (see the proxy settings).
+#
+# The image runs `akev`; `start …` below is only the default command, so arguments after the
+# image name replace it. The MCP server over stdio, with a built-in Akev when none is running:
+#
+#   docker run -i --rm akev mcp
 FROM oven/bun:1 AS ui
 WORKDIR /src/ui
 COPY ui/package.json ui/bun.lock* ./
@@ -28,6 +33,8 @@ COPY --from=ui /src/ui/dist ui/dist
 RUN cargo build --release --locked -p akev-cli --features impersonate
 
 FROM debian:bookworm-slim
+# The MCP Registry reads this label to verify that the image belongs to the listed server.
+LABEL io.modelcontextprotocol.server.name="io.github.akevdev/akev"
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --system --uid 10001 --home-dir /data --shell /usr/sbin/nologin akev \
@@ -39,4 +46,5 @@ ENV AKEV_DATA_DIR=/data
 VOLUME /data
 USER akev
 EXPOSE 8000 45456
-ENTRYPOINT ["akev", "start", "--no-open", "--data-dir", "/data", "--api-bind", "0.0.0.0", "--proxy-bind", "0.0.0.0"]
+ENTRYPOINT ["akev"]
+CMD ["start", "--no-open", "--data-dir", "/data", "--api-bind", "0.0.0.0", "--proxy-bind", "0.0.0.0"]

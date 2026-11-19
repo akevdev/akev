@@ -11,6 +11,9 @@ user-visible change.
 - Rust code exported from a request targets reqwest 0.13.
 - `SHA256SUMS.sigstore.json` is a standard Sigstore bundle (signed with cosign 3); cosign 2
   verifies it with `--new-bundle-format`.
+- The Docker image runs `akev` with `start …` as its default command, so
+  `docker run -i --rm ghcr.io/akevdev/akev mcp` runs the MCP server. Arguments after the image
+  name now replace that command rather than adding options to `start`.
 - Building from source needs Rust 1.95 or newer.
 - Dependency updates.
 
