@@ -157,7 +157,7 @@ overwritten by the next release. The other channels are published by hand:
 | Homebrew | `homebrew/akev.rb` (CLI), `homebrew/akev-desktop.rb` (cask) | automatic: the `akevdev/homebrew-tap` sync (`brew install akevdev/tap/akev`); later submit to homebrew-core/cask once eligible |
 | winget | `winget/*.yaml` (schema 1.12) | PR to `microsoft/winget-pkgs` under `manifests/a/Akev/Akev/<version>/` (or `wingetcreate submit`) |
 | Scoop | `scoop/akev.json` | automatic: the `akevdev/scoop-bucket` sync (`scoop install akev/akev`) |
-| AUR | `aur/PKGBUILD` | push to `ssh://aur@aur.archlinux.org/akev-bin.git` with a fresh `.SRCINFO` (`makepkg --printsrcinfo > .SRCINFO`) |
+| AUR | `aur/PKGBUILD` | push to `ssh://aur@aur.archlinux.org/akev-bin.git` with a fresh `.SRCINFO` (`makepkg --printsrcinfo > .SRCINFO`; without Arch, run makepkg and namcap in the `archlinux` container image as a non-root user) |
 | apt / dnf | the release's `.deb` / `.rpm` | `scripts/linux-repos.sh dist out <gpg key>` builds signed repositories to upload to a static host (e.g. `packages.akev.dev`) |
 
 **Not offered:**

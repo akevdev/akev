@@ -7,7 +7,9 @@ pkgdesc='Fast HTTP(S) debugging proxy: intercept, inspect, mock and replay traff
 arch=('x86_64' 'aarch64')
 url='https://akev.dev'
 license=('AGPL-3.0-or-later')
-depends=('glibc' 'gcc-libs')
+depends=('glibc' 'libgcc')
+# The release binary is already stripped: no debug package, no second strip.
+options=('!debug' '!strip')
 provides=('akev')
 conflicts=('akev')
 source_x86_64=("https://github.com/akevdev/akev/releases/download/v@VERSION@/akev-@VERSION@-x86_64-unknown-linux-gnu.tar.gz")
