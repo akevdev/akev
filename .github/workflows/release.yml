@@ -134,7 +134,7 @@ jobs:
           name: ui-dist
           path: ui/dist
       - run: sudo apt-get update && sudo apt-get install -y cmake clang libclang-dev
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: ${{ env.AGENT_JDK }}
@@ -182,7 +182,7 @@ jobs:
         with:
           name: notices
           path: .
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: ${{ env.AGENT_JDK }}
@@ -509,7 +509,7 @@ jobs:
           cat SHA256SUMS | tee -a "$GITHUB_STEP_SUMMARY"
       # Keyless Sigstore signature of the checksum list: `cosign verify-blob` proves it was made
       # by this workflow in this repository.
-      - uses: sigstore/cosign-installer@v3
+      - uses: sigstore/cosign-installer@v4
       - name: Sign SHA256SUMS
         working-directory: dist
         run: cosign sign-blob --yes --bundle SHA256SUMS.sigstore.json SHA256SUMS

@@ -457,9 +457,7 @@ async fn rules_on_https_and_http2_traffic() {
     let proxy = start_proxy(rules, Arc::new(NoBreakpoints)).await;
     let http = reqwest::Client::builder()
         .proxy(reqwest::Proxy::all(proxy.url()).unwrap())
-        .add_root_certificate(
-            reqwest::Certificate::from_pem(proxy.ca.cert_pem().as_bytes()).unwrap(),
-        )
+        .tls_certs_only([reqwest::Certificate::from_pem(proxy.ca.cert_pem().as_bytes()).unwrap()])
         .build()
         .unwrap();
     let res = http

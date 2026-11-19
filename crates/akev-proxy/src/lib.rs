@@ -71,6 +71,7 @@ pub use ws_control::WsInjectError;
 pub use http3::Http3ListenerStatus;
 pub use quinn;
 pub use upstream::UpstreamHttpVersion;
+pub use upstream::tls::install_default_crypto_provider;
 
 use shared::{RuntimeSettings, Shared};
 use std::sync::atomic::Ordering;

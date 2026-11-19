@@ -58,7 +58,7 @@ fn collect(app: &App) -> Diagnostics {
     Diagnostics {
         version: akev_core::VERSION,
         release_date: akev_core::RELEASE_DATE,
-        os: sysinfo::System::long_os_version().unwrap_or_else(|| std::env::consts::OS.into()),
+        os: sysinfo::System::long_os_version().unwrap_or_else(|_| std::env::consts::OS.into()),
         arch: std::env::consts::ARCH,
         platform: crate::app::platform(),
         desktop: app.desktop,

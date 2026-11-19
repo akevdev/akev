@@ -181,7 +181,7 @@ impl<'a> tracing_subscriber::fmt::MakeWriter<'a> for LogWriter {
     }
 }
 
-static LOG_PATH: Mutex<Option<PathBuf>> = parking_lot::const_mutex(None);
+static LOG_PATH: Mutex<Option<PathBuf>> = Mutex::new(None);
 
 /// Open `<data_dir>/logs/akev.log` (creating the directories) and remember it as this
 /// process's log file (reported by `GET /api/diagnostics`).
@@ -241,7 +241,7 @@ struct Recent {
     warnings: VecDeque<RecentWarning>,
 }
 
-static RECENT: Mutex<Recent> = parking_lot::const_mutex(Recent {
+static RECENT: Mutex<Recent> = Mutex::new(Recent {
     lines: VecDeque::new(),
     warnings: VecDeque::new(),
 });
@@ -338,7 +338,7 @@ impl<S: Subscriber> Layer<S> for RecentEvents {
 // ---------------------------------------------------------------------------------------
 // Scrubbing
 
-static SECRETS: Mutex<Vec<String>> = parking_lot::const_mutex(Vec::new());
+static SECRETS: Mutex<Vec<String>> = Mutex::new(Vec::new());
 
 /// Remember a secret (the API token) so it never appears in crash reports or diagnostics.
 pub fn register_secret(secret: &str) {
@@ -459,7 +459,7 @@ pub fn tilde_home(text: &str) -> String {
 // ---------------------------------------------------------------------------------------
 // Crash reports
 
-static CRASH_DIR_PATH: Mutex<Option<PathBuf>> = parking_lot::const_mutex(None);
+static CRASH_DIR_PATH: Mutex<Option<PathBuf>> = Mutex::new(None);
 static IN_HOOK: AtomicBool = AtomicBool::new(false);
 
 /// Install a panic hook writing crash reports into `crash_dir` (created when needed), then
@@ -535,7 +535,7 @@ impl PanicDetails {
 
 /// The text of a crash report (scrubbed).
 pub fn crash_report(panic: &PanicDetails) -> String {
-    let os = sysinfo::System::long_os_version().unwrap_or_else(|| std::env::consts::OS.into());
+    let os = sysinfo::System::long_os_version().unwrap_or_else(|_| std::env::consts::OS.into());
     let program = std::env::current_exe()
         .ok()
         .and_then(|p| p.file_name().map(|n| n.to_string_lossy().into_owned()))

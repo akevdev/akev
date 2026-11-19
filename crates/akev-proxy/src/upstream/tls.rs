@@ -63,6 +63,16 @@ pub(crate) fn provider() -> Arc<CryptoProvider> {
         .clone()
 }
 
+/// Makes ring rustls' process-wide default provider as well. Akev hands its provider to
+/// rustls explicitly, but reqwest (built with `rustls-no-provider`, so that aws-lc-rs isn't
+/// compiled in next to ring) takes the default and panics when there is none. Call before
+/// building a reqwest client; repeated calls, or a provider installed earlier, are fine.
+pub fn install_default_crypto_provider() {
+    if CryptoProvider::get_default().is_none() {
+        let _ = rustls::crypto::ring::default_provider().install_default();
+    }
+}
+
 /// webpki-roots + OS trust store, loaded once per process.
 fn base_roots() -> &'static RootCertStore {
     static ROOTS: OnceLock<RootCertStore> = OnceLock::new();

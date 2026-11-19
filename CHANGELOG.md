@@ -6,6 +6,14 @@ user-visible change.
 
 ## Unreleased
 
+- Update checks trust the operating system's certificate store instead of a bundled copy of
+  Mozilla's, so they also work behind TLS-inspecting proxies whose CA the system trusts.
+- Rust code exported from a request targets reqwest 0.13.
+- `SHA256SUMS.sigstore.json` is a standard Sigstore bundle (signed with cosign 3); cosign 2
+  verifies it with `--new-bundle-format`.
+- Building from source needs Rust 1.95 or newer.
+- Dependency updates.
+
 ## 0.1.0 — 2026-11-15
 
 The first public release.

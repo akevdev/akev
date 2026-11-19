@@ -11,6 +11,7 @@ use std::time::Duration;
 /// HTTP client for the local API. Never uses a proxy: the user's `HTTP(S)_PROXY` may well
 /// point at Akev itself (e.g. inside an intercepted terminal).
 pub fn http_client(timeout: Option<Duration>) -> Result<reqwest::Client> {
+    akev_api::install_default_crypto_provider();
     let mut b = reqwest::Client::builder()
         .no_proxy()
         .user_agent(concat!("akev-cli/", env!("CARGO_PKG_VERSION")));

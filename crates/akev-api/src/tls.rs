@@ -89,7 +89,7 @@ pub(crate) fn certificate_names(bind: IpAddr, lan: &[std::net::Ipv4Addr]) -> Vec
     for ip in lan {
         add(ip.to_string());
     }
-    if let Some(host) = sysinfo::System::host_name() {
+    if let Ok(host) = sysinfo::System::host_name() {
         let host = host.trim().trim_end_matches('.').to_ascii_lowercase();
         if !host.is_empty() {
             if !host.contains('.') {

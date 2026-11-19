@@ -69,7 +69,7 @@ fn push_request_chain(out: &mut String, calls: &[(String, Vec<String>)]) {
 /// responses with its compression features enabled.
 pub(super) fn generate(p: &Prepared<'_>) -> String {
     let mut out = String::from(
-        "// Cargo.toml:\n// [dependencies]\n// reqwest = \"0.12\"\n\
+        "// Cargo.toml:\n// [dependencies]\n// reqwest = \"0.13\"\n\
          // tokio = { version = \"1\", features = [\"full\"] }\n\n\
          #[tokio::main]\nasync fn main() -> Result<(), Box<dyn std::error::Error>> {\n",
     );

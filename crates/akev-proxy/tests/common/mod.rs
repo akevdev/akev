@@ -147,6 +147,8 @@ pub async fn start_proxy_engine(
     settings: ProxySettings,
     capture: CaptureSettings,
 ) -> TestProxy {
+    // The tests' reqwest clients need rustls' default provider (the daemon installs it).
+    akev_proxy::install_default_crypto_provider();
     let ca = Arc::new(CertificateAuthority::generate().expect("CA"));
     let (tx, rx) = mpsc::unbounded_channel();
     let handle = akev_proxy::start(ProxyOptions {
@@ -169,6 +171,7 @@ pub async fn start_proxy_engine(
 /// Start a proxy without rules on the listening socket of a stopped one, as CA regeneration
 /// does ([`ProxyHandle::shutdown_keep_listener`]).
 pub async fn start_proxy_on(listener: akev_proxy::Listener) -> TestProxy {
+    akev_proxy::install_default_crypto_provider();
     let ca = Arc::new(CertificateAuthority::generate().expect("CA"));
     let (tx, rx) = mpsc::unbounded_channel();
     let handle = akev_proxy::start_on(
@@ -512,9 +515,9 @@ pub async fn read_response<S: AsyncRead + Unpin>(
 pub fn client(proxy: &TestProxy) -> reqwest::Client {
     reqwest::Client::builder()
         .proxy(reqwest::Proxy::all(proxy.url()).expect("proxy url"))
-        .add_root_certificate(
+        .tls_certs_only([
             reqwest::Certificate::from_pem(proxy.ca.cert_pem().as_bytes()).expect("ca pem"),
-        )
+        ])
         .timeout(Duration::from_secs(10))
         .build()
         .expect("client")

@@ -652,7 +652,9 @@ fn snapshot_processes(with_environ: bool) -> Vec<ProcessEntry> {
     if with_environ {
         kind = kind.with_environ(UpdateKind::Always);
     }
-    let mut sys = System::new();
+    let Ok(mut sys) = System::new() else {
+        return Vec::new();
+    };
     sys.refresh_processes_specifics(ProcessesToUpdate::All, true, kind);
     sys.processes()
         .values()

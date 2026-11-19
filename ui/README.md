@@ -409,7 +409,7 @@ bun run e2e -- --project visual --update-snapshots=all   # re-render the baselin
   `visual/__screenshots__/` (1.5% tolerance). The baselines are rendered in the
   `mcr.microsoft.com/playwright` image CI uses, so render new ones there:
   `podman run --rm --network host -v "$PWD/..":/work -w /work/ui -e AKEV_E2E_PROJECT=visual
-  mcr.microsoft.com/playwright:v1.65.0-noble npx playwright test -c e2e --update-snapshots=all`.
+  mcr.microsoft.com/playwright:v1.65.1-noble npx playwright test -c e2e --update-snapshots=all`.
 
 ## Performance budget (§9)
 

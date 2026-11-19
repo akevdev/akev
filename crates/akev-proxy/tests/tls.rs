@@ -16,10 +16,7 @@ fn no_rules() -> akev_core::rules::RuleSet {
 fn trusting_client(proxy: &TestProxy) -> reqwest::ClientBuilder {
     reqwest::Client::builder()
         .proxy(reqwest::Proxy::all(proxy.url()).unwrap())
-        .add_root_certificate(
-            reqwest::Certificate::from_pem(proxy.ca.cert_pem().as_bytes()).unwrap(),
-        )
-        .tls_built_in_root_certs(false)
+        .tls_certs_only([reqwest::Certificate::from_pem(proxy.ca.cert_pem().as_bytes()).unwrap()])
         .timeout(Duration::from_secs(10))
 }
 
@@ -175,8 +172,7 @@ async fn client_rejecting_our_ca_is_reported() {
     let other = akev_ca::CertificateAuthority::generate().unwrap();
     let http = reqwest::Client::builder()
         .proxy(reqwest::Proxy::all(proxy.url()).unwrap())
-        .tls_built_in_root_certs(false)
-        .add_root_certificate(reqwest::Certificate::from_pem(other.cert_pem().as_bytes()).unwrap())
+        .tls_certs_only([reqwest::Certificate::from_pem(other.cert_pem().as_bytes()).unwrap()])
         .timeout(Duration::from_secs(10))
         .build()
         .unwrap();
@@ -227,7 +223,7 @@ async fn tls_passthrough_tunnels_without_interception() {
     // The upstream's own (untrusted) certificate reaches the client untouched.
     let http = reqwest::Client::builder()
         .proxy(reqwest::Proxy::all(proxy.url()).unwrap())
-        .danger_accept_invalid_certs(true)
+        .tls_danger_accept_invalid_certs(true)
         .http1_only()
         .build()
         .unwrap();

@@ -67,6 +67,7 @@ pub use crate::launcher::{
 };
 pub use crate::license::{LicenseManager, builtin_public_keys, default_trial_file};
 pub use crate::persist::{DaemonInfo, default_data_dir};
+pub use akev_proxy::install_default_crypto_provider;
 
 /// Minimum length of a user-chosen API token when the API is reachable from the network
 /// (`api_bind` is not a loopback address). Generated tokens are 64 hex characters.
@@ -322,6 +323,8 @@ impl Drop for AkevHandle {
 
 /// Start Akev: load state, start the proxy and serve the API/UI.
 pub async fn start(options: AkevOptions) -> anyhow::Result<AkevHandle> {
+    // For every reqwest client in this process, not only Akev's own (see the function).
+    install_default_crypto_provider();
     let api_bind = match options.api_bind.trim() {
         "" => "127.0.0.1".to_string(),
         b => b.to_string(),
@@ -856,13 +859,11 @@ mod tests {
 
         let ca = reqwest::Certificate::from_pem(handle.app.ca().cert_pem().as_bytes()).unwrap();
         let trusting = |ca: Option<reqwest::Certificate>| {
-            let mut b = reqwest::Client::builder()
+            reqwest::Client::builder()
                 .no_proxy()
-                .tls_built_in_root_certs(false);
-            if let Some(ca) = ca {
-                b = b.add_root_certificate(ca);
-            }
-            b.build().unwrap()
+                .tls_certs_only(ca)
+                .build()
+                .unwrap()
         };
         let client = trusting(Some(ca.clone()));
         for host in ["127.0.0.1", "localhost"] {

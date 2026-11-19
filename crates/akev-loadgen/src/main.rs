@@ -86,6 +86,8 @@ async fn main() -> anyhow::Result<()> {
         None => format!("http://{}/", start_origin(args.body_size).await?),
     };
 
+    // reqwest is built without a crypto provider of its own (see the workspace Cargo.toml).
+    let _ = rustls::crypto::ring::default_provider().install_default();
     let mut builder = reqwest::Client::builder()
         .pool_max_idle_per_host(args.concurrency)
         .timeout(Duration::from_secs(30));

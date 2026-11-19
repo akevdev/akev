@@ -70,7 +70,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
         working-directory: ui
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     # The image the baselines in ui/e2e/visual/__screenshots__ were rendered in: same browser,
     # fonts and rendering on every machine. Keep its version in step with @playwright/test.
-    container: mcr.microsoft.com/playwright:v1.65.0-noble
+    container: mcr.microsoft.com/playwright:v1.65.1-noble
     env:
       AKEV_E2E_PROJECT: visual
     steps:
@@ -140,7 +140,7 @@ jobs:
         with:
           name: ui-dist
           path: ui/dist
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
@@ -173,7 +173,7 @@ jobs:
         with:
           name: ui-dist
           path: ui/dist
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           # Temurin has no Java 8 build for Apple Silicon (macos-latest); Zulu ships a native one.
           distribution: ${{ (matrix.java == '8' && matrix.os == 'macos-latest') && 'zulu' || 'temurin' }}
@@ -213,7 +213,7 @@ jobs:
       CARGO_PROFILE_DEV_DEBUG: line-tables-only
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
@@ -249,7 +249,7 @@ jobs:
       - name: Free disk space
         run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
@@ -274,7 +274,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'

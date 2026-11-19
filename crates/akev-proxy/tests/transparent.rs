@@ -83,10 +83,7 @@ fn transparent_client(
     reqwest::Client::builder()
         .no_proxy()
         .resolve(host, listener)
-        .add_root_certificate(
-            reqwest::Certificate::from_pem(proxy.ca.cert_pem().as_bytes()).unwrap(),
-        )
-        .tls_built_in_root_certs(false)
+        .tls_certs_only([reqwest::Certificate::from_pem(proxy.ca.cert_pem().as_bytes()).unwrap()])
         .timeout(Duration::from_secs(10))
 }
 
@@ -244,7 +241,7 @@ async fn tls_passthrough_tunnels_to_the_original_destination() {
     let http = reqwest::Client::builder()
         .no_proxy()
         .resolve("pinned.test", listener)
-        .danger_accept_invalid_certs(true)
+        .tls_danger_accept_invalid_certs(true)
         .http1_only()
         .timeout(Duration::from_secs(10))
         .build()

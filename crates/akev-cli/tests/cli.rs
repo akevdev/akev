@@ -13,6 +13,12 @@ use tokio::process::Command;
 const BIN: &str = env!("CARGO_BIN_EXE_akev");
 const TIMEOUT: Duration = Duration::from_secs(15);
 
+/// reqwest needs rustls' default crypto provider (the CLI installs it in `http_client`).
+fn http() -> reqwest::ClientBuilder {
+    akev_api::install_default_crypto_provider();
+    reqwest::Client::builder()
+}
+
 async fn daemon(dir: &Path) -> AkevHandle {
     akev_api::start(AkevOptions {
         data_dir: Some(dir.to_path_buf()),
@@ -196,7 +202,7 @@ async fn capture_prints_exchanges_and_writes_filtered_har() {
             break addr.trim().to_string();
         }
     };
-    let client = reqwest::Client::builder()
+    let client = http()
         .proxy(reqwest::Proxy::all(&proxy).unwrap())
         .build()
         .unwrap();
@@ -381,7 +387,7 @@ async fn start_opens_the_ui_without_the_token_on_a_command_line() {
     let page = assert_opened_launcher_page(&opened, &info.token);
     assert_eq!(page.parent().unwrap(), std::path::absolute(&data).unwrap());
 
-    let r = reqwest::Client::builder()
+    let r = http()
         .no_proxy()
         .build()
         .unwrap()
@@ -517,7 +523,7 @@ async fn hangup_stays_ignored_under_nohup() {
         child.try_wait().unwrap().is_none(),
         "an ignored SIGHUP doesn't stop Akev"
     );
-    let r = reqwest::Client::builder()
+    let r = http()
         .no_proxy()
         .build()
         .unwrap()

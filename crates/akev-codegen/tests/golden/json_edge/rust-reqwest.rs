@@ -1,6 +1,6 @@
 // Cargo.toml:
 // [dependencies]
-// reqwest = "0.12"
+// reqwest = "0.13"
 // tokio = { version = "1", features = ["full"] }
 
 #[tokio::main]

@@ -24,16 +24,19 @@ pub fn lan_ipv4_addresses() -> Vec<Ipv4Addr> {
 }
 
 fn enumerate() -> Vec<Ipv4Addr> {
-    let networks = sysinfo::Networks::new_with_refreshed_list();
-    let mut out: Vec<Ipv4Addr> = networks
-        .iter()
-        .filter(|(name, _)| !is_virtual_interface(name))
-        .flat_map(|(_, data)| data.ip_networks().iter().map(|n| n.addr))
-        .filter_map(|addr| match addr {
-            IpAddr::V4(v4) if is_usable(v4) => Some(v4),
-            _ => None,
+    let mut out: Vec<Ipv4Addr> = sysinfo::Networks::new_with_refreshed_list()
+        .map(|networks| {
+            networks
+                .iter()
+                .filter(|(name, _)| !is_virtual_interface(&name.to_string_lossy()))
+                .flat_map(|(_, data)| data.ip_networks().iter().map(|n| n.addr))
+                .filter_map(|addr| match addr {
+                    IpAddr::V4(v4) if is_usable(v4) => Some(v4),
+                    _ => None,
+                })
+                .collect()
         })
-        .collect();
+        .unwrap_or_default();
     if out.is_empty()
         && let Some(primary) = primary_outbound_ipv4()
     {

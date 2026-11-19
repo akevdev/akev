@@ -150,6 +150,7 @@ impl UpdateChecker {
     }
 
     async fn fetch(&self) -> Result<Manifest, String> {
+        crate::install_default_crypto_provider();
         let client = reqwest::Client::builder()
             .timeout(TIMEOUT)
             .user_agent(format!("Akev/{}", self.current))

@@ -307,7 +307,9 @@ impl DaemonInfo {
 pub fn process_alive(pid: u32) -> bool {
     use sysinfo::{Pid, ProcessRefreshKind, ProcessesToUpdate, System};
     let pid = Pid::from_u32(pid);
-    let mut system = System::new();
+    let Ok(mut system) = System::new() else {
+        return false;
+    };
     system.refresh_processes_specifics(
         ProcessesToUpdate::Some(&[pid]),
         true,
