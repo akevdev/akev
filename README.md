@@ -117,6 +117,21 @@ https://token.actions.githubusercontent.com SHA256SUMS`).
 | Command line only | `akev-<version>-<platform>.tar.gz` / `.zip` |
 | Docker (headless, amd64 and arm64) | `docker run -v akev-data:/data -p 127.0.0.1:8000:8000 -p 127.0.0.1:45456:45456 -e AKEV_TOKEN="$(openssl rand -hex 24)" ghcr.io/akevdev/akev` |
 
+With a package manager:
+
+```sh
+# Homebrew (macOS and Linux): the command line, and the macOS app
+brew install akevdev/tap/akev
+brew install --cask akevdev/tap/akev-desktop
+
+# Scoop (Windows): the command line
+scoop bucket add akev https://github.com/akevdev/scoop-bucket
+scoop install akev/akev
+```
+
+The macOS app isn't notarized by Apple yet, so macOS asks before the first launch: open Akev
+once, then click **Open Anyway** in System Settings → Privacy & Security.
+
 Building from source: `make ui && cargo install --path crates/akev-cli` (add
 `--features impersonate` for TLS fingerprint impersonation; needs cmake and clang).
 

@@ -1,23 +1,39 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.12.0.schema.json
+
 PackageIdentifier: Akev.Akev
 PackageVersion: @VERSION@
 PackageLocale: en-US
 Publisher: Akev
-PublisherUrl: https://akev.dev
+PublisherUrl: https://akev.dev/
 PublisherSupportUrl: https://github.com/akevdev/akev/issues
-PrivacyUrl: https://akev.dev/privacy/
+PrivacyUrl: https://akev.dev/privacy
+Author: Akev contributors
 PackageName: Akev
-PackageUrl: https://akev.dev
+PackageUrl: https://akev.dev/
 License: AGPL-3.0-or-later
 LicenseUrl: https://github.com/akevdev/akev/blob/main/LICENSE
+Copyright: Copyright (c) Akev contributors
 ShortDescription: Fast HTTP(S) debugging proxy to intercept, inspect, mock and replay traffic.
-Description: Akev intercepts HTTP, HTTPS, HTTP/2, HTTP/3, WebSocket and gRPC traffic from browsers, apps, terminals, Android devices and containers, and lets you inspect, breakpoint, mock, rewrite and replay it.
+Description: |-
+  Akev is an open-source HTTP(S) debugging proxy for developers, testers and security engineers.
+  Launch a browser, terminal, Android device or container with one click and every request it makes shows up as it happens: headers, bodies, timings, TLS details and the app that sent it.
+  Then mock responses, rewrite requests, map to local files, throttle the network or pause at breakpoints.
+  It decodes HTTP/1.1, HTTP/2, WebSockets, SSE, gRPC and protobuf, with optional HTTP/3, imports HAR, Charles, mitmproxy and Fiddler captures, and includes an MCP server for AI coding agents.
+Moniker: akev
 Tags:
+  - debugging
+  - developer-tools
+  - grpc
+  - har
   - http
   - https
-  - proxy
-  - debugging
   - mitm
-  - developer-tools
+  - mock
+  - proxy
+  - websocket
 ReleaseNotesUrl: https://github.com/akevdev/akev/releases/tag/v@VERSION@
+Documentations:
+  - DocumentLabel: Documentation
+    DocumentUrl: https://akev.dev/docs
 ManifestType: defaultLocale
-ManifestVersion: 1.6.0
+ManifestVersion: 1.12.0

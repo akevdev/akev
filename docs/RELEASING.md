@@ -146,14 +146,17 @@ licence type must be added to both `deny.toml` and `packaging/notices/about.toml
 ## Package managers
 
 The release's `akev-<version>-packaging.zip` holds the manifests from `packaging/`, filled in
-with that release's checksums (`scripts/package-manifests.sh`). Publishing them is manual,
-because each goes to someone else's repository:
+with that release's checksums (`scripts/package-manifests.sh`). The Homebrew tap and the Scoop
+bucket pick them up by themselves: their `sync` workflow copies the latest release's files every
+6 hours (after checking the zip against the signed `SHA256SUMS`), then tests them. So fix a
+formula, cask or Scoop manifest here in `packaging/`: an edit made only in the tap or bucket is
+overwritten by the next release. The other channels are published by hand:
 
 | Channel | File | How |
 |---|---|---|
-| Homebrew | `homebrew/akev.rb` (CLI), `homebrew/akev-desktop.rb` (cask) | commit to a tap repository `akevdev/homebrew-tap` (`brew install akevdev/tap/akev`); later submit to homebrew-core/cask once eligible |
-| winget | `winget/*.yaml` | PR to `microsoft/winget-pkgs` under `manifests/a/Akev/Akev/<version>/` (or `wingetcreate submit`) |
-| Scoop | `scoop/akev.json` | commit to a bucket repository `akevdev/scoop-bucket` |
+| Homebrew | `homebrew/akev.rb` (CLI), `homebrew/akev-desktop.rb` (cask) | automatic: the `akevdev/homebrew-tap` sync (`brew install akevdev/tap/akev`); later submit to homebrew-core/cask once eligible |
+| winget | `winget/*.yaml` (schema 1.12) | PR to `microsoft/winget-pkgs` under `manifests/a/Akev/Akev/<version>/` (or `wingetcreate submit`) |
+| Scoop | `scoop/akev.json` | automatic: the `akevdev/scoop-bucket` sync (`scoop install akev/akev`) |
 | AUR | `aur/PKGBUILD` | push to `ssh://aur@aur.archlinux.org/akev-bin.git` with a fresh `.SRCINFO` (`makepkg --printsrcinfo > .SRCINFO`) |
 | apt / dnf | the release's `.deb` / `.rpm` | `scripts/linux-repos.sh dist out <gpg key>` builds signed repositories to upload to a static host (e.g. `packages.akev.dev`) |
 
@@ -188,5 +191,5 @@ of realistic requests through a running proxy, for demos and manual QA.
 
 ## Not automated yet
 
-* **Package manager submissions** (see above): the manifests are generated, the PRs and
-  pushes to the taps, buckets and AUR are by hand.
+* **Package manager submissions** (see above): the winget PR and the AUR push are by hand (the
+  tap and bucket sync themselves).
