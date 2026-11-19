@@ -6,6 +6,8 @@ user-visible change.
 
 ## Unreleased
 
+## 0.1.1 — 2026-11-19
+
 - Update checks trust the operating system's certificate store instead of a bundled copy of
   Mozilla's, so they also work behind TLS-inspecting proxies whose CA the system trusts.
 - Rust code exported from a request targets reqwest 0.13.

@@ -43,5 +43,5 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 /// building a release).
 pub const RELEASE_DATE: &str = match option_env!("AKEV_RELEASE_DATE") {
     Some(date) => date,
-    None => "2026-11-15",
+    None => "2026-11-19",
 };

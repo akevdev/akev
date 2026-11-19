@@ -70,7 +70,7 @@ dependencies = [
 
 [[package]]
 name = "akev-api"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-ca",
  "akev-codegen",
@@ -121,7 +121,7 @@ dependencies = [
 
 [[package]]
 name = "akev-ca"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-core",
  "base64 0.23.1",
@@ -147,7 +147,7 @@ dependencies = [
 
 [[package]]
 name = "akev-cli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-api",
  "akev-ca",
@@ -175,7 +175,7 @@ dependencies = [
 
 [[package]]
 name = "akev-codegen"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-core",
  "base64 0.23.1",
@@ -189,7 +189,7 @@ dependencies = [
 
 [[package]]
 name = "akev-content"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-core",
  "base64 0.23.1",
@@ -211,7 +211,7 @@ dependencies = [
 
 [[package]]
 name = "akev-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "base64 0.23.1",
@@ -226,7 +226,7 @@ dependencies = [
 
 [[package]]
 name = "akev-desktop"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-api",
  "akev-core",
@@ -250,7 +250,7 @@ dependencies = [
 
 [[package]]
 name = "akev-filter"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-core",
  "memchr",
@@ -263,7 +263,7 @@ dependencies = [
 
 [[package]]
 name = "akev-intercept"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-core",
  "async-trait",
@@ -288,7 +288,7 @@ dependencies = [
 
 [[package]]
 name = "akev-loadgen"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "bytes",
@@ -304,7 +304,7 @@ dependencies = [
 
 [[package]]
 name = "akev-proxy"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-ca",
  "akev-content",
@@ -367,7 +367,7 @@ dependencies = [
 
 [[package]]
 name = "akev-rules"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-content",
  "akev-core",
@@ -390,7 +390,7 @@ dependencies = [
 
 [[package]]
 name = "akev-store"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-content",
  "akev-core",
@@ -413,7 +413,7 @@ dependencies = [
 
 [[package]]
 name = "akev-wireguard"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "akev-ca",
  "akev-core",
