@@ -144,6 +144,14 @@ lets someone ship updates to every user. With the secrets set, the workflow buil
 packages (`.sig` files) and the checksums job writes `latest.json`. Without them no update
 packages are made and installed apps don't see the release (they can still download it).
 
+An installed app updates from the same kind of package it was installed from. It first looks
+for `<os>-<arch>-<installer>` in `latest.json` (`linux-x86_64-rpm`, `windows-x86_64-msi`, …)
+and then `<os>-<arch>` (AppImage, NSIS setup, macOS `.app`). If a `.deb` or `.rpm` install
+fell back to the AppImage, it would fail with "invalid updater binary format". So every
+package type needs its `.sig`, and the checksums job fails if one is missing. The app
+upgrades an RPM itself with `pkexec rpm -U --nosignature`: RPM 6 (Fedora 43+) refuses
+packages without an OpenPGP signature, and the updater signature has already been checked.
+
 The CLI and browser UI only *check* (`GET /api/update`, `akev update`): users install with
 their package manager or the download.
 

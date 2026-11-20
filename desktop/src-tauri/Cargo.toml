@@ -45,6 +45,8 @@ tracing-subscriber = { workspace = true }
 [target.'cfg(target_os = "linux")'.dependencies]
 # Reads the desktop's window-button layout for the custom title bar (the gtk Tauri itself uses).
 gtk = "0.18"
+# The downloaded RPM update, handed to `pkexec rpm -U`.
+tempfile = { workspace = true }
 
 [lints]
 workspace = true

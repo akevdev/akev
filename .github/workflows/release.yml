@@ -342,7 +342,10 @@ jobs:
         run: |
           shopt -s nullglob
           case "$RUNNER_OS" in
-            Linux)   cp "$BUNDLE"/deb/*.deb "$BUNDLE"/rpm/*.rpm "$BUNDLE"/appimage/*.AppImage "$BUNDLE"/appimage/*.AppImage.sig dist/ ;;
+            # The .sig files are updater signatures (made when TAURI_SIGNING_PRIVATE_KEY is set);
+            # each installer type updates itself from its own kind of package.
+            Linux)   cp "$BUNDLE"/deb/*.deb "$BUNDLE"/deb/*.deb.sig "$BUNDLE"/rpm/*.rpm "$BUNDLE"/rpm/*.rpm.sig \
+                        "$BUNDLE"/appimage/*.AppImage "$BUNDLE"/appimage/*.AppImage.sig dist/ ;;
             macOS)   cp "$BUNDLE"/dmg/*.dmg dist/
                      # COPYFILE_DISABLE: no AppleDouble (._*) files inside the signed bundle.
                      if [ -f "$BUNDLE/macos/Akev.app.tar.gz" ]; then
@@ -351,7 +354,7 @@ jobs:
                      else
                        COPYFILE_DISABLE=1 tar -C "$BUNDLE/macos" -czf "dist/Akev_${VERSION}_universal.app.tar.gz" Akev.app
                      fi ;;
-            Windows) cp "$BUNDLE"/msi/*.msi "$BUNDLE"/nsis/*.exe "$BUNDLE"/nsis/*.exe.sig dist/ ;;
+            Windows) cp "$BUNDLE"/msi/*.msi "$BUNDLE"/msi/*.msi.sig "$BUNDLE"/nsis/*.exe "$BUNDLE"/nsis/*.exe.sig dist/ ;;
           esac
           ls -l dist
           [ "$(ls dist | wc -l)" -ge 2 ] || { echo "::error::no desktop packages were produced"; exit 1; }

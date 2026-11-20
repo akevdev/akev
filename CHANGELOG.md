@@ -6,6 +6,11 @@ user-visible change.
 
 ## Unreleased
 
+- In-app updates work for the desktop app installed from a `.deb`, `.rpm` or `.msi` package.
+  Before, those installs were offered the AppImage or the NSIS installer, and on Linux the
+  update failed with "invalid updater binary format". RPM installs on Fedora 43 and later
+  (RPM 6) are upgraded through the system's password prompt.
+
 ## 0.1.1 — 2026-11-19
 
 - Update checks trust the operating system's certificate store instead of a bundled copy of

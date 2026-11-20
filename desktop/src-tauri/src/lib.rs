@@ -153,15 +153,56 @@ async fn install_update(app: AppHandle) -> Result<bool, String> {
         return Ok(false);
     };
     tracing::info!(version = %update.version, "installing update");
-    update
-        .download_and_install(|_, _| {}, || {})
+    // `download` checks the package against its updater signature before returning it.
+    let package = update
+        .download(|_, _| {}, || {})
         .await
-        .map_err(|e| format!("couldn't install the update: {e}"))?;
+        .map_err(|e| format!("couldn't download the update: {e}"))?;
+    install_package(&update, &package).map_err(|e| format!("couldn't install the update: {e}"))?;
     // Restore the system proxy and stop launched browsers before the new version starts.
     if let Some(state) = app.try_state::<DesktopState>() {
         state.akev.shutdown().await;
     }
     app.restart()
+}
+
+/// Install a downloaded update that has passed the signature check. The updater plugin
+/// installs everything except RPMs: it upgrades those with a plain `rpm -U`, which RPM 6
+/// (Fedora 43 and later) refuses for a package without an OpenPGP signature. Ours have none;
+/// the updater signature already vouches for the package.
+fn install_package(update: &tauri_plugin_updater::Update, package: &[u8]) -> Result<(), String> {
+    #[cfg(target_os = "linux")]
+    if matches!(
+        tauri::utils::platform::bundle_type(),
+        Some(tauri::utils::config::BundleType::Rpm)
+    ) {
+        return install_rpm(update, package);
+    }
+    update.install(package).map_err(|e| e.to_string())
+}
+
+/// Upgrade the installed RPM as root, through polkit's password prompt. `--nosignature` skips
+/// only the OpenPGP signature check: rpm still verifies the package's digests.
+#[cfg(target_os = "linux")]
+fn install_rpm(update: &tauri_plugin_updater::Update, package: &[u8]) -> Result<(), String> {
+    let manual = format!("install it with `sudo dnf install {}`", update.download_url);
+    let dir = tempfile::Builder::new()
+        .prefix("akev-update-")
+        .tempdir()
+        .map_err(|e| format!("couldn't save it ({e}); {manual}"))?;
+    let path = dir.path().join(format!("akev-{}.rpm", update.version));
+    std::fs::write(&path, package).map_err(|e| format!("couldn't save it ({e}); {manual}"))?;
+    let status = std::process::Command::new("pkexec")
+        .args(["rpm", "-U", "--nosignature"])
+        .arg(&path)
+        .status()
+        .map_err(|e| format!("couldn't run pkexec ({e}); {manual}"))?;
+    match status.code() {
+        Some(0) => Ok(()),
+        // pkexec: the password prompt was dismissed (126) or the user isn't allowed (127).
+        Some(126 | 127) => Err(format!("not authorized; {manual}")),
+        _ => Err(format!("rpm failed ({status}); {manual}")),
+    }
 }
 
 /// The file name to suggest: URI-decoded, last path component only, never empty.
