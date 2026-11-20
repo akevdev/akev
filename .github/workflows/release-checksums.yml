@@ -1,0 +1,141 @@
+name: Release checksums
+
+# The last stage of a release: SBOM, the updater manifest (latest.json), package-manager
+# manifests, SHA256SUMS with a keyless Sigstore signature, and build provenance.
+#
+# release.yml calls it with the packages of its own run. Run it by hand (Actions → Release
+# checksums → Run workflow, or `gh workflow run release-checksums.yml -f tag=vX.Y.Z`) to
+# redo this stage for a release whose packages are already uploaded: it takes them from the
+# GitHub Release and replaces this stage's files there. See docs/RELEASING.md.
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: true
+      publish:
+        description: attest and upload to the release named by the calling run's tag
+        type: boolean
+        required: true
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag whose packages to checksum and sign (e.g. v0.1.1)
+        type: string
+        required: true
+
+jobs:
+  checksums:
+    name: Checksums, signatures, SBOM, updater manifest
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    env:
+      GH_REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      # Called: the caller's version, its tag, packages from this run. By hand: the tag's
+      # release, which must exist, and its packages.
+      - name: Release
+        shell: bash
+        env:
+          IN_TAG: ${{ inputs.tag }}
+          IN_VERSION: ${{ inputs.version }}
+          IN_PUBLISH: ${{ inputs.publish }}
+        run: |
+          if [ -n "$IN_TAG" ]; then
+            [[ "$IN_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]] || { echo "::error::'$IN_TAG' is not a vX.Y.Z tag"; exit 1; }
+            gh release view "$IN_TAG" --json isDraft,publishedAt,url --jq '"\(.url) draft=\(.isDraft) published=\(.publishedAt)"'
+            tag=$IN_TAG version=${IN_TAG#v} publish=true from_release=true
+          else
+            tag=$GITHUB_REF_NAME version=$IN_VERSION publish=$IN_PUBLISH from_release=false
+          fi
+          printf '%s\n' "TAG=$tag" "VERSION=$version" "PUBLISH=$publish" "FROM_RELEASE=$from_release" | tee -a "$GITHUB_ENV"
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/download-artifact@v8
+        if: env.FROM_RELEASE == 'false'
+        with:
+          pattern: release-*
+          path: dist
+          merge-multiple: true
+      - name: Packages from the release
+        if: env.FROM_RELEASE == 'true'
+        run: |
+          gh release download "$TAG" --dir dist
+          # This stage's own files, from an earlier attempt: made again below.
+          rm -f dist/SHA256SUMS dist/SHA256SUMS.sigstore.json dist/*.spdx.json dist/latest.json dist/*-packaging.zip
+          ls -l dist
+      - name: SBOM (source dependencies)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          output-file: dist/akev-${{ env.VERSION }}.spdx.json
+          upload-artifact: false
+      - name: Updater manifest (latest.json)
+        shell: bash
+        run: |
+          base="https://github.com/${GITHUB_REPOSITORY}/releases/download/v$VERSION"
+          entry() { # platform-key file
+            local f="dist/$2"; [ -f "$f" ] && [ -f "$f.sig" ] || return 0
+            jq -n --arg k "$1" --arg url "$base/$2" --rawfile sig "$f.sig" '{($k): {url: $url, signature: $sig}}'
+          }
+          shopt -s nullglob
+          parts=()
+          for f in dist/*_amd64.AppImage; do parts+=("$(entry linux-x86_64 "$(basename "$f")")"); done
+          for f in dist/*_aarch64.AppImage; do parts+=("$(entry linux-aarch64 "$(basename "$f")")"); done
+          for f in dist/*_universal.app.tar.gz; do
+            parts+=("$(entry darwin-aarch64 "$(basename "$f")")" "$(entry darwin-x86_64 "$(basename "$f")")")
+          done
+          for f in dist/*_x64-setup.exe; do parts+=("$(entry windows-x86_64 "$(basename "$f")")"); done
+          for f in dist/*_arm64-setup.exe; do parts+=("$(entry windows-aarch64 "$(basename "$f")")"); done
+          if [ ${#parts[@]} -eq 0 ] || [ -z "$(printf '%s' "${parts[@]}")" ]; then
+            echo "::warning::no signed update packages; skipping latest.json"; exit 0
+          fi
+          notes=$(awk -v v="$VERSION" '$0 ~ "^## "v" " {f=1; next} /^## /{f=0} f' CHANGELOG.md)
+          printf '%s\n' "${parts[@]}" | jq -s --arg v "$VERSION" --arg notes "$notes" \
+            --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{version: $v, notes: $notes, pub_date: $date, platforms: (add // {})}' > dist/latest.json
+          cat dist/latest.json
+      - name: Package-manager manifests
+        shell: bash
+        run: |
+          scripts/package-manifests.sh "$VERSION" dist "$RUNNER_TEMP/packaging"
+          (cd "$RUNNER_TEMP/packaging" && zip -qr "$GITHUB_WORKSPACE/dist/akev-$VERSION-packaging.zip" .)
+      - name: SHA256SUMS
+        working-directory: dist
+        run: |
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS | tee -a "$GITHUB_STEP_SUMMARY"
+      # Keyless Sigstore signature of the checksum list: `cosign verify-blob` proves it was made
+      # by a workflow of this repository. cosign-installer has no floating major tag: pin a release.
+      - uses: sigstore/cosign-installer@v4.1.3
+      - name: Sign SHA256SUMS
+        working-directory: dist
+        run: cosign sign-blob --yes --bundle SHA256SUMS.sigstore.json SHA256SUMS
+      - name: Build provenance
+        if: env.PUBLISH == 'true'
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: dist/*
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-checksums
+          path: |
+            dist/SHA256SUMS
+            dist/SHA256SUMS.sigstore.json
+            dist/*.spdx.json
+            dist/latest.json
+            dist/*-packaging.zip
+          if-no-files-found: ignore
+      - name: Attach to the release
+        if: env.PUBLISH == 'true'
+        run: |
+          shopt -s nullglob
+          gh release upload "$TAG" dist/SHA256SUMS dist/SHA256SUMS.sigstore.json dist/*.spdx.json dist/latest.json dist/*-packaging.zip --clobber
+          echo "Files attached: $(gh release view "$TAG" --json url -q .url)" >> "$GITHUB_STEP_SUMMARY"

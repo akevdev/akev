@@ -452,87 +452,12 @@ jobs:
           docker buildx imagetools create "${tags[@]}" $(printf "$image@sha256:%s " *)
           docker buildx imagetools inspect "$image:$VERSION"
 
+  # In its own workflow so it can also be run by hand for a release whose packages are already
+  # uploaded (when this job failed, or its files need redoing).
   checksums:
-    name: Checksums, signatures, SBOM, updater manifest
+    name: Checksums
     needs: [prepare, package]
-    runs-on: ubuntu-latest
-    env:
-      VERSION: ${{ needs.prepare.outputs.version }}
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/download-artifact@v8
-        with:
-          pattern: release-*
-          path: dist
-          merge-multiple: true
-      - name: SBOM (source dependencies)
-        uses: anchore/sbom-action@v0
-        with:
-          path: .
-          format: spdx-json
-          output-file: dist/akev-${{ needs.prepare.outputs.version }}.spdx.json
-          upload-artifact: false
-      - name: Updater manifest (latest.json)
-        shell: bash
-        run: |
-          base="https://github.com/${GITHUB_REPOSITORY}/releases/download/v$VERSION"
-          entry() { # platform-key file
-            local f="dist/$2"; [ -f "$f" ] && [ -f "$f.sig" ] || return 0
-            jq -n --arg k "$1" --arg url "$base/$2" --rawfile sig "$f.sig" '{($k): {url: $url, signature: $sig}}'
-          }
-          shopt -s nullglob
-          parts=()
-          for f in dist/*_amd64.AppImage; do parts+=("$(entry linux-x86_64 "$(basename "$f")")"); done
-          for f in dist/*_aarch64.AppImage; do parts+=("$(entry linux-aarch64 "$(basename "$f")")"); done
-          for f in dist/*_universal.app.tar.gz; do
-            parts+=("$(entry darwin-aarch64 "$(basename "$f")")" "$(entry darwin-x86_64 "$(basename "$f")")")
-          done
-          for f in dist/*_x64-setup.exe; do parts+=("$(entry windows-x86_64 "$(basename "$f")")"); done
-          for f in dist/*_arm64-setup.exe; do parts+=("$(entry windows-aarch64 "$(basename "$f")")"); done
-          if [ ${#parts[@]} -eq 0 ] || [ -z "$(printf '%s' "${parts[@]}")" ]; then
-            echo "::warning::no signed update packages; skipping latest.json"; exit 0
-          fi
-          notes=$(awk -v v="$VERSION" '$0 ~ "^## "v" " {f=1; next} /^## /{f=0} f' CHANGELOG.md)
-          printf '%s\n' "${parts[@]}" | jq -s --arg v "$VERSION" --arg notes "$notes" \
-            --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            '{version: $v, notes: $notes, pub_date: $date, platforms: (add // {})}' > dist/latest.json
-          cat dist/latest.json
-      - name: Package-manager manifests
-        shell: bash
-        run: |
-          scripts/package-manifests.sh "$VERSION" dist "$RUNNER_TEMP/packaging"
-          (cd "$RUNNER_TEMP/packaging" && zip -qr "$GITHUB_WORKSPACE/dist/akev-$VERSION-packaging.zip" .)
-      - name: SHA256SUMS
-        working-directory: dist
-        run: |
-          sha256sum * > SHA256SUMS
-          cat SHA256SUMS | tee -a "$GITHUB_STEP_SUMMARY"
-      # Keyless Sigstore signature of the checksum list: `cosign verify-blob` proves it was made
-      # by this workflow in this repository.
-      - uses: sigstore/cosign-installer@v4
-      - name: Sign SHA256SUMS
-        working-directory: dist
-        run: cosign sign-blob --yes --bundle SHA256SUMS.sigstore.json SHA256SUMS
-      - name: Build provenance
-        if: needs.prepare.outputs.publish == 'true'
-        uses: actions/attest-build-provenance@v4
-        with:
-          subject-path: dist/*
-      - uses: actions/upload-artifact@v7
-        with:
-          name: release-checksums
-          path: |
-            dist/SHA256SUMS
-            dist/SHA256SUMS.sigstore.json
-            dist/*.spdx.json
-            dist/latest.json
-            dist/*-packaging.zip
-          if-no-files-found: ignore
-      - name: Attach to the draft release
-        if: needs.prepare.outputs.publish == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          shopt -s nullglob
-          gh release upload "$GITHUB_REF_NAME" dist/SHA256SUMS dist/SHA256SUMS.sigstore.json dist/*.spdx.json dist/latest.json dist/*-packaging.zip --clobber
-          echo "Draft ready for review: $(gh release view "$GITHUB_REF_NAME" --json url -q .url)" >> "$GITHUB_STEP_SUMMARY"
+    uses: ./.github/workflows/release-checksums.yml
+    with:
+      version: ${{ needs.prepare.outputs.version }}
+      publish: ${{ needs.prepare.outputs.publish == 'true' }}

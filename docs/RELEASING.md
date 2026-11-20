@@ -55,7 +55,19 @@ Release builds trust the production licence-signing key: its public half is comm
 When the workflow finishes (about 30–40 minutes), open **Releases**, check the draft (the
 notes are generated from the commits since the last release; edit them freely) and press
 **Publish release**. If a job fails, fix it and re-run the workflow for the same tag: uploads
-replace the existing files.
+replace the existing files. A re-run uses the workflow files as they were at the tag, so a
+fix to the workflow itself doesn't reach it.
+
+Publish only when every job is green. The last one, **Checksums**, writes `SHA256SUMS`, its
+Sigstore bundle, the SBOM, the package-manager zip and `latest.json`. A published release
+without `latest.json` breaks update checks for every installed app, because they fetch it
+from the latest release. That job is its own workflow, `release-checksums.yml`. If it fails
+(or its files need redoing), fix it on `main` and run it for the tag. It takes the packages
+already attached to the release and replaces its own files there, even on a published release:
+
+```sh
+gh workflow run release-checksums.yml -f tag=vX.Y.Z
+```
 
 ## Test build (nothing published)
 
