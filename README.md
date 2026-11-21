@@ -157,6 +157,12 @@ akev capture --output traffic.har -- npm test
 
 Each capture uses a fresh CA: `--ca-out ca.pem` writes it for clients started another way.
 
+Shell completions (Homebrew and the AUR package install them for you):
+
+```bash
+akev completions zsh > "${fpath[1]}/_akev"                # or bash, fish, powershell, elvish
+```
+
 ## Documentation
 
 The user guides and the HTTP API reference live on the website, [akev.dev/docs](https://akev.dev/docs/):

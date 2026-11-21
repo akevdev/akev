@@ -223,6 +223,11 @@ enum Command {
         #[arg(long)]
         json: bool,
     },
+    /// Print a shell completion script, e.g. `akev completions zsh > "${fpath[1]}/_akev"`.
+    Completions {
+        /// The shell to complete for.
+        shell: clap_complete::Shell,
+    },
 }
 
 /// Log to stderr; the daemon (`daemon_dir`: its data directory) also logs to
@@ -302,6 +307,24 @@ pub(crate) fn data_dir(global: &GlobalArgs) -> anyhow::Result<PathBuf> {
     }
 }
 
+/// The completion script for `shell`.
+fn completion_script(shell: clap_complete::Shell) -> Vec<u8> {
+    use clap::CommandFactory as _;
+    let mut script = Vec::new();
+    clap_complete::generate(shell, &mut Cli::command(), "akev", &mut script);
+    script
+}
+
+/// `akev completions <shell>`: the script on stdout. No daemon, no data directory.
+fn print_completions(shell: clap_complete::Shell) -> anyhow::Result<ExitCode> {
+    use anyhow::Context as _;
+    use std::io::Write as _;
+    std::io::stdout()
+        .write_all(&completion_script(shell))
+        .context("couldn't write the completion script")?;
+    Ok(ExitCode::SUCCESS)
+}
+
 fn main() -> ExitCode {
     let cli = Cli::parse();
     let daemon_dir = daemon_data_dir(&cli);
@@ -370,6 +393,7 @@ async fn run(cli: Cli) -> anyhow::Result<ExitCode> {
             }
             Ok(ExitCode::SUCCESS)
         }
+        Some(Command::Completions { shell }) => print_completions(shell),
     }
 }
 
@@ -630,6 +654,24 @@ mod tests {
         assert!(check_start_args(&cli).is_err());
         let cli = Cli::try_parse_from(["akev", "--no-open"]).unwrap();
         assert!(check_start_args(&cli).is_ok());
+    }
+
+    #[test]
+    fn completions_for_every_shell() {
+        use clap::ValueEnum as _;
+        for &shell in clap_complete::Shell::value_variants() {
+            let name = shell.to_string();
+            let cli = Cli::try_parse_from(["akev", "completions", &name]).unwrap();
+            assert!(matches!(cli.command, Some(Command::Completions { shell: s }) if s == shell));
+            let script = String::from_utf8(completion_script(shell)).unwrap();
+            assert!(script.contains("akev"), "{name}");
+            // Subcommands and their options are in the script.
+            assert!(
+                script.contains("capture") && script.contains("proxy-port"),
+                "{name}"
+            );
+        }
+        assert!(Cli::try_parse_from(["akev", "completions", "tcsh"]).is_err());
     }
 
     #[test]

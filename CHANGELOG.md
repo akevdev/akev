@@ -10,6 +10,17 @@ user-visible change.
   Before, those installs were offered the AppImage or the NSIS installer, and on Linux the
   update failed with "invalid updater binary format". RPM installs on Fedora 43 and later
   (RPM 6) are upgraded through the system's password prompt.
+  **Fedora 43+ with Akev 0.1.1 from the `.rpm`:** 0.1.1 can't install this update itself, so
+  install it once by hand, and later updates work from the app:
+  `sudo dnf install https://github.com/akevdev/akev/releases/download/v0.1.2/Akev-0.1.2-1.x86_64.rpm`
+  (`aarch64.rpm` on Arm).
+- `akev capture` and the terminal interceptor also point gRPC (`grpcio` and other C-core
+  clients), Nix-built programs and Python's `httplib2` at Akev's CA
+  (`GRPC_DEFAULT_SSL_ROOTS_FILE_PATH`, `NIX_SSL_CERT_FILE`, `HTTPLIB2_CA_CERTS`), so they no
+  longer reject its certificate.
+- `akev completions <shell>` prints a completion script for bash, zsh, fish, PowerShell or
+  elvish. The Homebrew formula and the AUR package install them.
+- Dependency updates.
 
 ## 0.1.1 — 2026-11-19
 

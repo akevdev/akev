@@ -22,6 +22,7 @@ class Akev < Formula
 
   def install
     bin.install "akev"
+    generate_completions_from_executable(bin/"akev", "completions")
     doc.install "README.md", "CHANGELOG.md"
     (share/"licenses/akev").install "LICENSE"
   end

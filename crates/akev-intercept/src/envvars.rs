@@ -53,6 +53,9 @@ pub const ENV_VAR_NAMES: &[&str] = &[
     "HEX_CACERTS_PATH",
     "PERL_LWP_SSL_CA_FILE",
     "CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE",
+    "GRPC_DEFAULT_SSL_ROOTS_FILE_PATH",
+    "NIX_SSL_CERT_FILE",
+    "HTTPLIB2_CA_CERTS",
     "NODE_EXTRA_CA_CERTS",
     "JAVA_TOOL_OPTIONS",
     "AKEV_ACTIVE",
@@ -128,6 +131,9 @@ pub fn build_env_vars(cfg: &EnvConfig) -> Vec<(String, String)> {
         ("HEX_CACERTS_PATH", bundle.into()), // Elixir hex
         ("PERL_LWP_SSL_CA_FILE", bundle.into()), // Perl LWP
         ("CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE", bundle.into()), // gcloud
+        ("GRPC_DEFAULT_SSL_ROOTS_FILE_PATH", bundle.into()), // gRPC C-core: grpcio, Ruby, PHP, C++
+        ("NIX_SSL_CERT_FILE", bundle.into()), // Nix-built OpenSSL and curl
+        ("HTTPLIB2_CA_CERTS", bundle.into()), // Python httplib2 (older Google API clients)
         // Additive: Node, npm, Bun, Electron main process.
         ("NODE_EXTRA_CA_CERTS", cfg.ca_file.clone()),
         ("JAVA_TOOL_OPTIONS", java_tool_options(cfg)),
@@ -478,6 +484,11 @@ mod tests {
             "BUNDLE_SSL_CA_CERT",
             "DENO_CERT",
             "HEX_CACERTS_PATH",
+            "PERL_LWP_SSL_CA_FILE",
+            "CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE",
+            "GRPC_DEFAULT_SSL_ROOTS_FILE_PATH",
+            "NIX_SSL_CERT_FILE",
+            "HTTPLIB2_CA_CERTS",
         ] {
             assert_eq!(get(&vars, k), Some("/data/ca-bundle.pem"), "{k}");
         }

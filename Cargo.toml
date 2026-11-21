@@ -138,6 +138,7 @@ uuid = { version = "1", features = ["v4", "v7", "serde"] }
 time = { version = "0.3", features = ["serde", "formatting", "parsing", "macros"] }
 rand = "0.10"
 clap = { version = "4", features = ["derive", "env", "wrap_help"] }
+clap_complete = "4.6"
 dirs = "7"
 tempfile = "3"
 socket2 = { version = "0.6", features = ["all"] }
