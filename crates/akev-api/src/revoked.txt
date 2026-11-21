@@ -1,4 +1,7 @@
-# Akev Pro licence ids that no longer unlock new builds: refunds and chargebacks.
-# One id per line. scripts/release.sh regenerates this file from Stripe
-# (`bun licensing/cli.ts revoked` in the website repository); edit by hand only to add a
-# licence that was revoked outside Stripe. Builds released earlier keep accepting the key.
+# Akev Pro licence ids that no longer unlock new builds: fully refunded purchases and
+# charged-back purchases (open or lost chargebacks; inquiries and won disputes don't count).
+# A licence id is the purchase's PaymentIntent id. Builds released earlier keep accepting the
+# key: the check runs offline, against the list compiled into each build.
+# Generated from Stripe by `bun licensing/cli.ts revoked` in the website repository, which
+# scripts/release.sh runs for every release, so changes made here by hand don't survive it.
+# Stripe live mode.

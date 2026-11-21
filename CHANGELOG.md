@@ -6,6 +6,8 @@ user-visible change.
 
 ## Unreleased
 
+## 0.1.2 — 2026-11-21
+
 - In-app updates work for the desktop app installed from a `.deb`, `.rpm` or `.msi` package.
   Before, those installs were offered the AppImage or the NSIS installer, and on Linux the
   update failed with "invalid updater binary format". RPM installs on Fedora 43 and later
